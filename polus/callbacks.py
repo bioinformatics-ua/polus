@@ -1,4 +1,4 @@
-from core import BaseLogger
+from polus.core import BaseLogger
 from timeit import default_timer as timer
 from collections import OrderedDict, defaultdict
 import tensorflow as tf

@@ -1,5 +1,5 @@
-from elements import Entity
-from elements import EntitySet
+from polus.ner.elements import Entity
+from polus.ner.elements import EntitySet
 
 
 def longer_entities_first(entities):

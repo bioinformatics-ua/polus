@@ -1,4 +1,4 @@
-from core import BaseLogger
+from polus.core import BaseLogger
 
 
 class IMetric(BaseLogger):

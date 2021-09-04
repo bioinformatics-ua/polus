@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-from layers import CRF
-from models import SavableModel
+from polus.layers import CRF
+from polus.models import SavableModel
 
 class NERBertModel(SavableModel):
     def __init__(self, **kwargs):

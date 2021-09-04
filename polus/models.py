@@ -7,12 +7,12 @@ import h5py
 
 import types
 
-from core import BaseLogger
+from polus.core import BaseLogger
 from functools import wraps
-from utils import merge_dicts
+from polus.utils import merge_dicts
 
 #import for refering to this file, used in the load_model method
-import models
+import polus.models
 
 
 from transformers import TFBertModel
@@ -24,7 +24,7 @@ def load_model(file_name, change_config={}):
     
     cfg["model"] = merge_dicts(cfg["model"], change_config)
     
-    model = getattr(models, cfg['func_name'])(**cfg)
+    model = getattr(polus.models, cfg['func_name'])(**cfg)
         
     # load weights
     with h5py.File(file_name.split(".")[0]+".h5", 'r') as f:

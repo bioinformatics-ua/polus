@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-from core import BaseLogger
-from callbacks import CallbackCoordinator
+from polus.core import BaseLogger
+from polus.callbacks import CallbackCoordinator
 
 class Trainer(BaseLogger):
     def __init__(self, 

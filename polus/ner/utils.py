@@ -1,8 +1,8 @@
 from core import BaseLogger
 from copy import deepcopy
-from bio import decode_bio
-from bio import get_bio
-from elements import get_entities_within_span
+from polus.ner.bio import decode_bio
+from polus.ner.bio import get_bio
+from polus.ner.elements import get_entities_within_span
 
 class SequenceDecoder(BaseLogger):
     

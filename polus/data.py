@@ -1,8 +1,71 @@
 import inspect
-from core import BaseLogger, find_dtype_and_shapes
+from polus.core import BaseLogger, find_dtype_and_shapes
 import tensorflow as tf
 import os
+def get_bert_map_function(checkpoint, bert_layer_index=-1, **kwargs): # selecting only 256
+    
+    bert_model = TFBertModel.from_pretrained(checkpoint,
+                                             output_attentions = False,
+                                             output_hidden_states = True,
+                                             return_dict=True,
+                                             from_pt=True)
+    
+    @tf.function
+    def embeddings(**kwargs):
+        return bert_model(kwargs)["hidden_states"][bert_layer_index] # NONE, 512, 768
 
+    def run_bert(data):
+
+        data["embeddings"] = embeddings(input_ids=data["input_ids"], 
+                                         token_type_ids=data["token_type_ids"],
+                                         attention_mask=data["attention_mask"])
+
+        return data
+    
+    return run_bert
+
+def get_mapps_for_model(model):
+    
+    cfg = model.savable_config
+    
+    mapps = {}
+    
+    if "embeddings" in cfg:
+        if cfg["embeddings"]["type"]=="bert":
+            mapps["pre_tf_transformation"] = get_bert_map_function(**cfg["embeddings"])
+            
+            if "low" in cfg["model"]:
+                def training(data):
+                    return data["embeddings"][cfg["model"]["low"]:cfg["model"]["high"],:], tf.one_hot(data["tags_int"][cfg["model"]["low"]:cfg["model"]["high"]], 
+                                                          cfg["model"]["output_classes"])
+            else:
+                def training(data):
+                    return data["embeddings"], tf.one_hot(data["tags_int"], 
+                                                          cfg["model"]["output_classes"])
+            
+            mapps["training"] = training
+            if "low" in cfg["model"]:
+                def testing(data):
+                    data["embeddings"] = data["embeddings"][cfg["model"]["low"]:cfg["model"]["high"],:]
+                    data["spans"] = data["spans"][cfg["model"]["low"]:cfg["model"]["high"]]
+                    data["is_prediction"] = data["is_prediction"][cfg["model"]["low"]:cfg["model"]["high"]]
+                    data["tags_int"] = tf.cast(data["tags_int"][cfg["model"]["low"]:cfg["model"]["high"]], tf.int32)
+                    return data
+            else:
+                def testing(data):
+                    data["tags_int"] = tf.cast(data["tags_int"], tf.int32)
+
+                    return data
+                
+            mapps["testing"] = testing
+            
+    return mapps
+
+short_checkpoint_names = {
+    "microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext":"pubmedBertFull",
+    'microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract':"pubmedBertAbstract",
+    'cambridgeltl/SapBERT-from-PubMedBERT-fulltext':"SapBert"
+}
 
 class DataLoader(BaseLogger):
     
