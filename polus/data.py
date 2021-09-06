@@ -2,6 +2,11 @@ import inspect
 from polus.core import BaseLogger, find_dtype_and_shapes
 import tensorflow as tf
 import os
+
+
+
+        
+
 def get_bert_map_function(checkpoint, bert_layer_index=-1, **kwargs): # selecting only 256
     
     bert_model = TFBertModel.from_pretrained(checkpoint,

@@ -38,7 +38,6 @@ class BaseLogger:
     def set_logging_level(logging_level):
         self.logger.setLevel(logging_level)
         
-
         
 def find_dtype_and_shapes(data_generator):
     """
@@ -76,3 +75,5 @@ def find_dtype_and_shapes(data_generator):
         raise ValueError(f"The find_dtype_and_shapes only supports when the sample from generator are dict or tuples or list, but found {type(sample)}")
     
     return dtypes, shapes
+
+

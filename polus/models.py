@@ -35,13 +35,30 @@ def load_model(file_name, change_config={}):
     
     return model
 
+        
+def resolve_activation(activation_name):
+    if activation_name=="mish":
+        return tfa.activations.mish
+    else:
+        return activation_name
+    
 
-def savable_model(func):
+def from_config(func):
     @wraps(func)
     def function_wrapper(**kwargs):
         
+        # run resolve_activation
+        if "activation" in kwargs["model"]:
+            # cache the reference for the activation
+            _activation = kwargs["model"]["activation"]
+            kwargs["model"]["activation"] = resolve_activation(_activation)
+        
         model = func(**kwargs["model"])
         kwargs['func_name'] = func.__name__
+        
+        # restore the original activation reference for saving
+        if "activation" in kwargs["model"]:
+            kwargs["model"]["activation"] = _activation
         
         model._name = func.__name__
         model.savable_config = kwargs
@@ -77,4 +94,11 @@ class SavableModel(tf.keras.Model, BaseLogger):
     
     def set_name(self, name):
         self._name = name
-
+        
+class SequentialSavableModel(tf.keras.Sequential, SavableModel):
+    """
+    This class is just to be compatible with the Sequential Model from keras and implements
+    the same inference method from the SavableModel class
+    """
+    def __init__(self, layers, **kwargs):
+        super().__init__(layers, **kwargs)

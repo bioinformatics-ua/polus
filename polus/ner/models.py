@@ -1,7 +1,8 @@
 import tensorflow as tf
 
 from polus.layers import CRF
-from polus.models import SavableModel
+from polus.models import from_config, resolve_activation
+
 
 class NERBertModel(SavableModel):
     def __init__(self, **kwargs):
@@ -22,22 +23,15 @@ class SequentialNERBertModel(tf.keras.Sequential, NERBertModel):
     def __init__(self, layers, **kwargs):
         super().__init__(layers, **kwargs)
 
-        
-def resolve_activation(activation_name):
-    if activation_name=="mish":
-        return tfa.activations.mish
-    else:
-        return activation_name
+
     
     
-@savable_model
+@from_config
 def baselineNER_MLP_CRF(sequence_length=256, 
                         output_classes = 3, 
                         hidden_space = 128,
                         activation=tf.keras.activations.swish, 
                         **kwargs):
-    
-    activation = resolve_activation(activation)
     
     crf_layer = CRF(output_classes)
     

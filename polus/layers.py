@@ -86,7 +86,9 @@ class CRF(tf.keras.layers.Layer):
     
     @property
     def loss_sample_weights(self):
-
+        
+        self.logger.warning("THE loss_sample_weights METHOD IS HARDCODED FOR THE biocreate NER TASK, PLS FIX ME :(")
+        
         def crf_loss(y_true, y_pred):
 
             log_likelihood, _ = crf_log_likelihood(

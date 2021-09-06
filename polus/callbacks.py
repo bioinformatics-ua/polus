@@ -268,12 +268,13 @@ class EarlyStop(Callback):
             
 class WandBLogCallback(Callback, IOutput):
     import wandb
-    def __init__(self, project, init_args, entity=None, additional_info=None):
+    def __init__(self, project, init_args, entity=None, additional_info=None, model_config=None):
         super().__init__()
         self.project = project
         self.entity = entity
         self.init_args = init_args
         self.additional_info = additional_info
+        self.model_config = model_config
      
     def __flatdict(self, d):
         _temp = {}
@@ -286,13 +287,21 @@ class WandBLogCallback(Callback, IOutput):
         return _temp
     
     def on_train_begin(self):
+        if self.model_config is not None:
+            model_config = self.model_config
+        elif hasattr(self.coordinator.trainer.model, "savable_config"):
+            model_config = self.coordinator.trainer.model.savable_config
+        else:
+            model_config = {}
+            self.logger.warning(f"The training will log information to WandB, however, the callback was unable to find the model configuration, you should explicitly set the model configuration or use @savable_model decorator")
+                
         if self.entity is None:
             wandb.init(project=self.project,
-                       config=self.coordinator.trainer.model.savable_config)
+                       config=model_config)
         else:
             wandb.init(project=self.project,
                        entity=self.entity,
-                       config=self.coordinator.trainer.model.savable_config)
+                       config=model_config)
         
         wandb.config.update(self.init_args) 
         wandb.config.update(self.additional_info) 

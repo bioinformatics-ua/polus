@@ -1,35 +1,28 @@
-
-import inspect
-from polus.core import BaseLogger, find_dtype_and_shapes
-import tensorflow as tf
 import os
 import pickle
 import random
 import json
+import inspect
+from polus.core import BaseLogger, find_dtype_and_shapes
+import tensorflow as tf
+from transformers import TFBertModel
+from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
+
+
 class DataLoader(BaseLogger):
+    
     
     def __init__(self, 
                  source_generator,
-                 mapping_f = None,
-                 use_cache = False,
-                 cache_additional_identifier = "",
-                 cache_chunk_size = 8192,
-                 cache_folder=os.path.join(".polus_cache","data")):
+                 mapping_f = None):
         """
         source_generator - the source generator that feeds the data
         mapping_f    - an optional transformation function that would be applied to 
                            the source generator samples, ideally it can be used to do heavy pre processing on the the GPU
-        cache - optinal variable that should specified a string path to save the output of the pre_tf_transformations function
         """
         super().__init__()
         
-        self.use_cache = use_cache
-        self.cache_folder = cache_folder
-        self.cache_chunk_size = cache_chunk_size
-        self.cache_additional_identifier = cache_additional_identifier
-        self.shuffle_blocks = False
-        
-        self.sample_generator = self.__build_sample_generator(source_generator, mapping_f)
+        self.sample_generator = self._build_sample_generator(source_generator, mapping_f)
 
         dytpes, shapes = find_dtype_and_shapes(self.sample_generator())
         
@@ -41,34 +34,15 @@ class DataLoader(BaseLogger):
         for method in filter(lambda x: not x[0].startswith("_"), inspect.getmembers(self.tf_dataset, predicate=inspect.ismethod)):
             setattr(self, method[0], method[1])
     
-    def __build_sample_generator(self, source_generator, mapping_f):
-        if self.use_cache:
-            if not os.path.exists(self.cache_folder):
-                os.makedirs(self.cache_folder)
-        
-            # get path to cache
-            self.cache_base_name = self.__build_cache_base_name(source_generator, mapping_f)
-            self.cache_base_path = os.path.join(self.cache_folder, self.cache_base_name)
-            self.cache_index_path = f"{self.cache_base_path}.index"
-            
-            if os.path.exists(self.cache_index_path):
-                # build a generator that reads the files from cache
-                return self.__build_cache_generator()
-            else:
-                self.logger.info(f"DataLoader will cache the sample in {self.cache_base_path}")
-                generator = self.__build_mapping_generator(source_generator, mapping_f)
-                
-                # cache the computations, this now runs in eager mode, however may be benificial to run in lazy mode
-                return self.__build_cache_generator(generator)
-                
-        return self.__build_mapping_generator(source_generator, mapping_f)
     
-    def __build_mapping_generator(self, source_generator, mapping_f):
+    def _build_sample_generator(self, source_generator, mapping_f):
+        
+        # Logic to construct a generator that maybe applies the mapping_f to the source_generator
         
         if mapping_f is None:
             generator = source_generator
         else:
-
+            
             def generator():
 
                 BATCH = 128
@@ -84,6 +58,7 @@ class DataLoader(BaseLogger):
                     data = mapping_f(data)
 
                     ## debatching in python
+                    ## TODO: this may be a bottleneck since python is slow
                     if isinstance(data, dict):
                         key = list(data.keys())[0]
                         n_samples = data[key].shape[0] #batch size
@@ -94,13 +69,73 @@ class DataLoader(BaseLogger):
                         for i in range(n_samples):
                             yield [ v[i] for v in data ] 
                     else:
-                        raise ValueError(f"the pre_tf_transformations function does not yield a dict nor tuple nor a list")
+                        raise ValueError(f"the mapping_f function does not yield a dict nor tuple nor a list")
                         
         return generator
+
+    def __iter__(self):
+        return self.tf_dataset.__iter__()
+
+    def get_n_samples(self):
+        if hasattr(self, "n_samples"):
+            return self.n_samples
+        else:
+            self.logger.info("this dataset does not have the number of samples in cache so it will take some time to counting")
+            n_samples = 0
+            for _ in self.tf_dataset:
+                n_samples += 1
+                
+            self.n_samples = n_samples
+            
+            return self.n_samples
         
         
         
-    def __build_cache_generator(self, generator = None):
+class CachedDataLoader(DataLoader):
+    
+    
+    def __init__(self, 
+                 source_generator,
+                 mapping_f = None,
+                 do_clean_up = False,
+                 cache_additional_identifier = "",
+                 cache_chunk_size = 8192,
+                 cache_folder=os.path.join(".polus_cache","data")):
+
+
+        self.cache_folder = cache_folder
+        self.cache_chunk_size = cache_chunk_size
+        self.cache_additional_identifier = cache_additional_identifier
+        self.shuffle_blocks = False
+        self.do_clean_up = do_clean_up
+        
+        # the parent DataLoader will call _build_sample_generator that contains the logic to build the dataloader
+        super().__init__(source_generator, mapping_f=mapping_f)
+            
+            
+    def _build_sample_generator(self, source_generator, mapping_f):
+
+        if not os.path.exists(self.cache_folder):
+            os.makedirs(self.cache_folder)
+
+        # get path to cache
+        self.cache_base_name = self.__build_cache_base_name(source_generator, mapping_f)
+        self.cache_base_path = os.path.join(self.cache_folder, self.cache_base_name)
+        self.cache_index_path = f"{self.cache_base_path}.index"
+        
+        generator = None
+        
+        if not os.path.exists(self.cache_index_path):
+            # there are no history of a previous generator so we must generate the samples once and then store in cache
+            # normaly apply the mapping_f to the source_generator
+            generator = super()._build_sample_generator(source_generator, mapping_f)
+
+        # build a generator that reads the files from cache
+        self.logger.info(f"DataLoader will store the smaples in {self.cache_base_path}, with a max_sample per file of {self.cache_chunk_size}, this may take a while")
+        return self._build_cache_generator(generator)
+
+    
+    def _build_cache_generator(self, generator = None):
         # first it need to store in cache the samples
         if generator is not None:
             
@@ -120,6 +155,9 @@ class DataLoader(BaseLogger):
             _temp_data = []
             _file_index = 0
             n_samples = 0
+            
+            # TODO: Change the tf section here so that all the tf function launched here can be destroyed
+            
             for data in generator():
                 n_samples += 1
                 _temp_data.append(data)
@@ -131,6 +169,8 @@ class DataLoader(BaseLogger):
                     _temp_data = []
                     _file_index+=1
             
+            # TODO: swap to the main tf session and destroy the previous one
+            
             if len(_temp_data)>0:
                 # save the reminder data
                 write_to_file(_file_index, _temp_data, index_info)
@@ -141,7 +181,13 @@ class DataLoader(BaseLogger):
             
             with open(self.cache_index_path, "w") as f:
                 json.dump(index_info, f)
-            
+        
+        
+        if self.do_clean_up:
+            # TODO: make test to see if this thing works
+            self.logger.info("The current tf session will be reseted to clear the computation done by the mapping function")
+            tf.keras.backend.clear_session()
+        
         # Build the cache generator
         
         # read the index from file
@@ -165,6 +211,7 @@ class DataLoader(BaseLogger):
                         yield sample
         
         return generator
+
     
     def __build_cache_base_name(self, source_generator, mapping_f):
         name = ""
@@ -176,28 +223,49 @@ class DataLoader(BaseLogger):
             
         return f"{name}_{source_generator.__name__}"
     
-    def __iter__(self):
-        return self.tf_dataset.__iter__()
     
     def pre_shuffle(self):
         """
-        If active, the order of the cached files will be readed in a random order
+        The order of the cached files will be readed in a random order
         """
-        if not self.use_cache:
-            self.logger.warning("Note that you are setting shuffle_blocks to true, however, this DataLoader does not use blocks (cache) so this option will have no effect")
-        
         self.shuffle_blocks = True
         
         return self
     
-    def get_n_samples(self):
-        if hasattr(self, "n_samples"):
-            return self.n_samples
+def access_embeddings(func):
+    """
+    A simple decorator function to access the embeddings property if present in the data
+    """
+    def function_wrapper(*args, **kwargs):
+        if isinstance(kwargs, dict) and "embeddings" in kwargs:
+            return func(**kwargs["embeddings"])
         else:
-            n_samples = 0
-            for _ in self.tf_dataset:
-                n_samples += 1
-                
-            self.n_samples = n_samples
+            return func(*args, **kwargs)
             
-            return self.n_samples
+        
+    return function_wrapper
+    
+@access_embeddings
+def build_bert_embeddings(checkpoint, bert_layer_index=-1, **kwargs):
+    
+    assert bert_layer_index < 0
+    
+    bert_model = TFBertModel.from_pretrained(checkpoint,
+                                             output_attentions = False,
+                                             output_hidden_states = bert_layer_index!=-1,
+                                             return_dict=True,
+                                             from_pt=True)
+    
+    if bert_layer_index==-1:
+        @tf.function
+        def embeddings(**kwargs):
+            return bert_model(kwargs)
+    else:
+        # use hidden_states
+        @tf.function
+        def embeddings(**kwargs):
+            out = bert_model(kwargs)
+            return TFBaseModelOutputWithPooling(last_hidden_state=out["hidden_states"][bert_layer_index],
+                                                pooler_output=out["pooler_output"])
+    
+    return embeddings

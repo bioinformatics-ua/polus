@@ -8,7 +8,7 @@ setup(
     author='Tiago Almeida and Rui Antunes',
     author_email='tiagomeloalmeida@ua.pt',
     license='MIT',
-    install_requires=["tensorflow>=2.6.0","transformers","tensorflow-addons","wandb"],
+    install_requires=["tensorflow>=2.6.0","transformers","tensorflow-addons","wandb","torch"],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
     test_suite='tests',
