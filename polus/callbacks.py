@@ -3,6 +3,7 @@ from timeit import default_timer as timer
 from collections import OrderedDict, defaultdict
 import tensorflow as tf
 import inspect
+import wandb
 
 class IOutput(BaseLogger):
     def __init__(self):
@@ -122,7 +123,6 @@ class TimerCallback(Callback):
         super().__init__()
         self.start = None
 
-        
     def on_train_batch_begin(self, epoch, step):
         self.start = timer()
 
@@ -267,9 +267,10 @@ class EarlyStop(Callback):
 
             
 class WandBLogCallback(Callback, IOutput):
-    import wandb
+    
     def __init__(self, project, init_args, entity=None, additional_info=None, model_config=None):
         super().__init__()
+        
         self.project = project
         self.entity = entity
         self.init_args = init_args

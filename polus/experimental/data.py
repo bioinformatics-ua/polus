@@ -7,6 +7,20 @@ from polus.core import BaseLogger, find_dtype_and_shapes
 import tensorflow as tf
 from transformers import TFBertModel
 from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
+from functools import wraps
+
+
+class IAccelerated_Map(BaseLogger):
+    def __init__(self):
+        super().__init__()
+        
+        self.__name__ = self.__class__.__name__
+        
+        if self.__class__.__name__ == "IAccelerated_Map":
+            raise Exception("This is an interface that cannot be instantiated")
+            
+    def build(self):
+        raise ("build method was not implemented")
 
 
 class DataLoader(BaseLogger):
@@ -14,15 +28,20 @@ class DataLoader(BaseLogger):
     
     def __init__(self, 
                  source_generator,
-                 mapping_f = None):
+                 accelerated_map_f = None,
+                 show_progress = False):
         """
-        source_generator - the source generator that feeds the data
-        mapping_f    - an optional transformation function that would be applied to 
-                           the source generator samples, ideally it can be used to do heavy pre processing on the the GPU
+        source_generator         - the source generator that feeds the data
+        accelerated_map_f        - an optional transformation function that would be applied to 
+                                   the source generator samples, this function will be executed in the best hardware that tf founds on the device
+        
         """
         super().__init__()
         
-        self.sample_generator = self._build_sample_generator(source_generator, mapping_f)
+        self.show_progress = show_progress
+        self.accelerated_map_f = accelerated_map_f
+        
+        self.sample_generator = self._build_sample_generator(source_generator)
 
         dytpes, shapes = find_dtype_and_shapes(self.sample_generator())
         
@@ -35,27 +54,34 @@ class DataLoader(BaseLogger):
             setattr(self, method[0], method[1])
     
     
-    def _build_sample_generator(self, source_generator, mapping_f):
+    def _build_sample_generator(self, source_generator):
         
-        # Logic to construct a generator that maybe applies the mapping_f to the source_generator
-        
-        if mapping_f is None:
+        # Logic to construct a generator that maybe applies the accelerated_map_f to the source_generator
+        if self.accelerated_map_f is None:
             generator = source_generator
+        
         else:
-            
+            # build and store the accelerated_map_f
+            if isinstance(self.accelerated_map_f, IAccelerated_Map):
+                # get the map function and run any heavy init only 1 time!
+                self.accelerated_map_f = self.accelerated_map_f.build()
+                        
             def generator():
-
+                
                 BATCH = 128
                 dytpes, shapes = find_dtype_and_shapes(source_generator())
                 inner_tf_dataset = tf.data.Dataset.from_generator(source_generator, 
                                                                   output_types= dytpes,
                                                                   output_shapes= shapes)\
                                                   .batch(BATCH)\
-                                                  .prefetch(tf.data.experimental.AUTOTUNE)
-
-                for data in inner_tf_dataset:
-
-                    data = mapping_f(data)
+                                                  .prefetch(tf.data.AUTOTUNE)
+                
+                for i, data in enumerate(inner_tf_dataset):
+                    
+                    if self.show_progress:
+                        print(f"Iteration: {i*BATCH}", end="\r")
+                    
+                    data = self.accelerated_map_f(data)
 
                     ## debatching in python
                     ## TODO: this may be a bottleneck since python is slow
@@ -69,8 +95,8 @@ class DataLoader(BaseLogger):
                         for i in range(n_samples):
                             yield [ v[i] for v in data ] 
                     else:
-                        raise ValueError(f"the mapping_f function does not yield a dict nor tuple nor a list")
-                        
+                        raise ValueError(f"the accelerated_map_f function does not yield a dict nor tuple nor a list")
+            
         return generator
 
     def __iter__(self):
@@ -96,7 +122,10 @@ class CachedDataLoader(DataLoader):
     
     def __init__(self, 
                  source_generator,
-                 mapping_f = None,
+                 accelerated_map_f = None,
+                 show_progress = False,
+                 tf_sample_map_f = None, # sample mapping function written and executed in tensorflow that is applied before the data is stored in cache
+                 py_sample_map_f = None, # sample mapping function written and executed in python that is applied before the data is stored in cache
                  do_clean_up = False,
                  cache_additional_identifier = "",
                  cache_chunk_size = 8192,
@@ -108,30 +137,65 @@ class CachedDataLoader(DataLoader):
         self.cache_additional_identifier = cache_additional_identifier
         self.shuffle_blocks = False
         self.do_clean_up = do_clean_up
+        self.__tf_sample_map_f = tf_sample_map_f
+        self.__py_sample_map_f = py_sample_map_f
         
         # the parent DataLoader will call _build_sample_generator that contains the logic to build the dataloader
-        super().__init__(source_generator, mapping_f=mapping_f)
+        super().__init__(source_generator, accelerated_map_f=accelerated_map_f, show_progress=show_progress)
             
             
-    def _build_sample_generator(self, source_generator, mapping_f):
-
+    def _build_sample_generator(self, source_generator):
+        
         if not os.path.exists(self.cache_folder):
             os.makedirs(self.cache_folder)
 
         # get path to cache
-        self.cache_base_name = self.__build_cache_base_name(source_generator, mapping_f)
+        self.cache_base_name = self.__build_cache_base_name(source_generator)
         self.cache_base_path = os.path.join(self.cache_folder, self.cache_base_name)
         self.cache_index_path = f"{self.cache_base_path}.index"
         
         generator = None
         
         if not os.path.exists(self.cache_index_path):
+             # build a generator that reads the files from cache
+            self.logger.info(f"DataLoader will store the smaples in {self.cache_base_path}, with a max_sample per file of {self.cache_chunk_size}, this may take a while")
             # there are no history of a previous generator so we must generate the samples once and then store in cache
-            # normaly apply the mapping_f to the source_generator
-            generator = super()._build_sample_generator(source_generator, mapping_f)
+            # normaly apply the accelerated_map_f to the source_generator
+            generator = super()._build_sample_generator(source_generator)
+            
+            if self.__tf_sample_map_f is not None:
+                tf_source_generator = generator
+                
+                if isinstance(self.__tf_sample_map_f, IAccelerated_Map):
+                    # get the map function and run any heavy init only 1 time!
+                    self.__tf_sample_map_f = self.__tf_sample_map_f.build()
+                
+                def generator():
+                    
+                    dytpes, shapes = find_dtype_and_shapes(tf_source_generator())
+                    inner_tf_dataset = tf.data.Dataset.from_generator(tf_source_generator, 
+                                                                      output_types= dytpes,
+                                                                      output_shapes= shapes)\
+                                                      .map(self.__tf_sample_map_f, num_parallel_calls=tf.data.AUTOTUNE)\
+                                                      .prefetch(tf.data.AUTOTUNE)
 
-        # build a generator that reads the files from cache
-        self.logger.info(f"DataLoader will store the smaples in {self.cache_base_path}, with a max_sample per file of {self.cache_chunk_size}, this may take a while")
+                    for data in inner_tf_dataset:
+                        yield data
+            
+            if self.__py_sample_map_f is not None:
+                
+                py_source_generator = generator
+                
+                if isinstance(self.__py_sample_map_f, IAccelerated_Map):
+                    # get the map function and run any heavy init only 1 time!
+                    self.__py_sample_map_f = self.__py_sample_map_f.build()
+                
+                def generator():
+                    for data in py_source_generator():
+                        yield self.__py_sample_map_f(data)
+        else:
+            self.logger.info(f"We found a compatible cache file for this DataLoader")
+            
         return self._build_cache_generator(generator)
 
     
@@ -157,6 +221,7 @@ class CachedDataLoader(DataLoader):
             n_samples = 0
             
             # TODO: Change the tf section here so that all the tf function launched here can be destroyed
+            self.logger.info("Starting to cache the dataset, this may take a while")
             
             for data in generator():
                 n_samples += 1
@@ -194,10 +259,10 @@ class CachedDataLoader(DataLoader):
         with open(self.cache_index_path, "r") as f:
             self.cache_index = json.load(f) 
         
-        
         # set n_samples
         self.n_samples = self.cache_index["n_samples"]
         
+        self.logger.info(f"Total number of samples in dataset: {self.n_samples}")
         
         def generator():
             aux_file_index = list(range(len(self.cache_index["files"])))
@@ -213,13 +278,19 @@ class CachedDataLoader(DataLoader):
         return generator
 
     
-    def __build_cache_base_name(self, source_generator, mapping_f):
+    def __build_cache_base_name(self, source_generator):
         name = ""
         if self.cache_additional_identifier!="":
             name = f"{self.cache_additional_identifier}_"
         
-        if mapping_f is not None:
-            name += mapping_f.__name__
+        if self.accelerated_map_f is not None:
+            name += self.accelerated_map_f.__name__
+            
+        if self.__tf_sample_map_f is not None:
+            name += self.__tf_sample_map_f.__name__
+            
+        if self.__py_sample_map_f is not None:
+            name += self.__py_sample_map_f.__name__
             
         return f"{name}_{source_generator.__name__}"
     

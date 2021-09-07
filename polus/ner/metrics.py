@@ -36,8 +36,8 @@ class IConfusionMatrixTF(IMetric):
     def _build_confusion_matrix(self, y_true, y_pred):
         self.logger.debug("_build_confusion_matrix function was traced")
         #print(y_true)
-        y_true = tf.reshape(y_true, (-1,))
-        y_pred = tf.reshape(y_pred, (-1,))
+        #y_true = tf.reshape(y_true, (-1,))
+        #y_pred = tf.reshape(y_pred, (-1,))
         
         return tf.math.confusion_matrix(y_true, y_pred, num_classes=self.num_classes)
         

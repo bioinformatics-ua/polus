@@ -29,7 +29,7 @@ class Trainer(BaseLogger):
     def __str__(self):
         return 'Trainer'
     
-    @tf.function()
+    @tf.function#()
     def train_step(self, x, y):
         self.logger.debug("train_step was traced (Should appear twice)")
         with tf.GradientTape() as tape:
