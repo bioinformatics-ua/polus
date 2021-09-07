@@ -77,6 +77,7 @@ class SavableModel(tf.keras.Model, BaseLogger):
         BaseLogger.__init__(self)
     
     def save(self, base_path = os.path.join(".polus_cache","saved_models"), extension=""):
+        
         if not os.path.exists(base_path):
             os.makedirs(base_path)
         
