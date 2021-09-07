@@ -1,12 +1,12 @@
 # Polus
 
-A powerfull tensorflow toolkit for creating/training complex deep learning models.
+A powerful tensorflow toolkit for creating/training complex deep learning models in a functional way.
 
-This toolkit is currently under development and aims to focused on biomedical tasks, although can also be used in other domains
+This toolkit is currently under development and aims to focus on biomedical tasks, although it can also also be used in other domains.
 
 ### Documentation
 
-to do
+TO DO
 
 ### Team
   * Tiago Almeida<sup id="a1">[1](#f1)</sup>
