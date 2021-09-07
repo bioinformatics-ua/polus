@@ -187,6 +187,60 @@ def test_cachedDataloader_mapping_f_and_py_sample_f_cache_pre_shuffle():
     assert sample["new_entry"] == sample["id"]*2
     assert sample["new_entry_sample_map"] == str(int(sample["id"].numpy()))
     
+def test_cachedDataloader_MERGE_mapping_f_and_py_sample_f_cache_pre_shuffle():
+    
+    
+    def mapping_f(samples):
+        samples["new_entry"] = samples["id"]*2
+        return samples
+    
+    def samples_map(sample):
+        sample["new_entry_sample_map"] = str(int(sample["id"].numpy()))
+        return sample
+    
+    def source_gen_1():
+        for i in range(1000):
+            yield {"id":i, "text":"dummy"}
+    
+    def source_gen_2():
+        for i in range(500):
+            yield {"id":i, "text":"dummy2"}
+            
+    def source_gen_3():
+        for i in range(721):
+            yield {"id":i, "text":"dummy3"}
+    
+    dataloaders = []
+    
+    for source_gen in [source_gen_1, source_gen_2, source_gen_3]:
+        
+        dataloaders.append(CachedDataLoader(source_gen, 
+                                      cache_chunk_size = 256,
+                                      cache_folder = PATH_CACHE,
+                                      accelerated_map_f=mapping_f,
+                                      py_sample_map_f=samples_map))
+    
+    
+    N_SAMPLES = 1000 + 500 + 721
+    
+    dataloader = CachedDataLoader.merge(*dataloaders)
+    
+    dataloader.pre_shuffle()
+    
+    text_samples = []
+    
+    n_samples = 0
+    for sample in dataloader:
+        n_samples += 1
+        if not n_samples%100:
+            text_samples.append(sample["text"])
+    
+    assert n_samples == N_SAMPLES
+    assert dataloader.get_n_samples() == N_SAMPLES
+    assert all([text in ["dummy", "dummy2", "dummy3"] for text in text_samples])
+    assert sample["new_entry"] == sample["id"]*2
+    assert sample["new_entry_sample_map"] == str(int(sample["id"].numpy()))
+    
 def test_cachedDataloader_mapping_f_and_py_sample_f_tf_sample_f_cache_pre_shuffle():
     
     N_SAMPLES = 1000

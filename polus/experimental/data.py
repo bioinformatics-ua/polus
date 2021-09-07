@@ -29,6 +29,7 @@ class DataLoader(BaseLogger):
     def __init__(self, 
                  source_generator,
                  accelerated_map_f = None,
+                 accelerated_map_batch = 128,
                  show_progress = False):
         """
         source_generator         - the source generator that feeds the data
@@ -39,6 +40,7 @@ class DataLoader(BaseLogger):
         super().__init__()
         
         self.show_progress = show_progress
+        self.accelerated_map_batch = accelerated_map_batch
         self.accelerated_map_f = accelerated_map_f
         
         self.sample_generator = self._build_sample_generator(source_generator)
@@ -68,12 +70,12 @@ class DataLoader(BaseLogger):
                         
             def generator():
                 
-                BATCH = 128
+                # BATCH = 128
                 dytpes, shapes = find_dtype_and_shapes(source_generator())
                 inner_tf_dataset = tf.data.Dataset.from_generator(source_generator, 
                                                                   output_types= dytpes,
                                                                   output_shapes= shapes)\
-                                                  .batch(BATCH)\
+                                                  .batch(self.accelerated_map_batch)\
                                                   .prefetch(tf.data.AUTOTUNE)
                 
                 for i, data in enumerate(inner_tf_dataset):
@@ -121,16 +123,20 @@ class CachedDataLoader(DataLoader):
     
     
     def __init__(self, 
-                 source_generator,
+                 source_generator = None,
                  accelerated_map_f = None,
+                 accelerated_map_batch = 128,
                  show_progress = False,
                  tf_sample_map_f = None, # sample mapping function written and executed in tensorflow that is applied before the data is stored in cache
                  py_sample_map_f = None, # sample mapping function written and executed in python that is applied before the data is stored in cache
                  do_clean_up = False,
                  cache_additional_identifier = "",
                  cache_chunk_size = 8192,
-                 cache_folder=os.path.join(".polus_cache","data")):
-
+                 cache_folder=os.path.join(".polus_cache","data"),
+                 cache_index = None): # this variable is used to init a CacheDataLoader with an already cached index usefull in merge
+        
+        # impossible condition
+        assert source_generator is not None or cache_index is not None
 
         self.cache_folder = cache_folder
         self.cache_chunk_size = cache_chunk_size
@@ -139,13 +145,46 @@ class CachedDataLoader(DataLoader):
         self.do_clean_up = do_clean_up
         self.__tf_sample_map_f = tf_sample_map_f
         self.__py_sample_map_f = py_sample_map_f
+        self.cache_index = cache_index
         
         # the parent DataLoader will call _build_sample_generator that contains the logic to build the dataloader
-        super().__init__(source_generator, accelerated_map_f=accelerated_map_f, show_progress=show_progress)
+        super().__init__(source_generator, accelerated_map_f=accelerated_map_f, show_progress=show_progress, accelerated_map_batch=accelerated_map_batch)
+    
+    @classmethod
+    def merge(cls, *cache_dataloaders):
+        assert (len(cache_dataloaders)>1)
+
+        index_info = {"files":[],
+                      "cache_chunk_size": 0,
+                      "n_samples": 0
+                      }
+        
+        # read files
+        for dl in cache_dataloaders:
             
+            index = CachedDataLoader.read_index(dl.cache_index_path)
+                
+            index_info["n_samples"] += index["n_samples"]
+            index_info["files"].extend(index["files"])
             
+            # this is a bit starange, but it is possible to have different DL with diff chunk size so we will pick the larger one to define the conjunt
+            index_info["cache_chunk_size"] = max(index_info["cache_chunk_size"], index["cache_chunk_size"])
+            
+        return cls(cache_index=index_info)
+                 
+    @staticmethod
+    def read_index(file_path):
+        with open(file_path, "r") as f:
+            index = json.load(f)
+        return index
+    
     def _build_sample_generator(self, source_generator):
         
+        if self.cache_index is not None:
+            # we are alredy have the data needed to create the DataLoader
+            # So, let's build it
+            return self.__build_generator_from_index()
+                 
         if not os.path.exists(self.cache_folder):
             os.makedirs(self.cache_folder)
 
@@ -197,7 +236,6 @@ class CachedDataLoader(DataLoader):
             self.logger.info(f"We found a compatible cache file for this DataLoader")
             
         return self._build_cache_generator(generator)
-
     
     def _build_cache_generator(self, generator = None):
         # first it need to store in cache the samples
@@ -256,12 +294,15 @@ class CachedDataLoader(DataLoader):
         # Build the cache generator
         
         # read the index from file
-        with open(self.cache_index_path, "r") as f:
-            self.cache_index = json.load(f) 
+        self.cache_index = CachedDataLoader.read_index(self.cache_index_path)
         
+        return self.__build_generator_from_index()
+                 
+    def __build_generator_from_index(self):
         # set n_samples
         self.n_samples = self.cache_index["n_samples"]
-        
+        self.cache_chunk_size = self.cache_index["cache_chunk_size"]
+                 
         self.logger.info(f"Total number of samples in dataset: {self.n_samples}")
         
         def generator():
@@ -274,10 +315,9 @@ class CachedDataLoader(DataLoader):
                 with open(self.cache_index["files"][file_index], "rb") as f:
                     for sample in pickle.load(f):
                         yield sample
-        
+                 
         return generator
-
-    
+        
     def __build_cache_base_name(self, source_generator):
         name = ""
         if self.cache_additional_identifier!="":
