@@ -81,7 +81,7 @@ class DataLoader(BaseLogger):
                 for i, data in enumerate(inner_tf_dataset):
                     
                     if self.show_progress:
-                        print(f"Iteration: {i*BATCH}", end="\r")
+                        print(f"Iteration: {i*self.accelerated_map_batch}", end="\r")
                     
                     data = self.accelerated_map_f(data)
 

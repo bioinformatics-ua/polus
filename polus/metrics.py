@@ -66,7 +66,7 @@ class IConfusionMatrixTF(IMetric):
     def reset(self):
         self.confusion_matrix = tf.zeros((self.num_classes, self.num_classes), dtype=tf.int32)
         
-        
+
 class MacroF1Score(IConfusionMatrixTF):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
