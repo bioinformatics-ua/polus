@@ -1,4 +1,4 @@
-from polus.core import BaseLogger
+from polus.core import BaseLogger, get_jit_compile
 from timeit import default_timer as timer
 from collections import OrderedDict, defaultdict
 import tensorflow as tf
@@ -375,7 +375,10 @@ class ConsoleLogCallback(Callback, IOutput):
     
     def on_train_begin(self):
         self.logger.info(f"Begin training of the model \"{self.coordinator.trainer.model.name}\" for {self.coordinator.epochs} epochs")
-    
+        jit_compiler_flag = get_jit_compile()
+        self.logger.debug(f"The training step will be build with jit_compiler={jit_compiler_flag}")
+        
+        
     def on_epoch_begin(self, epoch):
         self.logger.info(f"Begin epoch {epoch}")
     

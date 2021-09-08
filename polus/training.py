@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from polus.core import BaseLogger
+from polus.core import BaseLogger, get_jit_compile
 from polus.callbacks import CallbackCoordinator
 
 class Trainer(BaseLogger):
@@ -29,7 +29,7 @@ class Trainer(BaseLogger):
     def __str__(self):
         return 'Trainer'
     
-    @tf.function#()
+    @tf.function(jit_compile=get_jit_compile())#()
     def train_step(self, x, y):
         self.logger.debug("train_step was traced (Should appear twice)")
         with tf.GradientTape() as tape:

@@ -10,6 +10,19 @@ Describe code that is used through all packages of this toolkit
 
 FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
 
+# module-wide variables
+this = sys.modules[__name__]
+this.jit_compile=False
+
+def activate_jit_compile():
+    this.jit_compile=True
+    
+def set_jit_compile(mode):
+    this.jit_compile=mode
+
+def get_jit_compile():
+    return this.jit_compile
+    
 class BaseLogger:
     def __init__(self, logging_level=logging.DEBUG, log_name="polus.log"):
         """
