@@ -27,7 +27,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
         """
         super().__init__(**kwargs)
         BaseLogger.__init__(self)
-        self.output_dim = int(output_dim) 
+        self.output_dim = int(output_dim)
         self.input_spec = tf.keras.layers.InputSpec(min_ndim=3)
         self.sequence_lengths = None
         self.transitions = None
@@ -86,10 +86,11 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
             return tf.reduce_mean(-log_likelihood)
         return crf_loss
     
-    @property
-    def loss_sample_weights(self):
+    def loss_sample_weights(self, sample_weight_vector):
+        """
+        sample_weight_vector:  list - array that contains the weight per class, which will be multiplied by all the predictions in a sequence 
         
-        self.logger.warning("THE loss_sample_weights METHOD IS HARDCODED FOR THE biocreate NER TASK, PLS FIX ME :(")
+        """
         
         def crf_loss(y_true, y_pred):
 
@@ -100,7 +101,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
                 transition_params=self.transitions,
             )
             
-            per_sample = tf.reduce_sum(2* y_true * [0,0,1,0], axis=[-2,-1]) + tf.reduce_sum(y_true * [0,0,0,1], axis=[-2,-1])
+            per_sample = tf.reduce_sum(y_true * sample_weight_vector, axis=[-2,-1])
             sample_weight = tf.math.log(per_sample+1)
             
             loss_per_sample = -log_likelihood * sample_weight
