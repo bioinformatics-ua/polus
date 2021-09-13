@@ -17,14 +17,17 @@ import polus.models
 
 from transformers import TFBertModel
 
-def load_model(file_name, change_config={}):
+def load_model(file_name, change_config={}, external_module=None):
     
     with open(file_name,"r") as f:
         cfg = json.load(f)
     
     cfg["model"] = merge_dicts(cfg["model"], change_config)
     
-    model = getattr(polus.models, cfg['func_name'])(**cfg)
+    if external_module is not None:
+        model = getattr(external_module, cfg['func_name'])(**cfg)
+    else:
+        model = getattr(polus.models, cfg['func_name'])(**cfg)
         
     # load weights
     with h5py.File(file_name.split(".")[0]+".h5", 'r') as f:

@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from polus.core import BaseLogger
+from polus.core import BaseLogger, get_jit_compile
 
 
 class IMetric(BaseLogger):
@@ -11,7 +11,8 @@ class IMetric(BaseLogger):
             
         self.name = self.__class__.__name__
         self.reduce_f = reduce_f
-    
+        self.transform_logits = transform_logits
+        
     def samples_from_batch(self, samples):
         if self.reduce_f is not None:
             samples = self.reduce_f(samples)
@@ -53,7 +54,7 @@ class IConfusionMatrixTF(IMetric):
         #
         self.confusion_matrix += self._build_confusion_matrix(*samples)
         
-    @tf.function(input_signature=[tf.TensorSpec(shape=(None, ), dtype=tf.int32), tf.TensorSpec(shape=(None, ), dtype=tf.int32)])
+    @tf.function(input_signature=[tf.TensorSpec(shape=(None, ), dtype=tf.int32), tf.TensorSpec(shape=(None, ), dtype=tf.int32)], jit_compile=get_jit_compile())
     def _build_confusion_matrix(self, y_true, y_pred):
         self.logger.debug("_build_confusion_matrix function was traced")
         #print(y_true)
@@ -74,7 +75,7 @@ class MacroF1Score(IConfusionMatrixTF):
     def _evaluate(self):
         return self._tfevaluate(self.confusion_matrix)
     
-    @tf.function(input_signature=[tf.TensorSpec(shape=(None, None), dtype=tf.int32)])
+    @tf.function(input_signature=[tf.TensorSpec(shape=(None, None), dtype=tf.int32)], jit_compile=get_jit_compile())
     def _tfevaluate(self, matrix):
         self.logger.debug("MacroF1Score function was traced")
         
