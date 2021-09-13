@@ -151,6 +151,14 @@ class CachedDataLoader(DataLoader):
         super().__init__(source_generator, accelerated_map_f=accelerated_map_f, show_progress=show_progress, accelerated_map_batch=accelerated_map_batch)
     
     @classmethod
+    def from_cached_index(cls, index_path):
+        
+        index_info = CachedDataLoader.read_index(index_path)
+        
+        return cls(cache_index=index_info)
+        
+    
+    @classmethod
     def merge(cls, *cache_dataloaders):
         assert (len(cache_dataloaders)>1)
 

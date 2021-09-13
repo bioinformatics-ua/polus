@@ -281,6 +281,53 @@ def test_cachedDataloader_mapping_f_and_py_sample_f_tf_sample_f_cache_pre_shuffl
     assert sample["new_entry_sample_map"] == str(int(sample["id"].numpy()))
     assert sample["tf_new_entry"] == sample["id"] + 1
     
+    
+def test_cachedDataloader_from_cache_name():
+    
+    N_SAMPLES = 1000
+    
+    def mapping_f(samples):
+        samples["new_entry"] = samples["id"]*2
+        return samples
+    
+    def tf_samples_map(sample):
+        sample["tf_new_entry"] = sample["id"] + 1 
+        return sample
+    
+    def samples_map(sample):
+        sample["new_entry_sample_map"] = str(int(sample["id"].numpy()))
+        return sample
+    
+    def source_gen():
+        for i in range(N_SAMPLES):
+            yield {"id":i, "text":"dummy"}
+            
+    dataloader = CachedDataLoader(source_gen, 
+                                  cache_chunk_size = 256,
+                                  cache_folder = PATH_CACHE,
+                                  accelerated_map_f=mapping_f,
+                                  py_sample_map_f=samples_map,
+                                  tf_sample_map_f=tf_samples_map)
+    
+    from_cached_index = dataloader.cache_index_path
+    
+    del dataloader
+    
+    dl = CachedDataLoader.from_cached_index(from_cached_index)
+    
+    dl.pre_shuffle()
+    
+    n_samples = 0
+    for sample in dl:
+        n_samples += 1
+    
+    assert n_samples == N_SAMPLES
+    assert dl.get_n_samples() == N_SAMPLES
+    assert sample["text"] == "dummy"
+    assert sample["new_entry"] == sample["id"]*2
+    assert sample["new_entry_sample_map"] == str(int(sample["id"].numpy()))
+    assert sample["tf_new_entry"] == sample["id"] + 1
+    
 
 def test_get_bert_embedding_parameters():
     
