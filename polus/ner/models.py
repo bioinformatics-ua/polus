@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 from polus.layers import CRF
-from polus.models import from_config, resolve_activation
+from polus.models import from_config, resolve_activation, SavableModel
 
 
 class NERBertModel(SavableModel):
@@ -23,9 +23,6 @@ class SequentialNERBertModel(tf.keras.Sequential, NERBertModel):
     def __init__(self, layers, **kwargs):
         super().__init__(layers, **kwargs)
 
-
-    
-    
 @from_config
 def baselineNER_MLP_CRF(sequence_length=256, 
                         output_classes = 3, 
@@ -37,6 +34,29 @@ def baselineNER_MLP_CRF(sequence_length=256,
     
     model = SequentialNERBertModel([
         tf.keras.layers.Dense(hidden_space, input_shape=(sequence_length, 768), activation=activation),
+        tf.keras.layers.Dense(output_classes),
+        crf_layer
+    ])
+    
+    model.loss = crf_layer.loss
+    model.loss_sample_weights = crf_layer.loss_sample_weights
+    
+    return model
+
+@from_config
+def baselineNER_MLP_Dropout_CRF(sequence_length=256, 
+                        output_classes = 3, 
+                        hidden_space = 128,
+                        droupout_p = 0.1,
+                        activation=tf.keras.activations.swish, **kwargs):
+    
+    activation = resolve_activation(activation)
+    
+    crf_layer = CRF(output_classes)
+    
+    model = SequentialNERBertModel([
+        tf.keras.layers.Dropout(droupout_p, input_shape=(hidden_space, 768)),
+        tf.keras.layers.Dense(hidden_space, activation=activation),
         tf.keras.layers.Dense(output_classes),
         crf_layer
     ])
