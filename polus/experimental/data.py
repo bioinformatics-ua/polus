@@ -5,7 +5,7 @@ import json
 import inspect
 from polus.core import BaseLogger, find_dtype_and_shapes
 import tensorflow as tf
-from transformers import TFBertModel
+from transformers import TFAutoModel
 from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 from functools import wraps
 
@@ -361,7 +361,7 @@ def build_bert_embeddings(checkpoint, bert_layer_index=-1, **kwargs):
     
     assert bert_layer_index < 0
     
-    bert_model = TFBertModel.from_pretrained(checkpoint,
+    bert_model = TFAutoModel.from_pretrained(checkpoint,
                                              output_attentions = False,
                                              output_hidden_states = bert_layer_index!=-1,
                                              return_dict=True,

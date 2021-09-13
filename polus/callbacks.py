@@ -207,12 +207,12 @@ class SaveModelCallback(Callback):
                  strategy, 
                  validation_name = None,
                  metric_name = None,
-                 path_to_file = None):
+                 cache_folder = None):
         super().__init__()
         self.strategy = strategy
         self.validation_name = validation_name
         self.metric_name = metric_name
-        self.path_to_file = path_to_file
+        self.cache_folder = cache_folder
         
         if self.strategy not in ["every", "best", "end"]:
             self.logger.warn(f"The selected strategy ({strategy}) is not supported, so this callback will be ignored")
@@ -225,23 +225,23 @@ class SaveModelCallback(Callback):
         if self.strategy == "best":
             if self.coordinator.shared_dict["validation"][self.validation_name][self.metric_name][-1] > self.best:
                 self.best = self.coordinator.shared_dict["validation"][self.validation_name][self.metric_name][-1]
-                if self.path_to_file is None:
+                if self.cache_folder is None:
                     self.coordinator.trainer.model.save(extension=f"_{self.validation_name}_{self.metric_name}_best")
                 else:
-                    self.coordinator.trainer.model.save(extension=f"_{self.validation_name}_{self.metric_name}_best", base_path=self.path_to_file)
+                    self.coordinator.trainer.model.save(extension=f"_{self.validation_name}_{self.metric_name}_best", base_path=self.cache_folder)
                     
         elif self.strategy == "every":
-            if self.path_to_file is None:
+            if self.cache_folder is None:
                 self.coordinator.trainer.model.save(extension=f"_epoch_{epoch}")
             else:
-                self.coordinator.trainer.model.save(extension=f"_epoch_{epoch}", base_path=self.path_to_file)
+                self.coordinator.trainer.model.save(extension=f"_epoch_{epoch}", base_path=self.cache_folder)
     
     def on_train_end(self):
         if self.strategy == "end":
-            if self.path_to_file is None:
+            if self.cache_folder is None:
                 self.coordinator.trainer.model.save()
             else:
-                self.coordinator.trainer.model.save(base_path=self.path_to_file)
+                self.coordinator.trainer.model.save(base_path=self.cache_folder)
 
 class EarlyStop(Callback):
     def __init__(self, 
@@ -320,7 +320,7 @@ class WandBLogCallback(Callback, IOutput):
         wandb.config.update(self.additional_info) 
         
         # add optimizer and loss
-        if inspect.isfunction(self.coordinator.trainer.loss):
+        if inspect.isfunction(self.coordinator.trainer.loss) or isinstance(self.coordinator.trainer.loss, tf.types.experimental.GenericFunction):
             _loss = {"name":self.coordinator.trainer.loss.__name__}
         else:
             _loss = self.coordinator.trainer.loss.__dict__
