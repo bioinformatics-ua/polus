@@ -86,7 +86,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
             return tf.reduce_mean(-log_likelihood)
         return crf_loss
     
-    def loss_sample_weights(self, sample_weight_vector):
+    def loss_sample_weights(self, mask_positive_classes, negative_weight):
         """
         sample_weight_vector:  list - array that contains the weight per class, which will be multiplied by all the predictions in a sequence 
         
@@ -101,10 +101,14 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
                 transition_params=self.transitions,
             )
             
-            per_sample = tf.reduce_sum(y_true * sample_weight_vector, axis=[-2,-1])
-            sample_weight = tf.math.log(per_sample+1)
+            positive_samples = y_true * mask_positive_classes
             
-            loss_per_sample = -log_likelihood * sample_weight
+            negative_mask = tf.math.reduce_all(positive_samples == 0, axis=[-2,-1])
+            negative_weight_per_sample = tf.cast(negative_mask, tf.float32) * negative_weight
+            
+            sample_weights = tf.cast(tf.math.reduce_any(positive_samples == 1, axis=[-2,-1]), tf.float32) + negative_weight_per_sample
+            
+            loss_per_sample = -log_likelihood * sample_weights
             
             return tf.reduce_mean(loss_per_sample)
         return crf_loss

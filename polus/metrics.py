@@ -11,15 +11,14 @@ class IMetric(BaseLogger):
             
         self.name = self.__class__.__name__
         self.reduce_f = reduce_f
-        self.transform_logits = transform_logits
         
     def samples_from_batch(self, samples):
         if self.reduce_f is not None:
             samples = self.reduce_f(samples)
         
-        self._samples_from_batch(*samples)
+        self._samples_from_batch(samples)
     
-    def _samples_from_batch(self, *samples):
+    def _samples_from_batch(self, samples):
         raise Exception("_samples_from_batch was internally called, but is not implemented")
     
     def reset(self):
@@ -48,7 +47,7 @@ class IConfusionMatrixTF(IMetric):
         self.num_classes = num_classes
         self.reset()
         
-    def _samples_from_batch(self, *samples):
+    def _samples_from_batch(self, samples):
         #print(samples["tags_int"])
         #print(samples["tags_int_pred"])
         #

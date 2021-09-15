@@ -7,7 +7,7 @@ def warmup_scheduler(num_train_steps,
                      warmup_percentage=0.1, 
                      end_lr=1e-7):
 
-    num_warmup_steps = int(num_train_steps*0.1)
+    num_warmup_steps = int(num_train_steps*warmup_percentage)
     
     lr_linear_decay = tf.keras.optimizers.schedules.PolynomialDecay(
         initial_learning_rate=max_lr,

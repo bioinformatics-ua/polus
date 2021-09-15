@@ -11,7 +11,7 @@ class EntityF1(IMetric):
         self.sequence_decoder = BioCSequenceDecoder(corpora)
         self.reset()
         
-    def samples_from_batch(self, samples):
+    def _samples_from_batch(self, samples):
         self.sequence_decoder.samples_from_batch(samples)
     
     def reset(self):
