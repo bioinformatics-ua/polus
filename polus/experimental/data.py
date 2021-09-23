@@ -384,7 +384,6 @@ def build_bert_embeddings(checkpoint, bert_layer_index=-1, **kwargs):
         @tf.function
         def embeddings(**kwargs):
             out = bert_model(kwargs)
-            return TFBaseModelOutputWithPooling(last_hidden_state=out["hidden_states"][bert_layer_index],
-                                                pooler_output=out["pooler_output"])
+            return TFBaseModelOutputWithPooling(last_hidden_state=out["hidden_states"][bert_layer_index])
     
     return embeddings
