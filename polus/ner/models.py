@@ -55,7 +55,7 @@ def baselineNER_MLP_Dropout_CRF(sequence_length=256,
     crf_layer = CRF(output_classes)
     
     model = SequentialNERBertModel([
-        tf.keras.layers.Dropout(droupout_p, input_shape=(hidden_space, 768)),
+        tf.keras.layers.Dropout(droupout_p, input_shape=(sequence_length, 768)),
         tf.keras.layers.Dense(hidden_space, activation=activation),
         tf.keras.layers.Dense(output_classes),
         crf_layer

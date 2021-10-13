@@ -1,0 +1,7 @@
+Version 0.1.5:
+
+    - experimental.data moved to data
+    
+    CacheDataLoader:
+        - add clean method that deletes the index and associated files
+        - in case of error, automaticly cleans any file that was created

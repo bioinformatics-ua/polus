@@ -49,40 +49,48 @@ class BaseLogger:
         self.logger.setLevel(logging_level)
         
         
-def find_dtype_and_shapes(data_generator):
+def find_dtype_and_shapes(data_generator, k=10):
     """
     Automatically gets the dtype and shapes of samples
     
     """
     # get one sample
-    sample = next(iter(data_generator))
+    assert k>0
+    generator = iter(data_generator)
+    samples = [ next(generator) for i in range(k) ]
 
-    if isinstance(sample, dict):
+    
+            
+    if isinstance(samples[0], dict):
+        
         dtypes = {}
         shapes = {}
-        for key in sample.keys():
-            tf_value = tf.constant(sample[key])
+
+        for key in samples[0].keys():
+            tf_value = tf.constant(samples[0][key])
             dtypes[key] = tf_value.dtype
             shapes[key] = tf_value.shape
-    elif isinstance(sample, tuple):
-        dtypes = []
-        shapes = []
-        for e in sample:
-            tf_value = tf.constant(e)
-            dtypes.append(tf_value.dtype)
-            shapes.append(tf_value.shape)
-        dtypes = tuple(dtypes)
-        shapes = tuple(shapes)
-    elif isinstance(sample, list):
-        dtypes = []
-        shapes = []
-        for e in sample:
-            tf_value = tf.constant(e)
-            dtypes.append(tf_value.dtype)
-            shapes.append(tf_value.shape)
+
+
+        # infer the shape since it can be None if some dim is not in agreement 
+        for i in range(len(samples)-1):
+            assert len(set(samples[i].keys()) - set(samples[i+1].keys())) == 0
+            for key in samples[i+1].keys():
+                tf_value = tf.constant(samples[i+1][key])
+
+                # they must have the same dimensionality, but can have diff values per dimension
+                assert len(tf_value.shape) == len(shapes[key])
+
+                # sample with diff value in one of the dimensions
+                if tf_value.shape != shapes[key]:
+                    new_shape = list(shapes[key])
+                    for j in range(len(shapes[key])):
+                        if shapes[key][j] is not None and shapes[key][j]!=tf_value.shape[j]:
+                            new_shape[j] = None
+                    shapes[key] = tf.TensorShape(new_shape)
 
     else:
-        raise ValueError(f"The find_dtype_and_shapes only supports when the sample from generator are dict or tuples or list, but found {type(sample)}")
+        raise ValueError(f"The find_dtype_and_shapes only supports when the sample came from generator are dict but found {type(sample)}")
     
     return dtypes, shapes
 

@@ -1,4 +1,4 @@
-from polus.experimental.data import DataLoader, CachedDataLoader, build_bert_embeddings
+from polus.data import DataLoader, CachedDataLoader, build_bert_embeddings
 import pytest
 import glob
 import os
