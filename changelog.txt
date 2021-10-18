@@ -5,3 +5,7 @@ Version 0.1.5:
     CacheDataLoader:
         - add clean method that deletes the index and associated files
         - in case of error, automaticly cleans any file that was created
+        
+    training:
+        - Creation of the BaseTrainer abstraction
+        - Creation of a ClassifierTrainer instance that holds the logic to train models according to the classification problem
