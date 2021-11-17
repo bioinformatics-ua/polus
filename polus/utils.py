@@ -16,3 +16,7 @@ def merge_dicts(*list_of_dicts):
         temp.update(list_of_dicts[i])
         
     return temp
+
+def unique(iterable, key=lambda x:x):
+    "Find unique items in a iterable"
+    return list({ key(x):x for x in iterable }.values())

@@ -213,7 +213,7 @@ class CachedDataLoader(DataLoader):
         
         if not os.path.exists(self.cache_index_path):
              # build a generator that reads the files from cache
-            self.logger.info(f"DataLoader will store the smaples in {self.cache_base_path}, with a max_sample per file of {self.cache_chunk_size}, this may take a while")
+            self.logger.info(f"DataLoader will store the samples in {self.cache_base_path}, with a max_sample per file of {self.cache_chunk_size}, this may take a while")
             # there are no history of a previous generator so we must generate the samples once and then store in cache
             # normaly apply the accelerated_map_f to the source_generator
             generator = super()._build_sample_generator(source_generator)
@@ -269,7 +269,7 @@ class CachedDataLoader(DataLoader):
             def write_to_file(file_id, data, index):
                 
                 file_path = f"{self.cache_base_path}_{file_id:04}.part"
-                
+
                 with open(file_path, "wb") as f:
                     pickle.dump(data, f)
                     
@@ -284,9 +284,11 @@ class CachedDataLoader(DataLoader):
             
             for data in generator():
                 n_samples += 1
+                
                 _temp_data.append(data)
                 if len(_temp_data) >= self.cache_chunk_size:
                     # save data to file
+                    
                     write_to_file(_file_index, _temp_data, index_info)
                     
                     # clean up 

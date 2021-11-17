@@ -5,18 +5,19 @@ from polus.callbacks import CallbackCoordinator
 
 class BaseTrainer(BaseLogger):
     def __init__(self, 
+                 model,
                  optimizer, 
                  loss,
                  metrics = [],
                  post_process_prediction = None,
-                 post_process_grads = None,
-                 filter_weights = lambda x:x):
+                 post_process_grads = None):
     
         if self.__class__.__name__ == "BaseTrainer":
             raise Exception("This is an abstraction that cannot be instantiated")
             
         super().__init__()
-
+        
+        self.model = model
         self.loss = loss
         self.optimizer = optimizer
         self.post_process_logits = post_process_prediction
@@ -33,23 +34,34 @@ class BaseTrainer(BaseLogger):
     def __str__(self):
         return 'Trainer'
     
-    def foward_loss_pass(self, *inputs):
+    
+    def foward_without_grads(self, *inputs):
+        """
+        Foward computation that we dont want to store variables and the respective intermidiate steps for the gradients 
+        """
+        return inputs
+    
+    def foward_with_grads(self, *inputs):
         """
         Describes the computations required to produce the final loss value from a predifined model or models.
         
-        Note, that foward_loss_pass may use self.post_process_logits and self.loss
+        Note, that foward_with_grads may use self.post_process_logits and self.loss
         
         This method can be further decorated with tf.function with input_signature so that it can be called from lr_finder 
         and train_step without rebuilding the computation graph
         """
-        raise NotImplementedError("foward_loss_pass function must be implemented in order to compute a loss value for optimization")
+        raise NotImplementedError("foward_with_grads function must be implemented in order to compute a loss value for optimization")
     
     @tf.function(jit_compile=get_jit_compile())#()
     def train_step(self, *inputs):
-        self.logger.debug("train_step was traced (Should appear twice)")
+        self.logger.debug("train_step was traced (May appear twice, more than that means that that training step is receving inputs with different shapes or dtypes)")
         
         with tf.GradientTape() as tape:
-            loss_value = self.foward_loss_pass(*inputs)
+
+            with tape.stop_recording():
+                inputs = self.foward_without_grads(*inputs)
+                    
+            loss_value = self.foward_with_grads(*inputs)
         
         # using auto-diff to get the gradients
         grads = tape.gradient(loss_value, self.trainable_weights)
@@ -115,15 +127,14 @@ class ClassifierTrainer(BaseTrainer):
                  *args,
                  **kwargs):
         
-        self.model = model
         if trainable_weights is None:
             self.trainable_weights = model.trainable_weights
         else:
             self.trainable_weights = trainable_weights
         
-        super().__init__(*args, **kwargs)
+        super().__init__(model, *args, **kwargs)
     
-    def foward_loss_pass(self, x, y):
+    def foward_with_grads(self, x, y):
         
         logits = self.model(x, training=True)
             

@@ -49,7 +49,7 @@ class BaseLogger:
         self.logger.setLevel(logging_level)
         
         
-def find_dtype_and_shapes(data_generator, k=10):
+def find_dtype_and_shapes(data_generator, k=5):
     """
     Automatically gets the dtype and shapes of samples
     
@@ -95,3 +95,15 @@ def find_dtype_and_shapes(data_generator, k=10):
     return dtypes, shapes
 
 
+def execute_if(condition_var, error_message="", on=True):
+    def decorator(func):
+        def function_wrapper(self, *args, **kwargs):
+
+            if getattr(self, condition_var) == on:
+                return func(self, *args, **kwargs)
+            else:
+                if error_message != "":
+                    print(error_message)
+        return function_wrapper
+    
+    return decorator
