@@ -164,11 +164,13 @@ class ValidationDataCallback(Callback):
     def __init__(self, 
                  tf_validation, 
                  custom_inference_f=None,
-                 name=None):
+                 name=None,
+                 show_progress=False):
         super().__init__()
         self.tf_validation = tf_validation
         self.name = name
         self.custom_inference_f = custom_inference_f
+        self.show_progress = show_progress
         
     def on_train_begin(self):
         if "validation" not in self.coordinator.shared_dict:
@@ -182,9 +184,11 @@ class ValidationDataCallback(Callback):
     def on_epoch_end(self, epoch):
         self.logger.info(f"Running validation for {self.name} set")
         # make inference
-
+        
         for step, sample in enumerate(self.tf_validation):
-            
+            if self.show_progress:
+                print(f"{step}", end="\r")
+                
             if self.custom_inference_f is not None:
                 y = self.custom_inference_f(self.coordinator.trainer.model, sample)
             else:
