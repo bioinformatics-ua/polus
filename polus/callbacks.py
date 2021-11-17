@@ -165,12 +165,14 @@ class ValidationDataCallback(Callback):
                  tf_validation, 
                  custom_inference_f=None,
                  name=None,
-                 show_progress=False):
+                 show_progress=False,
+                 validation_interval=1):
         super().__init__()
         self.tf_validation = tf_validation
         self.name = name
         self.custom_inference_f = custom_inference_f
         self.show_progress = show_progress
+        self.validation_interval = validation_interval
         
     def on_train_begin(self):
         if "validation" not in self.coordinator.shared_dict:
@@ -182,28 +184,31 @@ class ValidationDataCallback(Callback):
         self.coordinator.shared_dict["validation"][self.name] = {metric.name:[] for metric in self.coordinator.trainer.metrics }
         
     def on_epoch_end(self, epoch):
-        self.logger.info(f"Running validation for {self.name} set")
-        # make inference
         
-        for step, sample in enumerate(self.tf_validation):
-            if self.show_progress:
-                print(f"{step}", end="\r")
-                
-            if self.custom_inference_f is not None:
-                y = self.custom_inference_f(self.coordinator.trainer.model, sample)
-            else:
-                y = self.coordinator.trainer.model(sample)
-            
-            for metric in self.coordinator.trainer.metrics:
-                metric.samples_from_batch(y)
-                
-            del sample
+        if not epoch%self.validation_interval:
+            # only do validation at X interval
 
-        for metric in self.coordinator.trainer.metrics:
-            self.coordinator.shared_dict["validation"][self.name][metric.name].append(metric.evaluate())
-        
-        for output in self.coordinator.output_streamers:
-            output.write(f"Validation {self.name}", self.coordinator.shared_dict["validation"][self.name])
+            self.logger.info(f"Running validation for {self.name} set")
+            # make inference
+            for step, sample in enumerate(self.tf_validation):
+                if self.show_progress:
+                    print(f"{step}", end="\r")
+
+                if self.custom_inference_f is not None:
+                    y = self.custom_inference_f(self.coordinator.trainer.model, sample)
+                else:
+                    y = self.coordinator.trainer.model(sample)
+
+                for metric in self.coordinator.trainer.metrics:
+                    metric.samples_from_batch(y)
+
+                del sample
+
+            for metric in self.coordinator.trainer.metrics:
+                self.coordinator.shared_dict["validation"][self.name][metric.name].append(metric.evaluate())
+
+            for output in self.coordinator.output_streamers:
+                output.write(f"Validation {self.name}", self.coordinator.shared_dict["validation"][self.name])
             
             
 class SaveModelCallback(Callback):
