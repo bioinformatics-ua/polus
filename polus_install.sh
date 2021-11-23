@@ -12,5 +12,5 @@ pip uninstall polus -y
 
 python setup.py bdist_wheel
 
-pip install dist/polus-0.1.5-py3-none-any.whl
+pip install dist/polus-0.1.6-py3-none-any.whl
 cd -

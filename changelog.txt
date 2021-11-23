@@ -1,3 +1,10 @@
+Version 0.1.6:
+    Introduction of a information retrieval package with trainers focused in dense retrieval
+    
+    CacheDataLoaderWlookup:
+        - Extension of the CacheDataLoader but it will additionally save an python object associated with the cached dataset.
+
+
 Version 0.1.5:
 
     - experimental.data moved to data

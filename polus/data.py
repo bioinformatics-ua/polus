@@ -371,6 +371,91 @@ class CachedDataLoader(DataLoader):
         self.shuffle_blocks = True
         
         return self
+
+    
+class CachedDataLoaderwLookup(CachedDataLoader):
+    """
+    Correspond to a CachedDataLoader but also keeps track of an aditional lookup file
+    """
+    
+    def __init__(self, 
+                 lookup_data = None,
+                 cache_index=None,  # this variable is used to init a CacheDataLoader with an already cached index usefull in merge
+                 *args,
+                 **kwargs,
+                ):
+        
+        if cache_index is not None and "lookup_file" in cache_index:
+            with open(cache_index["lookup_file"], "rb") as f:
+                lookup_data = pickle.load(f)
+        
+        if lookup_data is None:
+            raise ValueError("Do not use CachedDataLoaderwLookup without setting a lookup_data, instead use CachedDataLoader")
+        
+        self.lookup_data = lookup_data
+        
+        # the parent DataLoader will call _build_sample_generator that contains the logic to build the dataloader
+        super().__init__(*args, cache_index=cache_index, **kwargs)
+        
+    def get_lookup_data(self):
+        return self.lookup_data
+    
+    @staticmethod
+    def _load_lookup_data(lookup_file):
+        with open(lookup_file, "rb") as f:
+            return pickle.load(f)
+    
+    @classmethod
+    def merge(cls, *cache_dataloaders):
+        assert (len(cache_dataloaders)>1)
+
+        index_info = {"files":[],
+                      "cache_chunk_size": 0,
+                      "n_samples": 0
+                      }
+        
+        lookup_data = []
+        
+        # read files
+        for dl in cache_dataloaders:
+            
+            index = CachedDataLoaderwLookup.read_index(dl.cache_index_path)
+                
+            index_info["n_samples"] += index["n_samples"]
+            index_info["files"].extend(index["files"])
+            
+            # this is a bit starange, but it is possible to have different DL with diff chunk size so we will pick the larger one to define the conjunt
+            index_info["cache_chunk_size"] = max(index_info["cache_chunk_size"], index["cache_chunk_size"])
+            
+            lookup_data.extend(CachedDataLoaderwLookup._load_lookup_data(index["lookup_file"]))
+            
+        return CachedDataLoaderwLookup(cache_index=index_info, lookup_data=lookup_data)
+    
+    def clean(self):
+
+        if hasattr(self, "cache_index") and self.cache_index is not None and "lookup_file" in self.cache_index and os.path.exists(self.cache_index["lookup_file"]):
+            os.remove(self.cache_index["lookup_file"])
+        super().clean()
+    
+    def write_index_file(self, index_info):
+        
+        ## add lookup_data to the index
+        lookup_file = f"{self.cache_base_path}.lookup"
+        
+        with open(lookup_file, "wb") as f:
+            pickle.dump(self.lookup_data, f)
+        
+        index_info["lookup_file"] = lookup_file
+        
+        with open(self.cache_index_path, "w") as f:
+            json.dump(index_info, f)
+            
+    def __build_generator_from_index(self):
+        
+        self.lookup_data = CachedDataLoaderwLookup._load_lookup_data(self.cache_index["lookup_file"])
+        
+        return super().__build_generator_from_index()
+    
     
 def access_embeddings(func):
     """

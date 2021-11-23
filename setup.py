@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 setup(
     name='polus',
     packages=find_packages(include=['polus*']),
-    version='0.1.5',
+    version='0.1.6',
     description='A tensorflow based framework for training deep learning models',
     author='Tiago Almeida and Rui Antunes',
     author_email='tiagomeloalmeida@ua.pt',
