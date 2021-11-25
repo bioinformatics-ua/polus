@@ -114,4 +114,4 @@ class EfficientDenseRetrievalTrainer(BaseTrainer):
         else:
             pos_scores, neg_scores = self._foward_trainable_model_w_negatives(question, positive_doc, negative_doc)
 
-        return self.loss(pos_scores, neg_scores)
+        return pos_scores, neg_scores#self.loss(pos_scores, neg_scores)
