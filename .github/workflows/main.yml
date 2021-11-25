@@ -27,5 +27,13 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build sphinx docs
-        uses: cascode-labs/build-sphinx-action/action.yml@v0
+        uses: ammaraskar/sphinx-action@master
+        with:
+          docs-folder: "docs/"
+          
+      - name: Upload
+        uses: actions/upload-artifact@v1
+        with:
+          name: DocumentationHTML
+          path: docs/_build/html/
 
