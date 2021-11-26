@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>polus.core API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Polus core …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,19 +22,62 @@
 <h1 class="title">Module <code>polus.core</code></h1>
 </header>
 <section id="section-intro">
+<h1 id="polus-core">Polus core</h1>
+<p>Here we describe operations that are
+used through all packages of this toolkit</p>
+<p>Furtheremore, the package core have module-wide
+variables that govern some internal behaviour of
+this framework.</p>
+<p>For instance, polus.core has an jit_compile attribute
+that controls the utilization of XLA during tf.function,
+the correct way to write or read this attribute is throug
+its associated methods:</p>
+<pre><code class="language-python">
+from polus.core import set_jit_compile, get_jit_compile
+
+print(get_jit_compile()) # True
+set_jit_compile(False) #False
+print(get_jit_compile()) # False
+
+</code></pre>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import logging
+<pre><code class="python">r&#39;&#39;&#39;
+
+# Polus core 
+
+Here we describe operations that are
+used through all packages of this toolkit
+
+Furtheremore, the package core have module-wide
+variables that govern some internal behaviour of
+this framework.
+
+For instance, polus.core has an jit_compile attribute
+that controls the utilization of XLA during tf.function,
+the correct way to write or read this attribute is throug 
+its associated methods:
+
+```python
+
+from polus.core import set_jit_compile, get_jit_compile
+
+print(get_jit_compile()) # True
+set_jit_compile(False) #False
+print(get_jit_compile()) # False
+
+```
+
+&#39;&#39;&#39;
+
+
+import logging
 import os
 import sys
 import tensorflow as tf
 from logging.handlers import TimedRotatingFileHandler
-
-&#34;&#34;&#34;
-Describe code that is used through all packages of this toolkit
-&#34;&#34;&#34;
 
 FORMATTER = logging.Formatter(&#34;%(asctime)s — %(name)s — %(levelname)s — %(message)s&#34;)
 
@@ -326,7 +369,9 @@ def execute_if(condition_var, error_message=&#34;&#34;, on=True):
 <nav id="sidebar">
 <h1>Index</h1>
 <div class="toc">
-<ul></ul>
+<ul>
+<li><a href="#polus-core">Polus core</a></li>
+</ul>
 </div>
 <ul id="index">
 <li><h3>Super-module</h3>
