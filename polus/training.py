@@ -10,9 +10,9 @@ class BaseTrainer(BaseLogger):
     of training.
     
     This class should not be instantiated but instead it should be
-    extended by some concrete training procedure, e.g. a ClassifierTrainer
-    is a trainer that implements the logic needed to train models under simple
-    classification problems.
+    extended by some concrete training procedure, e.g. a 
+    `polus.training.ClassifierTrainer` is a trainer that implements the 
+    logic needed to train models under simple classification problems.
     
     """
     def __init__(self, 
@@ -20,7 +20,7 @@ class BaseTrainer(BaseLogger):
                  optimizer, 
                  loss,
                  metrics = [],
-                 post_process_prediction = None,
+                 post_process_logits = None,
                  post_process_grads = None):
         """
         Constructs all the necessary attributes for the training procedure
@@ -37,7 +37,7 @@ class BaseTrainer(BaseLogger):
             args are free and can be defined in runtime depending on the training
             procedure
 
-          metrics: it is a list of polus.metrics.IMetric instances, describe what 
+          metrics: it is a list of `polus.metrics.IMetric` instances, describe what 
             measurements should be taken
             
         Raises:
@@ -86,12 +86,12 @@ class BaseTrainer(BaseLogger):
         computations that do not interfere in the error propagation
         
         Args:
-          inputs (list <objects>): These are the model inputs
+          inputs (multiple tf.Tensor or dicts): These are the model inputs
             normally these would be a list of tf.Tensors or a list
             of dictionary of tf.Tensor.
             
         Returns:
-          (list <objects>): These are the inputs that are given to the
+          (multiple tf.Tensor or dicts): These are the inputs that are given to the
           forward_with_grads function, i.e. the inputs that are fed to the model
           that we want to train.
         """
@@ -102,20 +102,19 @@ class BaseTrainer(BaseLogger):
         Describes the computations required to produce the final loss 
         value from a predifined model or models.
         
-        Note, that foward_with_grads may use self.post_process_logits 
-        and self.loss
+        Note, that foward_with_grads may use self.post_process_logits
         
         This method can be further decorated with tf.function with 
         input_signature so that it can be called from lr_finder 
         and train_step without rebuilding the computation graph
         
         Args:
-          inputs (list <objects>): These are the model inputs
+          inputs (multiple tf.Tensor or dicts): These are the model inputs
             normally these would be a list of tf.Tensors or a list
             of dictionary of tf.Tensor.
             
         Returns:
-          (list <objects>): inputs that are given to the self.loss
+          (multiple tf.Tensor or dicts): inputs that are given to the self.loss
             function. 
         
         """
@@ -134,7 +133,7 @@ class BaseTrainer(BaseLogger):
         the forward_* methods for implementing more complex logic
         
         Args:
-          inputs (list <objects>): list of tensors or list of dict 
+          inputs (multiple tf.Tensor or dicts): list of tensors or list of dict 
           with tensors, this corresponds to the data that is
           outputed by the tf.Dataset.
           
@@ -169,7 +168,7 @@ class BaseTrainer(BaseLogger):
     
     def lr_finder(self, tf_dataset, use_lr_found=False):
         """
-        Implements the lr_finder "magic trick", famoused by
+        Implements the lr_finder "magic trick", famoused in
         fast.ai
         
         
@@ -183,7 +182,23 @@ class BaseTrainer(BaseLogger):
               custom_data_transform_f=None,
               steps = None,
               learning_rate = None):
+        """
+        Implements the main training loop, where the model is trained by
+        iterativly executing the *train_step* for every *tf_dataset* sample
+        during a specific amount of epoch*.
         
+        Args:
+          tf_dataset (tf.data.Dataset): Training dataset that is compatible 
+            with the tf.data.Dataset class, which is the case for every
+            data loader in `polus.data`.
+          
+          epochs (int): Number of training epoch that will run during the 
+            training procedure.
+            
+          callbacks (list of `polus.callbacks.ICallback): List of callbacks
+            that are triger during the main training loop. Use this to 
+            perform operations outside each *train_step* call.
+        """
         if steps is None:
             N_STEPS = tf.data.experimental.cardinality(tf_dataset).numpy()
         else:
@@ -219,19 +234,35 @@ class BaseTrainer(BaseLogger):
         
         
 class ClassifierTrainer(BaseTrainer):
+    """
+    Standard classifier that extens the base trainer.
     
+    This trainer can be use to solve simple classification 
+    or regression tasks.
+    """
     def __init__(self, 
-                 model,
-                 trainable_weights = None,
                  *args,
+                 trainable_weights = None,
                  **kwargs):
-        
+        """
+        Args:
+          args: positional arguments that are passed into the
+            base class, e.g., the model variable.
+            
+          trainable_weights (list of tf.Variables): List of 
+            trainable variables that will be optimized. Note 
+            that this variables must belongs to the model to 
+            be trained.
+          
+          kwargs: keyword arguments that are passed into the
+            base class.
+        """
         if trainable_weights is None:
             self.trainable_weights = model.trainable_weights
         else:
             self.trainable_weights = trainable_weights
         
-        super().__init__(model, *args, **kwargs)
+        super().__init__(*args, **kwargs)
     
     def foward_with_grads(self, x, y):
         

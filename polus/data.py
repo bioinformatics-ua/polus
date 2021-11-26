@@ -8,17 +8,17 @@ efficient preprocessing, hence the main classes here are the DataLoaders.
 
 ### Main classes
 
-- **DataLoader**: Base class of data loader and automatically converts python
+- `polus.data.DataLoader`: Base class of data loader and automatically converts python
   generators to highly efficient *tf.data.Dataset*. Furthermore, it also supports
   GPU preprocessing which differs from *tf.data.Dataset*, since it only runs on CPU
   
-- **CachedDataLoader**: Extension of *polus.DataLoader*, adds the ability to seamlessly
+- `polus.data.CachedDataLoader`: Extension of *polus.DataLoader*, adds the ability to seamlessly
   store the preprocessed samples in the disk, following a chunking mechanism. Besides the 
   organizational advantage, this also enables us to implement a *pre_shuffle* mechanism
   that occurs at the chunk level, making it a must more efficient process since we can
   fully shuffle the dataset without the need to have its memory. 
 
-- **CachedDataLoaderwLookup**: Extension of *polus.CachedDataLoaderwLookup*, adds the 
+- `polus.data.CachedDataLoaderwLookup`: Extension of *polus.CachedDataLoaderwLookup*, adds the 
   functionality to store arbitrary python objects jointly with the stored DataLoader.
   Note for storing python objects we use the *pickle* library.
 
@@ -62,7 +62,7 @@ class DataLoader(BaseLogger):
             *tf.data.Dataset*, all the datatypes must be supported in TensorFlow, which is
             true for all python primitives types.
           
-          accelerated_map_f (func or polus.IAccelerated_Map): A function or interface, that
+          accelerated_map_f (func or `polus.data.IAccelerated_Map`): A function or interface, that
             describe a transformation to be applied to the samples from the *source_generator*.
             By default, this function will execute in the best hardware found on the host device,
             i.e., it should be used for mapping computations that should run on a GPU, e.g., 
