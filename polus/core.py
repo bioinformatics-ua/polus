@@ -24,7 +24,6 @@ print(get_jit_compile()) # False
 
 '''
 
-
 import logging
 import os
 import sys
@@ -34,8 +33,8 @@ from logging.handlers import TimedRotatingFileHandler
 
 
 # module-wide variables
-this = sys.modules[__name__]
-this.jit_compile=True
+_this = sys.modules[__name__]
+_this.jit_compile=True
     
 def set_jit_compile(mode: bool):
     """
@@ -49,13 +48,13 @@ def set_jit_compile(mode: bool):
     Returns:
       None
     """
-    this.jit_compile=mode
+    _this.jit_compile=mode
 
 def get_jit_compile():
     """
     Reads the value of the *jit_compile* attribute.
     """
-    return this.jit_compile
+    return _this.jit_compile
     
 class BaseLogger:
     def __init__(self, logging_level=logging.DEBUG, log_name="polus.log"):
