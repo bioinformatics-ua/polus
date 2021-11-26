@@ -39,8 +39,8 @@ jobs:
       - name: Build docs
         run: |
           pdoc -o docs polus
-          rm index.html
-          cp polus.html index.html
+          rm docs/index.html
+          cp docs/polus.html docs/index.html
 
       # Runs a set of commands using the runners shell
       #- name: Reorganize the outputed docs
