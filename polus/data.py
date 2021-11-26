@@ -213,7 +213,7 @@ class CachedDataLoader(DataLoader):
         
         # the parent DataLoader will call _build_sample_generator that contains the logic to build the dataloader
         try:
-            super().__init__(source_generator = source_generator, *args, **kwargs)
+            super().__init__(source_generator = source_generator, **kwargs)
         except Exception as e:
             # here we dont want to solve the exception, we just want to clean up de previously created files
             self.logger.info("An error has occured so all the created files will be deleted")
