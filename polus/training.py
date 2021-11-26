@@ -40,6 +40,10 @@ class BaseTrainer(BaseLogger):
           metrics: it is a list of `polus.metrics.IMetric` instances, describe what 
             measurements should be taken
             
+          post_process_logits (func):
+          
+          post_process_grads (func):
+            
         Raises:
           Exception: if this class is diractly instantiated, since this class acts only as an abstraction
         
@@ -52,7 +56,7 @@ class BaseTrainer(BaseLogger):
         self.model = model
         self.loss = loss
         self.optimizer = optimizer
-        self.post_process_logits = post_process_prediction
+        self.post_process_logits = post_process_logits
         self.post_process_grads = post_process_grads
         
         self.metrics = metrics
