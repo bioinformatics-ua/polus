@@ -1,3 +1,30 @@
+r'''
+
+# Polus Data API
+
+The polus data API serves as a wrapper of the *tf.data.Dataset* API.
+More precisely, we focus on the perspective of data loading and
+efficient preprocessing, hence the main classes here are the DataLoaders.
+
+### Main classes
+
+- **DataLoader**: Base class of data loader and automatically converts python
+  generators to highly efficient *tf.data.Dataset*. Furthermore, it also supports
+  GPU preprocessing which differs from *tf.data.Dataset*, since it only runs on CPU
+  
+- **CachedDataLoader**: Extension of *polus.DataLoader*, adds the ability to seamlessly
+  store the preprocessed samples in the disk, following a chunking mechanism. Besides the 
+  organizational advantage, this also enables us to implement a *pre_shuffle* mechanism
+  that occurs at the chunk level, making it a must more efficient process since we can
+  fully shuffle the dataset without the need to have its memory. 
+
+- **CachedDataLoaderwLookup**: Extension of *polus.CachedDataLoaderwLookup*, adds the 
+  functionality to store arbitrary python objects jointly with the stored DataLoader.
+  Note for storing python objects we use the *pickle* library.
+
+'''
+
+
 import os
 import pickle
 import random
@@ -10,30 +37,44 @@ from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 from functools import wraps
 from timeit import default_timer as timer
 
-class IAccelerated_Map(BaseLogger):
-    def __init__(self):
-        super().__init__()
-        
-        self.__name__ = self.__class__.__name__
-        
-        if self.__class__.__name__ == "IAccelerated_Map":
-            raise Exception("This is an interface that cannot be instantiated")
-            
-    def build(self):
-        raise ("build method was not implemented")
+
 
 
 class DataLoader(BaseLogger):
+    """
+    Base class of a data loader that builds higly efficient datasets (*tf.data.Dataset*)
+    from full python generators. 
     
+    The python generator must return a dictionary of samples, and no other format
+    is currently supported.
+    
+    """
     def __init__(self, 
                  source_generator,
                  accelerated_map_f = None,
                  accelerated_map_batch = 128,
                  show_progress = False):
         """
-        source_generator         - the source generator that feeds the data
-        accelerated_map_f        - an optional transformation function that would be applied to 
-                                   the source generator samples, this function will be executed in the best hardware that tf founds on the device
+        
+        Args:
+          source_generator (python generator): Must be a python generator that returns a 
+            **dictionary of samples**. Since this generator will be converted into a 
+            *tf.data.Dataset*, all the datatypes must be supported in TensorFlow, which is
+            true for all python primitives types.
+          
+          accelerated_map_f (func or polus.IAccelerated_Map): A function or interface, that
+            describe a transformation to be applied to the samples from the *source_generator*.
+            By default, this function will execute in the best hardware found on the host device,
+            i.e., it should be used for mapping computations that should run on a GPU, e.g., 
+            contextualized embeddings from BERT.
+            
+          accelerated_map_batch (int): The size of the batch that is fed to the *accelerated_map_f*
+            recalling that when running on GPU it is more efficient to perform batch-wise operations.
+            
+          show_progress (boolean): If true prints the current batch that was fed to accelerated_map_f.
+        
+        Returns:
+          None
         
         """
         super().__init__()
@@ -107,6 +148,12 @@ class DataLoader(BaseLogger):
         return self.tf_dataset.__iter__()
 
     def get_n_samples(self):
+        """
+        Returns the number of samples that the DataLoader contains,
+        if the DataLoader does not know how many samples it has, then
+        the DataLoader will first count the samples and then cache it 
+        and return the counter.
+        """
         if hasattr(self, "n_samples"):
             return self.n_samples
         else:
@@ -122,21 +169,36 @@ class DataLoader(BaseLogger):
         
         
 class CachedDataLoader(DataLoader):
+    """
+    Extension of a the DataLoader class that adds the ability to seamlessly
+    store the preprocessed samples in the disk, following a chunking mechanism. Besides the 
+    organizational advantage, this also enables us to implement a *pre_shuffle* mechanism
+    that occurs at the chunk level, making it a must more efficient process since we can
+    fully shuffle the dataset without the need to have its memory. of a data loader 
+    that builds higly efficient datasets (*tf.data.Dataset*) from full python generators. 
     
+    Since this class involves the storage of files on disk, if any exception is raised, the
+    DataLoader will automatically clean all the created files before raising the exception
+    to the user.
+    
+    """
     
     def __init__(self, 
                  source_generator = None,
-                 accelerated_map_f = None,
-                 accelerated_map_batch = 128,
-                 show_progress = False,
                  tf_sample_map_f = None, # sample mapping function written and executed in tensorflow that is applied before the data is stored in cache
                  py_sample_map_f = None, # sample mapping function written and executed in python that is applied before the data is stored in cache
                  do_clean_up = False,
                  cache_additional_identifier = "",
                  cache_chunk_size = 8192,
                  cache_folder=os.path.join(".polus_cache","data"),
-                 cache_index = None): # this variable is used to init a CacheDataLoader with an already cached index usefull in merge
+                 cache_index = None, # this variable is used to init a CacheDataLoader with an already cached index usefull in merge
+                 **kwargs): 
+        """
         
+        Args:
+          source_generator (python generator): Same as in `polus.data.DataLoader`
+          
+        """
         # impossible condition
         assert source_generator is not None or cache_index is not None
 
@@ -151,7 +213,7 @@ class CachedDataLoader(DataLoader):
         
         # the parent DataLoader will call _build_sample_generator that contains the logic to build the dataloader
         try:
-            super().__init__(source_generator, accelerated_map_f=accelerated_map_f, show_progress=show_progress, accelerated_map_batch=accelerated_map_batch)
+            super().__init__(source_generator = source_generator, *args, **kwargs)
         except Exception as e:
             # here we dont want to solve the exception, we just want to clean up de previously created files
             self.logger.info("An error has occured so all the created files will be deleted")
@@ -455,8 +517,21 @@ class CachedDataLoaderwLookup(CachedDataLoader):
         self.lookup_data = CachedDataLoaderwLookup._load_lookup_data(self.cache_index["lookup_file"])
         
         return super().__build_generator_from_index()
+
     
+class IAccelerated_Map(BaseLogger):
+    def __init__(self):
+        super().__init__()
+        
+        self.__name__ = self.__class__.__name__
+        
+        if self.__class__.__name__ == "IAccelerated_Map":
+            raise Exception("This is an interface that cannot be instantiated")
+            
+    def build(self):
+        raise ("build method was not implemented")
     
+
 def access_embeddings(func):
     """
     A simple decorator function to access the embeddings property if present in the data
