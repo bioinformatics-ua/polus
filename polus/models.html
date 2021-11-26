@@ -338,11 +338,14 @@
 
             <div class="docstring"><p><code>Model</code> groups layers into an object with training and inference features.</p>
 
-<p>Args:
-    inputs: The input(s) of the model: a <code>keras.Input</code> object or list of
-        <code>keras.Input</code> objects.
-    outputs: The output(s) of the model. See Functional API example below.
-    name: String, the name of the model.</p>
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>inputs:</strong>  The input(s) of the model: a <code>keras.Input</code> object or list of
+<code>keras.Input</code> objects.</li>
+<li><strong>outputs:</strong>  The output(s) of the model. See Functional API example below.</li>
+<li><strong>name:</strong>  String, the name of the model.</li>
+</ul>
 
 <p>There are two ways to instantiate a <code>Model</code>:</p>
 
@@ -494,27 +497,30 @@ to do prediction with <code>model.predict()</code>.</p>
 <a href="https://keras.io/guides/serialization_and_saving/">Serialization and Saving guide</a>
 for details.</p>
 
-<p>Args:
-    filepath: String, PathLike, path to SavedModel or H5 file to save the
-        model.
-    overwrite: Whether to silently overwrite any existing file at the
-        target location, or provide the user with a manual prompt.
-    include_optimizer: If True, save optimizer's state together.
-    save_format: Either <code>'tf'</code> or <code>'h5'</code>, indicating whether to save the
-        model to Tensorflow SavedModel or HDF5. Defaults to 'tf' in TF 2.X,
-        and 'h5' in TF 1.X.
-    signatures: Signatures to save with the SavedModel. Applicable to the
-        'tf' format only. Please see the <code>signatures</code> argument in
-        <code>tf.saved_model.save</code> for details.
-    options: (only applies to SavedModel format)
-        <code>tf.saved_model.SaveOptions</code> object that specifies options for
-        saving to SavedModel.
-    save_traces: (only applies to SavedModel format) When enabled, the
-        SavedModel will store the function traces for each layer. This
-        can be disabled, so that only the configs of each layer are stored.
-        Defaults to <code>True</code>. Disabling this will decrease serialization time
-        and reduce file size, but it requires that all custom layers/models
-        implement a <code><a href="#SavableModel.get_config">get_config()</a></code> method.</p>
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>filepath:</strong>  String, PathLike, path to SavedModel or H5 file to save the
+model.</li>
+<li><strong>overwrite:</strong>  Whether to silently overwrite any existing file at the
+target location, or provide the user with a manual prompt.</li>
+<li><strong>include_optimizer:</strong>  If True, save optimizer's state together.</li>
+<li><strong>save_format:</strong>  Either <code>'tf'</code> or <code>'h5'</code>, indicating whether to save the
+model to Tensorflow SavedModel or HDF5. Defaults to 'tf' in TF 2.X,
+and 'h5' in TF 1.X.</li>
+<li><strong>signatures:</strong>  Signatures to save with the SavedModel. Applicable to the
+'tf' format only. Please see the <code>signatures</code> argument in
+<code>tf.saved_model.save</code> for details.</li>
+<li><strong>options:</strong>  (only applies to SavedModel format)
+<code>tf.saved_model.SaveOptions</code> object that specifies options for
+saving to SavedModel.</li>
+<li><strong>save_traces:</strong>  (only applies to SavedModel format) When enabled, the
+SavedModel will store the function traces for each layer. This
+can be disabled, so that only the configs of each layer are stored.
+Defaults to <code>True</code>. Disabling this will decrease serialization time
+and reduce file size, but it requires that all custom layers/models
+implement a <code><a href="#SavableModel.get_config">get_config()</a></code> method.</li>
+</ul>
 
 <p>Example:</p>
 
@@ -699,9 +705,12 @@ the same inference method from the SavableModel class</p>
 
             <div class="docstring"><p>Creates a <code>Sequential</code> model instance.</p>
 
-<p>Args:
-  layers: Optional list of layers to add to the model.
-  name: Optional name for the model.</p>
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>layers:</strong>  Optional list of layers to add to the model.</li>
+<li><strong>name:</strong>  Optional name for the model.</li>
+</ul>
 </div>
 
 

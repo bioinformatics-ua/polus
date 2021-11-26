@@ -944,25 +944,28 @@ is currently supported.</p>
 
         </details>
 
-            <div class="docstring"><p>Args:
-  source_generator (python generator): Must be a python generator that returns a 
-    <strong>dictionary of samples</strong>. Since this generator will be converted into a 
-    <em>tf.data.Dataset</em>, all the datatypes must be supported in TensorFlow, which is
-    true for all python primitives types.</p>
+            <div class="docstring"><h6 id="args">Args</h6>
 
-<p>accelerated_map_f (func or <a href="../polus.html#IAccelerated_Map">polus.IAccelerated_Map</a>): A function or interface, that
-    describe a transformation to be applied to the samples from the <em>source_generator</em>.
-    By default, this function will execute in the best hardware found on the host device,
-    i.e., it should be used for mapping computations that should run on a GPU, e.g., 
-    contextualized embeddings from BERT.</p>
+<ul>
+<li><strong>source_generator (python generator):</strong>  Must be a python generator that returns a 
+<strong>dictionary of samples</strong>. Since this generator will be converted into a 
+<em>tf.data.Dataset</em>, all the datatypes must be supported in TensorFlow, which is
+true for all python primitives types.</li>
+<li><strong>accelerated_map_f (func or <a href="../polus.html#IAccelerated_Map">polus.IAccelerated_Map</a>):</strong>  A function or interface, that
+describe a transformation to be applied to the samples from the <em>source_generator</em>.
+By default, this function will execute in the best hardware found on the host device,
+i.e., it should be used for mapping computations that should run on a GPU, e.g., 
+contextualized embeddings from BERT.</li>
+<li><strong>accelerated_map_batch (int):</strong>  The size of the batch that is fed to the <em>accelerated_map_f</em>
+recalling that when running on GPU it is more efficient to perform batch-wise operations.</li>
+<li><strong>show_progress (boolean):</strong>  If true prints the current batch that was fed to accelerated_map_f.</li>
+</ul>
 
-<p>accelerated_map_batch (int): The size of the batch that is fed to the <em>accelerated_map_f</em>
-    recalling that when running on GPU it is more efficient to perform batch-wise operations.</p>
+<h6 id="returns">Returns</h6>
 
-<p>show_progress (boolean): If true prints the current batch that was fed to accelerated_map_f.</p>
-
-<p>Returns:
-  None</p>
+<blockquote>
+  <p>None</p>
+</blockquote>
 </div>
 
 
@@ -1369,8 +1372,11 @@ to the user.</p>
 
         </details>
 
-            <div class="docstring"><p>Args:
-  source_generator (python generator): Same as in <code><a href="#DataLoader">polus.data.DataLoader</a></code></p>
+            <div class="docstring"><h6 id="args">Args</h6>
+
+<ul>
+<li><strong>source_generator (python generator):</strong>  Same as in <code><a href="#DataLoader">polus.data.DataLoader</a></code></li>
+</ul>
 </div>
 
 
@@ -1678,8 +1684,11 @@ to the user.</p>
 
         </details>
 
-            <div class="docstring"><p>Args:
-  source_generator (python generator): Same as in <code><a href="#DataLoader">polus.data.DataLoader</a></code></p>
+            <div class="docstring"><h6 id="args">Args</h6>
+
+<ul>
+<li><strong>source_generator (python generator):</strong>  Same as in <code><a href="#DataLoader">polus.data.DataLoader</a></code></li>
+</ul>
 </div>
 
 

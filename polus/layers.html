@@ -399,13 +399,24 @@
 
         </details>
 
-            <div class="docstring"><p>Args:
-    output_dim (int): the number of labels to tag each temporal input.
-    sparse_target (bool): whether the the ground-truth label represented in one-hot.
-Input shape:
-    (batch_size, sentence length, output_dim)
-Output shape:
-    (batch_size, sentence length, output_dim)</p>
+            <div class="docstring"><h6 id="args">Args</h6>
+
+<ul>
+<li><strong>output_dim (int):</strong>  the number of labels to tag each temporal input.</li>
+<li><strong>sparse_target (bool):</strong>  whether the the ground-truth label represented in one-hot.</li>
+</ul>
+
+<h6 id="input-shape">Input shape</h6>
+
+<blockquote>
+  <p>(batch_size, sentence length, output_dim)</p>
+</blockquote>
+
+<h6 id="output-shape">Output shape</h6>
+
+<blockquote>
+  <p>(batch_size, sentence length, output_dim)</p>
+</blockquote>
 </div>
 
 
@@ -450,10 +461,13 @@ layer instantiation and layer call.</p>
 
 <p>This is typically used to create the weights of <code>Layer</code> subclasses.</p>
 
-<p>Args:
-  input_shape: Instance of <code>TensorShape</code>, or list of instances of
-    <code>TensorShape</code> if the layer expects a list of inputs
-    (one instance per input).</p>
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>input_shape:</strong>  Instance of <code>TensorShape</code>, or list of instances of
+<code>TensorShape</code> if the layer expects a list of inputs
+(one instance per input).</li>
+</ul>
 </div>
 
 
@@ -499,39 +513,49 @@ from <code>keras</code> API. In <code>keras</code> API, you can pass support mas
 layers as additional arguments. Whereas <code>tf.keras</code> has <code><a href="#CRF.compute_mask">compute_mask()</a></code>
 method to support masking.</p>
 
-<p>Args:
-  inputs: Input tensor, or dict/list/tuple of input tensors.
-    The first positional <code>inputs</code> argument is subject to special rules:
-    - <code>inputs</code> must be explicitly passed. A layer cannot have zero
-      arguments, and <code>inputs</code> cannot be provided via the default value
-      of a keyword argument.
-    - NumPy array or Python scalar values in <code>inputs</code> get cast as tensors.
-    - Keras mask metadata is only collected from <code>inputs</code>.
-    - Layers are built (<code>build(input_shape)</code> method)
-      using shape info from <code>inputs</code> only.
-    - <code><a href="#CRF.input_spec">input_spec</a></code> compatibility is only checked against <code>inputs</code>.
-    - Mixed precision input casting is only applied to <code>inputs</code>.
-      If a layer has tensor arguments in <code>*args</code> or <code>**kwargs</code>, their
-      casting behavior in mixed precision should be handled manually.
-    - The SavedModel input specification is generated using <code>inputs</code> only.
-    - Integration with various ecosystem packages like TFMOT, TFLite,
-      TF.js, etc is only supported for <code>inputs</code> and not for tensors in
-      positional and keyword arguments.
-  <em>args: Additional positional arguments. May contain tensors, although
-    this is not recommended, for the reasons above.
-  *</em>kwargs: Additional keyword arguments. May contain tensors, although
-    this is not recommended, for the reasons above.
-    The following optional keyword arguments are reserved:
-    - <code>training</code>: Boolean scalar tensor of Python boolean indicating
-      whether the <code><a href="#CRF.call">call</a></code> is meant for training or inference.
-    - <code>mask</code>: Boolean input mask. If the layer's <code><a href="#CRF.call">call()</a></code> method takes a
-      <code>mask</code> argument, its default value will be set to the mask generated
-      for <code>inputs</code> by the previous layer (if <code><a href="#CRF.input">input</a></code> did come from a layer
-      that generated a corresponding mask, i.e. if it came from a Keras
-      layer with masking support).</p>
+<h6 id="args">Args</h6>
 
-<p>Returns:
-  A tensor or list/tuple of tensors.</p>
+<ul>
+<li><strong>inputs:</strong>  Input tensor, or dict/list/tuple of input tensors.
+The first positional <code>inputs</code> argument is subject to special rules:
+<ul>
+<li><code>inputs</code> must be explicitly passed. A layer cannot have zero
+arguments, and <code>inputs</code> cannot be provided via the default value
+of a keyword argument.</li>
+<li>NumPy array or Python scalar values in <code>inputs</code> get cast as tensors.</li>
+<li>Keras mask metadata is only collected from <code>inputs</code>.</li>
+<li>Layers are built (<code>build(input_shape)</code> method)
+using shape info from <code>inputs</code> only.</li>
+<li><code><a href="#CRF.input_spec">input_spec</a></code> compatibility is only checked against <code>inputs</code>.</li>
+<li>Mixed precision input casting is only applied to <code>inputs</code>.
+If a layer has tensor arguments in <code>*args</code> or <code>**kwargs</code>, their
+casting behavior in mixed precision should be handled manually.</li>
+<li>The SavedModel input specification is generated using <code>inputs</code> only.</li>
+<li>Integration with various ecosystem packages like TFMOT, TFLite,
+TF.js, etc is only supported for <code>inputs</code> and not for tensors in
+positional and keyword arguments.</li>
+</ul></li>
+<li><strong>*args:</strong>  Additional positional arguments. May contain tensors, although
+this is not recommended, for the reasons above.</li>
+<li><strong>**kwargs:</strong>  Additional keyword arguments. May contain tensors, although
+this is not recommended, for the reasons above.
+The following optional keyword arguments are reserved:
+<ul>
+<li><code>training</code>: Boolean scalar tensor of Python boolean indicating
+whether the <code><a href="#CRF.call">call</a></code> is meant for training or inference.</li>
+<li><code>mask</code>: Boolean input mask. If the layer's <code><a href="#CRF.call">call()</a></code> method takes a
+<code>mask</code> argument, its default value will be set to the mask generated
+for <code>inputs</code> by the previous layer (if <code><a href="#CRF.input">input</a></code> did come from a layer
+that generated a corresponding mask, i.e. if it came from a Keras
+layer with masking support).</li>
+</ul></li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>A tensor or list/tuple of tensors.</p>
+</blockquote>
 </div>
 
 
@@ -613,14 +637,20 @@ method to support masking.</p>
 layer. This assumes that the layer will later be used with inputs that
 match the input shape provided here.</p>
 
-<p>Args:
-    input_shape: Shape tuple (tuple of integers)
-        or list of shape tuples (one per output tensor of the layer).
-        Shape tuples can include None for free dimensions,
-        instead of an integer.</p>
+<h6 id="args">Args</h6>
 
-<p>Returns:
-    An input shape tuple.</p>
+<ul>
+<li><strong>input_shape:</strong>  Shape tuple (tuple of integers)
+or list of shape tuples (one per output tensor of the layer).
+Shape tuples can include None for free dimensions,
+instead of an integer.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>An input shape tuple.</p>
+</blockquote>
 </div>
 
 
@@ -663,8 +693,11 @@ by <code>Network</code> (one layer of abstraction above).</p>
 every time it is called. The callers should make a copy of the returned dict
 if they want to modify it.</p>
 
-<p>Returns:
-    Python dictionary.</p>
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Python dictionary.</p>
+</blockquote>
 </div>
 
 

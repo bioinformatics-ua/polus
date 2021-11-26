@@ -329,13 +329,19 @@ attribute is through its associated methods:</p>
 
             <div class="docstring"><p>Changes the <em>jit_compile</em> attribute.</p>
 
-<p>Args:
-  mode (bool): Boolean variable that defines the utilization of
-    jit_compiler during build of computation graphs, which enables
-    XLA compiler.</p>
+<h6 id="args">Args</h6>
 
-<p>Returns:
-  None</p>
+<ul>
+<li><strong>mode (bool):</strong>  Boolean variable that defines the utilization of
+jit_compiler during build of computation graphs, which enables
+XLA compiler.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>None</p>
+</blockquote>
 </div>
 
 
@@ -525,12 +531,18 @@ Note that multiple instances use the same handler</p>
 
         </details>
 
-            <div class="docstring"><p>Args:
-  logging_level (int): A valid logging level supperted by the
-    logging package, see https://docs.python.org/3/library/logging.html#logging-levels</p>
+            <div class="docstring"><h6 id="args">Args</h6>
 
-<p>Returns:
-  None</p>
+<ul>
+<li><strong>logging_level (int):</strong>  A valid logging level supperted by the
+logging package, see https://docs.python.org/3/library/logging.html#logging-levels</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>None</p>
+</blockquote>
 </div>
 
 
@@ -607,15 +619,17 @@ Note that multiple instances use the same handler</p>
             <div class="docstring"><p>Automatically infer the data type and shapes of the samples from 
 the <em>data_generator</em>. This function is highly used in <a href="data.html">polus.data</a>.</p>
 
-<p>Args:
-  data_generator (python generator): python generator that output
-    samples in a <strong>dictionary</strong> format.</p>
+<h6 id="args">Args</h6>
 
-<p>k (int): Number of samples that are output from <em>data_generator</em>
-    in order to correctly infer the shape of each dictionary value.
-    For instance, if a sample contains a dynamic shape, this function
-    will return None in the place of the dimension that as a dynamic 
-    shape.</p>
+<ul>
+<li><strong>data_generator (python generator):</strong>  python generator that output
+samples in a <strong>dictionary</strong> format.</li>
+<li><strong>k (int):</strong>  Number of samples that are output from <em>data_generator</em>
+in order to correctly infer the shape of each dictionary value.
+For instance, if a sample contains a dynamic shape, this function
+will return None in the place of the dimension that as a dynamic 
+shape.</li>
+</ul>
 </div>
 
 
@@ -667,16 +681,17 @@ the <em>data_generator</em>. This function is highly used in <a href="data.html"
 function based on a condition. This is useful for instance methods
 that we only want to be called based on a simple condition.</p>
 
-<p>Args:
-  condition_var (boolean): Boolean expression that will be evaluated
-    when the decorated method is called.</p>
+<h6 id="args">Args</h6>
 
-<p>error_message (str): A printable error message to be displayed when
-    the condition fails.</p>
-
-<p>on (boolean): The condition that the <em>condition_var</em> is evaluated
-    against, by default the decorated method executes if <em>condition_var</em>
-    is True.</p>
+<ul>
+<li><strong>condition_var (boolean):</strong>  Boolean expression that will be evaluated
+when the decorated method is called.</li>
+<li><strong>error_message (str):</strong>  A printable error message to be displayed when
+the condition fails.</li>
+<li><strong>on (boolean):</strong>  The condition that the <em>condition_var</em> is evaluated
+against, by default the decorated method executes if <em>condition_var</em>
+is True.</li>
+</ul>
 </div>
 
 

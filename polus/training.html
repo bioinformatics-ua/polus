@@ -649,23 +649,26 @@ classification problems.</p>
 
             <div class="docstring"><p>Constructs all the necessary attributes for the training procedure</p>
 
-<p>Args:
-  model (tf.keras.models.Model): it corresponds to the model instance
-    that we aim to train. Furthermore the call to the model should
-    behave as if is in inference mode.</p>
+<h6 id="args">Args</h6>
 
-<p>optimizer (tf.keras.optimizers.Optimizer): it corresponds to the
-    optimizer instance that we want to use to update the model varibles.</p>
+<ul>
+<li><strong>model (tf.keras.models.Model):</strong>  it corresponds to the model instance
+that we aim to train. Furthermore the call to the model should
+behave as if is in inference mode.</li>
+<li><strong>optimizer (tf.keras.optimizers.Optimizer):</strong>  it corresponds to the
+optimizer instance that we want to use to update the model varibles.</li>
+<li><strong>loss (func):</strong>  it must be a function that returns a scalar tensor, the function
+args are free and can be defined in runtime depending on the training
+procedure</li>
+<li><strong>metrics:</strong>  it is a list of <a href="metrics.html#IMetric">polus.metrics.IMetric</a> instances, describe what 
+measurements should be taken</li>
+</ul>
 
-<p>loss (func): it must be a function that returns a scalar tensor, the function
-    args are free and can be defined in runtime depending on the training
-    procedure</p>
+<h6 id="raises">Raises</h6>
 
-<p>metrics: it is a list of <a href="metrics.html#IMetric">polus.metrics.IMetric</a> instances, describe what 
-    measurements should be taken</p>
-
-<p>Raises:
-  Exception: if this class is diractly instantiated, since this class acts only as an abstraction</p>
+<ul>
+<li><strong>Exception:</strong>  if this class is diractly instantiated, since this class acts only as an abstraction</li>
+</ul>
 </div>
 
 
@@ -711,15 +714,21 @@ and the respective intermidiate steps for the gradients</p>
 should be overrided in any case that we want to have
 computations that do not interfere in the error propagation</p>
 
-<p>Args:
-  inputs (list <objects>): These are the model inputs
-    normally these would be a list of tf.Tensors or a list
-    of dictionary of tf.Tensor.</p>
+<h6 id="args">Args</h6>
 
-<p>Returns:
-  (list <objects>): These are the inputs that are given to the
+<ul>
+<li><strong>inputs (list <objects>):</strong>  These are the model inputs
+normally these would be a list of tf.Tensors or a list
+of dictionary of tf.Tensor.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>(list <objects>): These are the inputs that are given to the
   forward_with_grads function, i.e. the inputs that are fed to the model
   that we want to train.</p>
+</blockquote>
 </div>
 
 
@@ -771,14 +780,20 @@ and self.loss</p>
 input_signature so that it can be called from lr_finder 
 and train_step without rebuilding the computation graph</p>
 
-<p>Args:
-  inputs (list <objects>): These are the model inputs
-    normally these would be a list of tf.Tensors or a list
-    of dictionary of tf.Tensor.</p>
+<h6 id="args">Args</h6>
 
-<p>Returns:
-  (list <objects>): inputs that are given to the self.loss
+<ul>
+<li><strong>inputs (list <objects>):</strong>  These are the model inputs
+normally these would be a list of tf.Tensors or a list
+of dictionary of tf.Tensor.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>(list <objects>): inputs that are given to the self.loss
     function.</p>
+</blockquote>
 </div>
 
 
@@ -852,10 +867,13 @@ with the gradient estimation and respective optimization.</p>
 self.step_counter tf.Variable, which can then be used by
 the forward_* methods for implementing more complex logic</p>
 
-<p>Args:
-  inputs (list <objects>): list of tensors or list of dict 
-  with tensors, this corresponds to the data that is
-  outputed by the tf.Dataset.</p>
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>inputs (list <objects>):</strong>  list of tensors or list of dict </li>
+<li>with tensors, this corresponds to the data that is</li>
+<li>outputed by the tf.Dataset.</li>
+</ul>
 
 <p>Returns (float): scalar error value that corresponds to
   the value outputed by the self.loss function</p>
@@ -1043,23 +1061,26 @@ classification problems.</p>
 
             <div class="docstring"><p>Constructs all the necessary attributes for the training procedure</p>
 
-<p>Args:
-  model (tf.keras.models.Model): it corresponds to the model instance
-    that we aim to train. Furthermore the call to the model should
-    behave as if is in inference mode.</p>
+<h6 id="args">Args</h6>
 
-<p>optimizer (tf.keras.optimizers.Optimizer): it corresponds to the
-    optimizer instance that we want to use to update the model varibles.</p>
+<ul>
+<li><strong>model (tf.keras.models.Model):</strong>  it corresponds to the model instance
+that we aim to train. Furthermore the call to the model should
+behave as if is in inference mode.</li>
+<li><strong>optimizer (tf.keras.optimizers.Optimizer):</strong>  it corresponds to the
+optimizer instance that we want to use to update the model varibles.</li>
+<li><strong>loss (func):</strong>  it must be a function that returns a scalar tensor, the function
+args are free and can be defined in runtime depending on the training
+procedure</li>
+<li><strong>metrics:</strong>  it is a list of <a href="metrics.html#IMetric">polus.metrics.IMetric</a> instances, describe what 
+measurements should be taken</li>
+</ul>
 
-<p>loss (func): it must be a function that returns a scalar tensor, the function
-    args are free and can be defined in runtime depending on the training
-    procedure</p>
+<h6 id="raises">Raises</h6>
 
-<p>metrics: it is a list of <a href="metrics.html#IMetric">polus.metrics.IMetric</a> instances, describe what 
-    measurements should be taken</p>
-
-<p>Raises:
-  Exception: if this class is diractly instantiated, since this class acts only as an abstraction</p>
+<ul>
+<li><strong>Exception:</strong>  if this class is diractly instantiated, since this class acts only as an abstraction</li>
+</ul>
 </div>
 
 
@@ -1097,14 +1118,20 @@ and self.loss</p>
 input_signature so that it can be called from lr_finder 
 and train_step without rebuilding the computation graph</p>
 
-<p>Args:
-  inputs (list <objects>): These are the model inputs
-    normally these would be a list of tf.Tensors or a list
-    of dictionary of tf.Tensor.</p>
+<h6 id="args">Args</h6>
 
-<p>Returns:
-  (list <objects>): inputs that are given to the self.loss
+<ul>
+<li><strong>inputs (list <objects>):</strong>  These are the model inputs
+normally these would be a list of tf.Tensors or a list
+of dictionary of tf.Tensor.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>(list <objects>): inputs that are given to the self.loss
     function.</p>
+</blockquote>
 </div>
 
 
