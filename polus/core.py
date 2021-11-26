@@ -12,7 +12,7 @@ FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(
 
 # module-wide variables
 this = sys.modules[__name__]
-this.jit_compile=False
+this.jit_compile=True
     
 def set_jit_compile(mode):
     this.jit_compile=mode
