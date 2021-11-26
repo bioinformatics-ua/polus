@@ -37,7 +37,7 @@ jobs:
           
           
       - name: Build docs
-        run: pdoc --html --force --output-dir docs polus
+        run: pdoc -o docs polus
 
       # Runs a set of commands using the runners shell
       - name: Reorganize the outputed docs
