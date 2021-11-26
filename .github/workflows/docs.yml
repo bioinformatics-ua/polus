@@ -40,7 +40,7 @@ jobs:
         run: pdoc --html --force --output-dir docs polus
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Reorganize the outputed docs
         run: |
           mv docs/polus/* docs
           rmdir docs/polus
