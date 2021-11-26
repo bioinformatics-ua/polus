@@ -1,12 +1,37 @@
+r'''
+
+# Polus core 
+
+Here we describe operations that are
+used through all packages of this toolkit
+
+Furtheremore, the package core have module-wide
+variables that govern some internal behaviour of
+this framework.
+
+For instance, polus.core has an jit_compile attribute
+that controls the utilization of XLA during tf.function,
+the correct way to write or read this attribute is throug 
+its associated methods:
+
+```python
+
+from polus.core import set_jit_compile, get_jit_compile
+
+print(get_jit_compile()) # True
+set_jit_compile(False) #False
+print(get_jit_compile()) # False
+
+```
+
+'''
+
+
 import logging
 import os
 import sys
 import tensorflow as tf
 from logging.handlers import TimedRotatingFileHandler
-
-"""
-Describe code that is used through all packages of this toolkit
-"""
 
 FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
 
