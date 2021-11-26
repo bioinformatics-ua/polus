@@ -127,6 +127,10 @@
 <span class="sd">          metrics: it is a list of `polus.metrics.IMetric` instances, describe what </span>
 <span class="sd">            measurements should be taken</span>
 <span class="sd">            </span>
+<span class="sd">          post_process_logits (func):</span>
+<span class="sd">          </span>
+<span class="sd">          post_process_grads (func):</span>
+<span class="sd">            </span>
 <span class="sd">        Raises:</span>
 <span class="sd">          Exception: if this class is diractly instantiated, since this class acts only as an abstraction</span>
 <span class="sd">        </span>
@@ -139,7 +143,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="o">=</span> <span class="n">post_process_prediction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="o">=</span> <span class="n">post_process_logits</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">post_process_grads</span> <span class="o">=</span> <span class="n">post_process_grads</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span>
@@ -413,6 +417,10 @@
 <span class="sd">          metrics: it is a list of `polus.metrics.IMetric` instances, describe what </span>
 <span class="sd">            measurements should be taken</span>
 <span class="sd">            </span>
+<span class="sd">          post_process_logits (func):</span>
+<span class="sd">          </span>
+<span class="sd">          post_process_grads (func):</span>
+<span class="sd">            </span>
 <span class="sd">        Raises:</span>
 <span class="sd">          Exception: if this class is diractly instantiated, since this class acts only as an abstraction</span>
 <span class="sd">        </span>
@@ -425,7 +433,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="o">=</span> <span class="n">post_process_prediction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="o">=</span> <span class="n">post_process_logits</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">post_process_grads</span> <span class="o">=</span> <span class="n">post_process_grads</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span>
@@ -660,6 +668,10 @@ logic needed to train models under simple classification problems.</p>
 <span class="sd">          metrics: it is a list of `polus.metrics.IMetric` instances, describe what </span>
 <span class="sd">            measurements should be taken</span>
 <span class="sd">            </span>
+<span class="sd">          post_process_logits (func):</span>
+<span class="sd">          </span>
+<span class="sd">          post_process_grads (func):</span>
+<span class="sd">            </span>
 <span class="sd">        Raises:</span>
 <span class="sd">          Exception: if this class is diractly instantiated, since this class acts only as an abstraction</span>
 <span class="sd">        </span>
@@ -672,7 +684,7 @@ logic needed to train models under simple classification problems.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="o">=</span> <span class="n">post_process_prediction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="o">=</span> <span class="n">post_process_logits</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">post_process_grads</span> <span class="o">=</span> <span class="n">post_process_grads</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span>
@@ -708,6 +720,8 @@ args are free and can be defined in runtime depending on the training
 procedure</li>
 <li><strong>metrics:</strong>  it is a list of <code><a href="metrics.html#IMetric">polus.metrics.IMetric</a></code> instances, describe what 
 measurements should be taken</li>
+<li><strong>post_process_logits (func):</strong> </li>
+<li><strong>post_process_grads (func):</strong> </li>
 </ul>
 
 <h6 id="raises">Raises</h6>
