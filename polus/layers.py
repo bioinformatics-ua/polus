@@ -31,6 +31,8 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
         self.input_spec = tf.keras.layers.InputSpec(min_ndim=3)
         self.sequence_lengths = None
         self.transitions = None
+        
+        self.flatten_layer = tf.keras.layers.Flatten()
 
     def build(self, input_shape):
         assert len(input_shape) == 3
@@ -48,6 +50,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
                                            shape=[self.output_dim, self.output_dim],
                                            initializer='glorot_uniform',
                                            trainable=True)
+        
         super().build(input_shape)
 
     def call(self, inputs, sequence_lengths=None, training=None, **kwargs):
@@ -57,7 +60,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
             assert tf.convert_to_tensor(sequence_lengths).dtype == 'int32'
             seq_len_shape = tf.convert_to_tensor(sequence_lengths).get_shape().as_list()
             assert seq_len_shape[1] == 1
-            self.sequence_lengths = K.flatten(sequence_lengths)
+            self.sequence_lengths = self.flatten_layer(sequence_lengths)
         else:
             self.sequence_lengths = tf.ones(tf.shape(inputs)[0], dtype=tf.int32) * (
                 tf.shape(inputs)[1]
@@ -122,7 +125,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
             'output_dim': self.output_dim,
             'sparse_target': self.sparse_target,
             'supports_masking': self.supports_masking,
-            'transitions': K.eval(self.transitions)
+            'transitions': self.transitions
         }
         base_config = super(CRF, self).get_config()
         return dict(base_config, **config)

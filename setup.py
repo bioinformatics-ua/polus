@@ -1,4 +1,7 @@
 from setuptools import find_packages, setup
+from pip.req import parse_requirements
+
+install_reqs = parse_requirements("requirements.txt")
 
 setup(
     name='polus',
@@ -8,7 +11,7 @@ setup(
     author='Tiago Almeida and Rui Antunes',
     author_email='tiagomeloalmeida@ua.pt',
     license='MIT',
-    install_requires=["tensorflow>=2.6.0","transformers","tensorflow-addons","wandb","torch"],
+    install_requires=[str(ir.req) for ir in install_reqs],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
     test_suite='tests',

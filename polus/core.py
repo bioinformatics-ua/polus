@@ -45,7 +45,7 @@ class BaseLogger:
 
             self.logger.propagate = False
     
-    def set_logging_level(logging_level):
+    def set_logging_level(self, logging_level):
         self.logger.setLevel(logging_level)
         
         
@@ -90,7 +90,7 @@ def find_dtype_and_shapes(data_generator, k=5):
                     shapes[key] = tf.TensorShape(new_shape)
 
     else:
-        raise ValueError(f"The find_dtype_and_shapes only supports when the sample came from generator are dict but found {type(sample)}")
+        raise ValueError(f"The find_dtype_and_shapes only supports when the sample came from generator are dict but found {type(samples[0])}")
     
     return dtypes, shapes
 

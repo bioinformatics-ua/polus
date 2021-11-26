@@ -137,7 +137,9 @@ def decode_bio(tags, spans, text, allow_errors=False):
     for tag, span in zip(tags, spans):
 
         start, end = span
-
+        s, e = -1, -1
+        t = "None"
+        
         if tag == 'O':
             if previous_tag_is_entity:
                 ent = Entity(text[s:e], (s, e), t)

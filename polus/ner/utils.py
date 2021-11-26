@@ -3,6 +3,7 @@ from copy import deepcopy
 from polus.ner.bio import decode_bio
 from polus.ner.bio import get_bio
 from polus.ner.elements import EntitySet, get_entities_within_span
+from math import nan
 
 class BioCSequenceDecoder(BaseLogger):
     TAG2INT = {
