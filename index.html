@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>polus API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Welcome to Polus!!! …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,6 +22,99 @@
 <h1 class="title">Package <code>polus</code></h1>
 </header>
 <section id="section-intro">
+<h1 id="welcome-to-polus">Welcome to Polus!!!</h1>
+<p>Polus is a simple functional training framework built on
+TensorFlow and focused on academic research. As such, we offer
+a simple interface to build and expand the training of new neural
+models.</p>
+<h1 id="main-packages">Main packages</h1>
+<p>Polus consists of a main API that resides under the polus package
+and more tasks specific APIs that will reside under the task name.
+For instance, polus.ner and polus.ir are sub-packages that are
+focused on ner (named entity recognition) and ir (information
+retrieval) tasks. </p>
+<h2 id="the-main-api">The main API</h2>
+<p>The main API consists of:
+- <strong>training.py</strong>: Training API that contains the most basic training loop
+- <strong>data.py</strong>: DataLoaders API that extends the tf.data.Dataset functionality
+to build more useful data loaders with easy to use caching mechanisms.
+- <strong>callbacks.py</strong>: Main source of interaction with the main training loop
+- <strong>models.py</strong>: Model API define an extension of the tf.keras.Model by handling
+storing and loading of the entire model architecture.
+- <strong>metrics</strong>: Metrics API describe how metrics should be implemented so that can
+be efficiently used during the training loop.
+- `<strong>core</strong>: The Core API defines some base classes or variables that are used
+through the framework. It also exposes some functions to change the internal
+behaviour of the polus framework, e.g., the use of XLA.</p>
+<h2 id="remaining-of-the-polus-package">Remaining of the polus package</h2>
+<p>The remaining of the files not yet mentioned act as code repository and hold
+some utility classes, e.g. <strong>layers.py</strong> contains some ready to use layers that
+can be imported and used by tf.keras.Model(s).</p>
+<h1 id="notebooks-and-examples">Notebooks and examples</h1>
+<p>At the time of writing, there are no notebooks available&hellip; work in progress</p>
+<h1 id="tensorflow-focused">TensorFlow focused</h1>
+<p>Since this framework was designed from scratch with TensorFlow 2.3+ in mind
+we leveraged the most recent features to make sure that the code runs
+smoothly and fast as possible. For instance, internally we utilize static
+computational graphs during the training procedure. Furthermore, XLA is
+enabled by default, which can be easily accessed by the polus.core API.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">r&#39;&#39;&#39;
+# Welcome to Polus!!!
+
+Polus is a simple functional training framework built on 
+TensorFlow and focused on academic research. As such, we offer
+a simple interface to build and expand the training of new neural
+models.
+
+# Main packages
+
+Polus consists of a main API that resides under the polus package
+and more tasks specific APIs that will reside under the task name.
+For instance, polus.ner and polus.ir are sub-packages that are
+focused on ner (named entity recognition) and ir (information 
+retrieval) tasks. 
+
+## The main API
+
+The main API consists of:
+ - **training.py**: Training API that contains the most basic training loop
+ - **data.py**: DataLoaders API that extends the tf.data.Dataset functionality
+ to build more useful data loaders with easy to use caching mechanisms.
+ - **callbacks.py**: Main source of interaction with the main training loop
+ - **models.py**: Model API define an extension of the tf.keras.Model by handling
+ storing and loading of the entire model architecture.
+ - **metrics**: Metrics API describe how metrics should be implemented so that can
+ be efficiently used during the training loop.
+ - `**core**: The Core API defines some base classes or variables that are used
+ through the framework. It also exposes some functions to change the internal
+ behaviour of the polus framework, e.g., the use of XLA.
+ 
+## Remaining of the polus package
+
+The remaining of the files not yet mentioned act as code repository and hold
+some utility classes, e.g. **layers.py** contains some ready to use layers that
+can be imported and used by tf.keras.Model(s).
+
+# Notebooks and examples
+
+At the time of writing, there are no notebooks available... work in progress
+
+# TensorFlow focused
+
+Since this framework was designed from scratch with TensorFlow 2.3+ in mind
+we leveraged the most recent features to make sure that the code runs
+smoothly and fast as possible. For instance, internally we utilize static
+computational graphs during the training procedure. Furthermore, XLA is 
+enabled by default, which can be easily accessed by the polus.core API.
+
+&#39;&#39;&#39;
+
+__version__=&#34;0.1.6&#34;</code></pre>
+</details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
@@ -90,7 +183,16 @@
 <nav id="sidebar">
 <h1>Index</h1>
 <div class="toc">
-<ul></ul>
+<ul>
+<li><a href="#welcome-to-polus">Welcome to Polus!!!</a></li>
+<li><a href="#main-packages">Main packages</a><ul>
+<li><a href="#the-main-api">The main API</a></li>
+<li><a href="#remaining-of-the-polus-package">Remaining of the polus package</a></li>
+</ul>
+</li>
+<li><a href="#notebooks-and-examples">Notebooks and examples</a></li>
+<li><a href="#tensorflow-focused">TensorFlow focused</a></li>
+</ul>
 </div>
 <ul id="index">
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
