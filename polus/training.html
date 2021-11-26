@@ -97,9 +97,9 @@
 <span class="sd">    of training.</span>
 <span class="sd">    </span>
 <span class="sd">    This class should not be instantiated but instead it should be</span>
-<span class="sd">    extended by some concrete training procedure, e.g. a ClassifierTrainer</span>
-<span class="sd">    is a trainer that implements the logic needed to train models under simple</span>
-<span class="sd">    classification problems.</span>
+<span class="sd">    extended by some concrete training procedure, e.g. a </span>
+<span class="sd">    `polus.training.ClassifierTrainer` is a trainer that implements the </span>
+<span class="sd">    logic needed to train models under simple classification problems.</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
@@ -107,7 +107,7 @@
                  <span class="n">optimizer</span><span class="p">,</span> 
                  <span class="n">loss</span><span class="p">,</span>
                  <span class="n">metrics</span> <span class="o">=</span> <span class="p">[],</span>
-                 <span class="n">post_process_prediction</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">post_process_logits</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">post_process_grads</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs all the necessary attributes for the training procedure</span>
@@ -124,7 +124,7 @@
 <span class="sd">            args are free and can be defined in runtime depending on the training</span>
 <span class="sd">            procedure</span>
 
-<span class="sd">          metrics: it is a list of polus.metrics.IMetric instances, describe what </span>
+<span class="sd">          metrics: it is a list of `polus.metrics.IMetric` instances, describe what </span>
 <span class="sd">            measurements should be taken</span>
 <span class="sd">            </span>
 <span class="sd">        Raises:</span>
@@ -173,12 +173,12 @@
 <span class="sd">        computations that do not interfere in the error propagation</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">          inputs (list &lt;objects&gt;): These are the model inputs</span>
+<span class="sd">          inputs (multiple tf.Tensor or dicts): These are the model inputs</span>
 <span class="sd">            normally these would be a list of tf.Tensors or a list</span>
 <span class="sd">            of dictionary of tf.Tensor.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">          (list &lt;objects&gt;): These are the inputs that are given to the</span>
+<span class="sd">          (multiple tf.Tensor or dicts): These are the inputs that are given to the</span>
 <span class="sd">          forward_with_grads function, i.e. the inputs that are fed to the model</span>
 <span class="sd">          that we want to train.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -189,20 +189,19 @@
 <span class="sd">        Describes the computations required to produce the final loss </span>
 <span class="sd">        value from a predifined model or models.</span>
 <span class="sd">        </span>
-<span class="sd">        Note, that foward_with_grads may use self.post_process_logits </span>
-<span class="sd">        and self.loss</span>
+<span class="sd">        Note, that foward_with_grads may use self.post_process_logits</span>
 <span class="sd">        </span>
 <span class="sd">        This method can be further decorated with tf.function with </span>
 <span class="sd">        input_signature so that it can be called from lr_finder </span>
 <span class="sd">        and train_step without rebuilding the computation graph</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">          inputs (list &lt;objects&gt;): These are the model inputs</span>
+<span class="sd">          inputs (multiple tf.Tensor or dicts): These are the model inputs</span>
 <span class="sd">            normally these would be a list of tf.Tensors or a list</span>
 <span class="sd">            of dictionary of tf.Tensor.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">          (list &lt;objects&gt;): inputs that are given to the self.loss</span>
+<span class="sd">          (multiple tf.Tensor or dicts): inputs that are given to the self.loss</span>
 <span class="sd">            function. </span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -221,7 +220,7 @@
 <span class="sd">        the forward_* methods for implementing more complex logic</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">          inputs (list &lt;objects&gt;): list of tensors or list of dict </span>
+<span class="sd">          inputs (multiple tf.Tensor or dicts): list of tensors or list of dict </span>
 <span class="sd">          with tensors, this corresponds to the data that is</span>
 <span class="sd">          outputed by the tf.Dataset.</span>
 <span class="sd">          </span>
@@ -256,7 +255,7 @@
     
     <span class="k">def</span> <span class="nf">lr_finder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tf_dataset</span><span class="p">,</span> <span class="n">use_lr_found</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Implements the lr_finder &quot;magic trick&quot;, famoused by</span>
+<span class="sd">        Implements the lr_finder &quot;magic trick&quot;, famoused in</span>
 <span class="sd">        fast.ai</span>
 <span class="sd">        </span>
 <span class="sd">        </span>
@@ -270,7 +269,23 @@
               <span class="n">custom_data_transform_f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">steps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">learning_rate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implements the main training loop, where the model is trained by</span>
+<span class="sd">        iterativly executing the *train_step* for every *tf_dataset* sample</span>
+<span class="sd">        during a specific amount of epoch*.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">          tf_dataset (tf.data.Dataset): Training dataset that is compatible </span>
+<span class="sd">            with the tf.data.Dataset class, which is the case for every</span>
+<span class="sd">            data loader in `polus.data`.</span>
+<span class="sd">          </span>
+<span class="sd">          epochs (int): Number of training epoch that will run during the </span>
+<span class="sd">            training procedure.</span>
+<span class="sd">            </span>
+<span class="sd">          callbacks (list of `polus.callbacks.ICallback): List of callbacks</span>
+<span class="sd">            that are triger during the main training loop. Use this to </span>
+<span class="sd">            perform operations outside each *train_step* call.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">N_STEPS</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">cardinality</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -306,19 +321,35 @@
         
         
 <span class="k">class</span> <span class="nc">ClassifierTrainer</span><span class="p">(</span><span class="n">BaseTrainer</span><span class="p">):</span>
-    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Standard classifier that extens the base trainer.</span>
+<span class="sd">    </span>
+<span class="sd">    This trainer can be use to solve simple classification </span>
+<span class="sd">    or regression tasks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-                 <span class="n">model</span><span class="p">,</span>
-                 <span class="n">trainable_weights</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="n">trainable_weights</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">          args: positional arguments that are passed into the</span>
+<span class="sd">            base class, e.g., the model variable.</span>
+<span class="sd">            </span>
+<span class="sd">          trainable_weights (list of tf.Variables): List of </span>
+<span class="sd">            trainable variables that will be optimized. Note </span>
+<span class="sd">            that this variables must belongs to the model to </span>
+<span class="sd">            be trained.</span>
+<span class="sd">          </span>
+<span class="sd">          kwargs: keyword arguments that are passed into the</span>
+<span class="sd">            base class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">trainable_weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_weights</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights</span> <span class="o">=</span> <span class="n">trainable_weights</span>
         
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">foward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         
@@ -352,9 +383,9 @@
 <span class="sd">    of training.</span>
 <span class="sd">    </span>
 <span class="sd">    This class should not be instantiated but instead it should be</span>
-<span class="sd">    extended by some concrete training procedure, e.g. a ClassifierTrainer</span>
-<span class="sd">    is a trainer that implements the logic needed to train models under simple</span>
-<span class="sd">    classification problems.</span>
+<span class="sd">    extended by some concrete training procedure, e.g. a </span>
+<span class="sd">    `polus.training.ClassifierTrainer` is a trainer that implements the </span>
+<span class="sd">    logic needed to train models under simple classification problems.</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
@@ -362,7 +393,7 @@
                  <span class="n">optimizer</span><span class="p">,</span> 
                  <span class="n">loss</span><span class="p">,</span>
                  <span class="n">metrics</span> <span class="o">=</span> <span class="p">[],</span>
-                 <span class="n">post_process_prediction</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">post_process_logits</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">post_process_grads</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs all the necessary attributes for the training procedure</span>
@@ -379,7 +410,7 @@
 <span class="sd">            args are free and can be defined in runtime depending on the training</span>
 <span class="sd">            procedure</span>
 
-<span class="sd">          metrics: it is a list of polus.metrics.IMetric instances, describe what </span>
+<span class="sd">          metrics: it is a list of `polus.metrics.IMetric` instances, describe what </span>
 <span class="sd">            measurements should be taken</span>
 <span class="sd">            </span>
 <span class="sd">        Raises:</span>
@@ -428,12 +459,12 @@
 <span class="sd">        computations that do not interfere in the error propagation</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">          inputs (list &lt;objects&gt;): These are the model inputs</span>
+<span class="sd">          inputs (multiple tf.Tensor or dicts): These are the model inputs</span>
 <span class="sd">            normally these would be a list of tf.Tensors or a list</span>
 <span class="sd">            of dictionary of tf.Tensor.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">          (list &lt;objects&gt;): These are the inputs that are given to the</span>
+<span class="sd">          (multiple tf.Tensor or dicts): These are the inputs that are given to the</span>
 <span class="sd">          forward_with_grads function, i.e. the inputs that are fed to the model</span>
 <span class="sd">          that we want to train.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -444,20 +475,19 @@
 <span class="sd">        Describes the computations required to produce the final loss </span>
 <span class="sd">        value from a predifined model or models.</span>
 <span class="sd">        </span>
-<span class="sd">        Note, that foward_with_grads may use self.post_process_logits </span>
-<span class="sd">        and self.loss</span>
+<span class="sd">        Note, that foward_with_grads may use self.post_process_logits</span>
 <span class="sd">        </span>
 <span class="sd">        This method can be further decorated with tf.function with </span>
 <span class="sd">        input_signature so that it can be called from lr_finder </span>
 <span class="sd">        and train_step without rebuilding the computation graph</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">          inputs (list &lt;objects&gt;): These are the model inputs</span>
+<span class="sd">          inputs (multiple tf.Tensor or dicts): These are the model inputs</span>
 <span class="sd">            normally these would be a list of tf.Tensors or a list</span>
 <span class="sd">            of dictionary of tf.Tensor.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">          (list &lt;objects&gt;): inputs that are given to the self.loss</span>
+<span class="sd">          (multiple tf.Tensor or dicts): inputs that are given to the self.loss</span>
 <span class="sd">            function. </span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -476,7 +506,7 @@
 <span class="sd">        the forward_* methods for implementing more complex logic</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">          inputs (list &lt;objects&gt;): list of tensors or list of dict </span>
+<span class="sd">          inputs (multiple tf.Tensor or dicts): list of tensors or list of dict </span>
 <span class="sd">          with tensors, this corresponds to the data that is</span>
 <span class="sd">          outputed by the tf.Dataset.</span>
 <span class="sd">          </span>
@@ -511,7 +541,7 @@
     
     <span class="k">def</span> <span class="nf">lr_finder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tf_dataset</span><span class="p">,</span> <span class="n">use_lr_found</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Implements the lr_finder &quot;magic trick&quot;, famoused by</span>
+<span class="sd">        Implements the lr_finder &quot;magic trick&quot;, famoused in</span>
 <span class="sd">        fast.ai</span>
 <span class="sd">        </span>
 <span class="sd">        </span>
@@ -525,7 +555,23 @@
               <span class="n">custom_data_transform_f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">steps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">learning_rate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implements the main training loop, where the model is trained by</span>
+<span class="sd">        iterativly executing the *train_step* for every *tf_dataset* sample</span>
+<span class="sd">        during a specific amount of epoch*.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">          tf_dataset (tf.data.Dataset): Training dataset that is compatible </span>
+<span class="sd">            with the tf.data.Dataset class, which is the case for every</span>
+<span class="sd">            data loader in `polus.data`.</span>
+<span class="sd">          </span>
+<span class="sd">          epochs (int): Number of training epoch that will run during the </span>
+<span class="sd">            training procedure.</span>
+<span class="sd">            </span>
+<span class="sd">          callbacks (list of `polus.callbacks.ICallback): List of callbacks</span>
+<span class="sd">            that are triger during the main training loop. Use this to </span>
+<span class="sd">            perform operations outside each *train_step* call.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">N_STEPS</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">cardinality</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -567,9 +613,9 @@ of all the logic needed to perform a gradient descent type
 of training.</p>
 
 <p>This class should not be instantiated but instead it should be
-extended by some concrete training procedure, e.g. a ClassifierTrainer
-is a trainer that implements the logic needed to train models under simple
-classification problems.</p>
+extended by some concrete training procedure, e.g. a 
+<code><a href="#ClassifierTrainer">polus.training.ClassifierTrainer</a></code> is a trainer that implements the 
+logic needed to train models under simple classification problems.</p>
 </div>
 
 
@@ -582,7 +628,7 @@ classification problems.</p>
     optimizer,
     loss,
     metrics=[],
-    post_process_prediction=None,
+    post_process_logits=None,
     post_process_grads=None
 )</span>
     </div>
@@ -594,7 +640,7 @@ classification problems.</p>
                  <span class="n">optimizer</span><span class="p">,</span> 
                  <span class="n">loss</span><span class="p">,</span>
                  <span class="n">metrics</span> <span class="o">=</span> <span class="p">[],</span>
-                 <span class="n">post_process_prediction</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">post_process_logits</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">post_process_grads</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs all the necessary attributes for the training procedure</span>
@@ -611,7 +657,7 @@ classification problems.</p>
 <span class="sd">            args are free and can be defined in runtime depending on the training</span>
 <span class="sd">            procedure</span>
 
-<span class="sd">          metrics: it is a list of polus.metrics.IMetric instances, describe what </span>
+<span class="sd">          metrics: it is a list of `polus.metrics.IMetric` instances, describe what </span>
 <span class="sd">            measurements should be taken</span>
 <span class="sd">            </span>
 <span class="sd">        Raises:</span>
@@ -660,7 +706,7 @@ optimizer instance that we want to use to update the model varibles.</li>
 <li><strong>loss (func):</strong>  it must be a function that returns a scalar tensor, the function
 args are free and can be defined in runtime depending on the training
 procedure</li>
-<li><strong>metrics:</strong>  it is a list of <a href="metrics.html#IMetric">polus.metrics.IMetric</a> instances, describe what 
+<li><strong>metrics:</strong>  it is a list of <code><a href="metrics.html#IMetric">polus.metrics.IMetric</a></code> instances, describe what 
 measurements should be taken</li>
 </ul>
 
@@ -693,12 +739,12 @@ measurements should be taken</li>
 <span class="sd">        computations that do not interfere in the error propagation</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">          inputs (list &lt;objects&gt;): These are the model inputs</span>
+<span class="sd">          inputs (multiple tf.Tensor or dicts): These are the model inputs</span>
 <span class="sd">            normally these would be a list of tf.Tensors or a list</span>
 <span class="sd">            of dictionary of tf.Tensor.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">          (list &lt;objects&gt;): These are the inputs that are given to the</span>
+<span class="sd">          (multiple tf.Tensor or dicts): These are the inputs that are given to the</span>
 <span class="sd">          forward_with_grads function, i.e. the inputs that are fed to the model</span>
 <span class="sd">          that we want to train.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -717,7 +763,7 @@ computations that do not interfere in the error propagation</p>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>inputs (list <objects>):</strong>  These are the model inputs
+<li><strong>inputs (multiple tf.Tensor or dicts):</strong>  These are the model inputs
 normally these would be a list of tf.Tensors or a list
 of dictionary of tf.Tensor.</li>
 </ul>
@@ -725,7 +771,7 @@ of dictionary of tf.Tensor.</li>
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>(list <objects>): These are the inputs that are given to the
+  <p>(multiple tf.Tensor or dicts): These are the inputs that are given to the
   forward_with_grads function, i.e. the inputs that are fed to the model
   that we want to train.</p>
 </blockquote>
@@ -748,20 +794,19 @@ of dictionary of tf.Tensor.</li>
 <span class="sd">        Describes the computations required to produce the final loss </span>
 <span class="sd">        value from a predifined model or models.</span>
 <span class="sd">        </span>
-<span class="sd">        Note, that foward_with_grads may use self.post_process_logits </span>
-<span class="sd">        and self.loss</span>
+<span class="sd">        Note, that foward_with_grads may use self.post_process_logits</span>
 <span class="sd">        </span>
 <span class="sd">        This method can be further decorated with tf.function with </span>
 <span class="sd">        input_signature so that it can be called from lr_finder </span>
 <span class="sd">        and train_step without rebuilding the computation graph</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">          inputs (list &lt;objects&gt;): These are the model inputs</span>
+<span class="sd">          inputs (multiple tf.Tensor or dicts): These are the model inputs</span>
 <span class="sd">            normally these would be a list of tf.Tensors or a list</span>
 <span class="sd">            of dictionary of tf.Tensor.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">          (list &lt;objects&gt;): inputs that are given to the self.loss</span>
+<span class="sd">          (multiple tf.Tensor or dicts): inputs that are given to the self.loss</span>
 <span class="sd">            function. </span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -773,8 +818,7 @@ of dictionary of tf.Tensor.</li>
             <div class="docstring"><p>Describes the computations required to produce the final loss 
 value from a predifined model or models.</p>
 
-<p>Note, that foward_with_grads may use self.post_process_logits 
-and self.loss</p>
+<p>Note, that foward_with_grads may use self.post_process_logits</p>
 
 <p>This method can be further decorated with tf.function with 
 input_signature so that it can be called from lr_finder 
@@ -783,7 +827,7 @@ and train_step without rebuilding the computation graph</p>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>inputs (list <objects>):</strong>  These are the model inputs
+<li><strong>inputs (multiple tf.Tensor or dicts):</strong>  These are the model inputs
 normally these would be a list of tf.Tensors or a list
 of dictionary of tf.Tensor.</li>
 </ul>
@@ -791,7 +835,7 @@ of dictionary of tf.Tensor.</li>
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>(list <objects>): inputs that are given to the self.loss
+  <p>(multiple tf.Tensor or dicts): inputs that are given to the self.loss
     function.</p>
 </blockquote>
 </div>
@@ -822,7 +866,7 @@ of dictionary of tf.Tensor.</li>
 <span class="sd">        the forward_* methods for implementing more complex logic</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">          inputs (list &lt;objects&gt;): list of tensors or list of dict </span>
+<span class="sd">          inputs (multiple tf.Tensor or dicts): list of tensors or list of dict </span>
 <span class="sd">          with tensors, this corresponds to the data that is</span>
 <span class="sd">          outputed by the tf.Dataset.</span>
 <span class="sd">          </span>
@@ -870,7 +914,7 @@ the forward_* methods for implementing more complex logic</p>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>inputs (list <objects>):</strong>  list of tensors or list of dict </li>
+<li><strong>inputs (multiple tf.Tensor or dicts):</strong>  list of tensors or list of dict </li>
 <li>with tensors, this corresponds to the data that is</li>
 <li>outputed by the tf.Dataset.</li>
 </ul>
@@ -893,7 +937,7 @@ the forward_* methods for implementing more complex logic</p>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">lr_finder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tf_dataset</span><span class="p">,</span> <span class="n">use_lr_found</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Implements the lr_finder &quot;magic trick&quot;, famoused by</span>
+<span class="sd">        Implements the lr_finder &quot;magic trick&quot;, famoused in</span>
 <span class="sd">        fast.ai</span>
 <span class="sd">        </span>
 <span class="sd">        </span>
@@ -903,7 +947,7 @@ the forward_* methods for implementing more complex logic</p>
 
         </details>
 
-            <div class="docstring"><p>Implements the lr_finder "magic trick", famoused by
+            <div class="docstring"><p>Implements the lr_finder "magic trick", famoused in
 fast.ai</p>
 </div>
 
@@ -934,7 +978,23 @@ fast.ai</p>
               <span class="n">custom_data_transform_f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">steps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">learning_rate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implements the main training loop, where the model is trained by</span>
+<span class="sd">        iterativly executing the *train_step* for every *tf_dataset* sample</span>
+<span class="sd">        during a specific amount of epoch*.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">          tf_dataset (tf.data.Dataset): Training dataset that is compatible </span>
+<span class="sd">            with the tf.data.Dataset class, which is the case for every</span>
+<span class="sd">            data loader in `polus.data`.</span>
+<span class="sd">          </span>
+<span class="sd">          epochs (int): Number of training epoch that will run during the </span>
+<span class="sd">            training procedure.</span>
+<span class="sd">            </span>
+<span class="sd">          callbacks (list of `polus.callbacks.ICallback): List of callbacks</span>
+<span class="sd">            that are triger during the main training loop. Use this to </span>
+<span class="sd">            perform operations outside each *train_step* call.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">N_STEPS</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">cardinality</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -971,7 +1031,24 @@ fast.ai</p>
 
         </details>
 
-    
+            <div class="docstring"><p>Implements the main training loop, where the model is trained by
+iterativly executing the <em>train_step</em> for every <em>tf_dataset</em> sample
+during a specific amount of epoch*.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>tf_dataset (tf.data.Dataset):</strong>  Training dataset that is compatible 
+with the tf.data.Dataset class, which is the case for every
+data loader in <code><a href="data.html">polus.data</a></code>.</li>
+<li><strong>epochs (int):</strong>  Number of training epoch that will run during the 
+training procedure.</li>
+<li><strong>callbacks (list of `<a href="callbacks.html#ICallback">polus.callbacks.ICallback</a>):</strong>  List of callbacks
+that are triger during the main training loop. Use this to 
+perform operations outside each <em>train_step</em> call.</li>
+</ul>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -996,19 +1073,35 @@ fast.ai</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ClassifierTrainer</span><span class="p">(</span><span class="n">BaseTrainer</span><span class="p">):</span>
-    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Standard classifier that extens the base trainer.</span>
+<span class="sd">    </span>
+<span class="sd">    This trainer can be use to solve simple classification </span>
+<span class="sd">    or regression tasks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-                 <span class="n">model</span><span class="p">,</span>
-                 <span class="n">trainable_weights</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="n">trainable_weights</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">          args: positional arguments that are passed into the</span>
+<span class="sd">            base class, e.g., the model variable.</span>
+<span class="sd">            </span>
+<span class="sd">          trainable_weights (list of tf.Variables): List of </span>
+<span class="sd">            trainable variables that will be optimized. Note </span>
+<span class="sd">            that this variables must belongs to the model to </span>
+<span class="sd">            be trained.</span>
+<span class="sd">          </span>
+<span class="sd">          kwargs: keyword arguments that are passed into the</span>
+<span class="sd">            base class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">trainable_weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_weights</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights</span> <span class="o">=</span> <span class="n">trainable_weights</span>
         
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">foward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         
@@ -1023,14 +1116,10 @@ fast.ai</p>
 
         </details>
 
-            <div class="docstring"><p>Base trainer class, this class implements an abstraction
-of all the logic needed to perform a gradient descent type
-of training.</p>
+            <div class="docstring"><p>Standard classifier that extens the base trainer.</p>
 
-<p>This class should not be instantiated but instead it should be
-extended by some concrete training procedure, e.g. a ClassifierTrainer
-is a trainer that implements the logic needed to train models under simple
-classification problems.</p>
+<p>This trainer can be use to solve simple classification 
+or regression tasks.</p>
 </div>
 
 
@@ -1038,48 +1127,49 @@ classification problems.</p>
                                         <div class="attr function"><a class="headerlink" href="#ClassifierTrainer.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">ClassifierTrainer</span><span class="signature">(model, trainable_weights=None, *args, **kwargs)</span>
+            <span class="name">ClassifierTrainer</span><span class="signature">(*args, trainable_weights=None, **kwargs)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-                 <span class="n">model</span><span class="p">,</span>
-                 <span class="n">trainable_weights</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="n">trainable_weights</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">          args: positional arguments that are passed into the</span>
+<span class="sd">            base class, e.g., the model variable.</span>
+<span class="sd">            </span>
+<span class="sd">          trainable_weights (list of tf.Variables): List of </span>
+<span class="sd">            trainable variables that will be optimized. Note </span>
+<span class="sd">            that this variables must belongs to the model to </span>
+<span class="sd">            be trained.</span>
+<span class="sd">          </span>
+<span class="sd">          kwargs: keyword arguments that are passed into the</span>
+<span class="sd">            base class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">trainable_weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_weights</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights</span> <span class="o">=</span> <span class="n">trainable_weights</span>
         
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Constructs all the necessary attributes for the training procedure</p>
-
-<h6 id="args">Args</h6>
+            <div class="docstring"><h6 id="args">Args</h6>
 
 <ul>
-<li><strong>model (tf.keras.models.Model):</strong>  it corresponds to the model instance
-that we aim to train. Furthermore the call to the model should
-behave as if is in inference mode.</li>
-<li><strong>optimizer (tf.keras.optimizers.Optimizer):</strong>  it corresponds to the
-optimizer instance that we want to use to update the model varibles.</li>
-<li><strong>loss (func):</strong>  it must be a function that returns a scalar tensor, the function
-args are free and can be defined in runtime depending on the training
-procedure</li>
-<li><strong>metrics:</strong>  it is a list of <a href="metrics.html#IMetric">polus.metrics.IMetric</a> instances, describe what 
-measurements should be taken</li>
-</ul>
-
-<h6 id="raises">Raises</h6>
-
-<ul>
-<li><strong>Exception:</strong>  if this class is diractly instantiated, since this class acts only as an abstraction</li>
+<li><strong>args:</strong>  positional arguments that are passed into the
+base class, e.g., the model variable.</li>
+<li><strong>trainable_weights (list of tf.Variables):</strong>  List of 
+trainable variables that will be optimized. Note 
+that this variables must belongs to the model to 
+be trained.</li>
+<li><strong>kwargs:</strong>  keyword arguments that are passed into the
+base class.</li>
 </ul>
 </div>
 
@@ -1111,8 +1201,7 @@ measurements should be taken</li>
             <div class="docstring"><p>Describes the computations required to produce the final loss 
 value from a predifined model or models.</p>
 
-<p>Note, that foward_with_grads may use self.post_process_logits 
-and self.loss</p>
+<p>Note, that foward_with_grads may use self.post_process_logits</p>
 
 <p>This method can be further decorated with tf.function with 
 input_signature so that it can be called from lr_finder 
@@ -1121,7 +1210,7 @@ and train_step without rebuilding the computation graph</p>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>inputs (list <objects>):</strong>  These are the model inputs
+<li><strong>inputs (multiple tf.Tensor or dicts):</strong>  These are the model inputs
 normally these would be a list of tf.Tensors or a list
 of dictionary of tf.Tensor.</li>
 </ul>
@@ -1129,7 +1218,7 @@ of dictionary of tf.Tensor.</li>
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>(list <objects>): inputs that are given to the self.loss
+  <p>(multiple tf.Tensor or dicts): inputs that are given to the self.loss
     function.</p>
 </blockquote>
 </div>

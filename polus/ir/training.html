@@ -381,7 +381,7 @@ optimizer instance that we want to use to update the model varibles.</li>
 <li><strong>loss (func):</strong>  it must be a function that returns a scalar tensor, the function
 args are free and can be defined in runtime depending on the training
 procedure</li>
-<li><strong>metrics:</strong>  it is a list of <a href="../metrics.html#IMetric">polus.metrics.IMetric</a> instances, describe what 
+<li><strong>metrics:</strong>  it is a list of <code><a href="../metrics.html#IMetric">polus.metrics.IMetric</a></code> instances, describe what 
 measurements should be taken</li>
 </ul>
 
@@ -425,7 +425,7 @@ computations that do not interfere in the error propagation</p>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>inputs (list <objects>):</strong>  These are the model inputs
+<li><strong>inputs (multiple tf.Tensor or dicts):</strong>  These are the model inputs
 normally these would be a list of tf.Tensors or a list
 of dictionary of tf.Tensor.</li>
 </ul>
@@ -433,7 +433,7 @@ of dictionary of tf.Tensor.</li>
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>(list <objects>): These are the inputs that are given to the
+  <p>(multiple tf.Tensor or dicts): These are the inputs that are given to the
   forward_with_grads function, i.e. the inputs that are fed to the model
   that we want to train.</p>
 </blockquote>
@@ -467,8 +467,7 @@ of dictionary of tf.Tensor.</li>
             <div class="docstring"><p>Describes the computations required to produce the final loss 
 value from a predifined model or models.</p>
 
-<p>Note, that foward_with_grads may use self.post_process_logits 
-and self.loss</p>
+<p>Note, that foward_with_grads may use self.post_process_logits</p>
 
 <p>This method can be further decorated with tf.function with 
 input_signature so that it can be called from lr_finder 
@@ -477,7 +476,7 @@ and train_step without rebuilding the computation graph</p>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>inputs (list <objects>):</strong>  These are the model inputs
+<li><strong>inputs (multiple tf.Tensor or dicts):</strong>  These are the model inputs
 normally these would be a list of tf.Tensors or a list
 of dictionary of tf.Tensor.</li>
 </ul>
@@ -485,7 +484,7 @@ of dictionary of tf.Tensor.</li>
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>(list <objects>): inputs that are given to the self.loss
+  <p>(multiple tf.Tensor or dicts): inputs that are given to the self.loss
     function.</p>
 </blockquote>
 </div>

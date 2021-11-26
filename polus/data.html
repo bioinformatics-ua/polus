@@ -141,15 +141,15 @@ efficient preprocessing, hence the main classes here are the DataLoaders.</p>
 <h3 id="main-classes">Main classes</h3>
 
 <ul>
-<li><p><strong>DataLoader</strong>: Base class of data loader and automatically converts python
+<li><p><code><a href="#DataLoader">polus.data.DataLoader</a></code>: Base class of data loader and automatically converts python
 generators to highly efficient <em>tf.data.Dataset</em>. Furthermore, it also supports
 GPU preprocessing which differs from <em>tf.data.Dataset</em>, since it only runs on CPU</p></li>
-<li><p><strong>CachedDataLoader</strong>: Extension of <em><a href="../polus.html#DataLoader">polus.DataLoader</a></em>, adds the ability to seamlessly
+<li><p><code><a href="#CachedDataLoader">polus.data.CachedDataLoader</a></code>: Extension of <em><a href="../polus.html#DataLoader">polus.DataLoader</a></em>, adds the ability to seamlessly
 store the preprocessed samples in the disk, following a chunking mechanism. Besides the 
 organizational advantage, this also enables us to implement a <em>pre_shuffle</em> mechanism
 that occurs at the chunk level, making it a must more efficient process since we can
 fully shuffle the dataset without the need to have its memory. </p></li>
-<li><p><strong>CachedDataLoaderwLookup</strong>: Extension of <em><a href="../polus.html#CachedDataLoaderwLookup">polus.CachedDataLoaderwLookup</a></em>, adds the 
+<li><p><code><a href="#CachedDataLoaderwLookup">polus.data.CachedDataLoaderwLookup</a></code>: Extension of <em><a href="../polus.html#CachedDataLoaderwLookup">polus.CachedDataLoaderwLookup</a></em>, adds the 
 functionality to store arbitrary python objects jointly with the stored DataLoader.
 Note for storing python objects we use the <em>pickle</em> library.</p></li>
 </ul>
@@ -167,17 +167,17 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
 
 <span class="sd">### Main classes</span>
 
-<span class="sd">- **DataLoader**: Base class of data loader and automatically converts python</span>
+<span class="sd">- `polus.data.DataLoader`: Base class of data loader and automatically converts python</span>
 <span class="sd">  generators to highly efficient *tf.data.Dataset*. Furthermore, it also supports</span>
 <span class="sd">  GPU preprocessing which differs from *tf.data.Dataset*, since it only runs on CPU</span>
 <span class="sd">  </span>
-<span class="sd">- **CachedDataLoader**: Extension of *polus.DataLoader*, adds the ability to seamlessly</span>
+<span class="sd">- `polus.data.CachedDataLoader`: Extension of *polus.DataLoader*, adds the ability to seamlessly</span>
 <span class="sd">  store the preprocessed samples in the disk, following a chunking mechanism. Besides the </span>
 <span class="sd">  organizational advantage, this also enables us to implement a *pre_shuffle* mechanism</span>
 <span class="sd">  that occurs at the chunk level, making it a must more efficient process since we can</span>
 <span class="sd">  fully shuffle the dataset without the need to have its memory. </span>
 
-<span class="sd">- **CachedDataLoaderwLookup**: Extension of *polus.CachedDataLoaderwLookup*, adds the </span>
+<span class="sd">- `polus.data.CachedDataLoaderwLookup`: Extension of *polus.CachedDataLoaderwLookup*, adds the </span>
 <span class="sd">  functionality to store arbitrary python objects jointly with the stored DataLoader.</span>
 <span class="sd">  Note for storing python objects we use the *pickle* library.</span>
 
@@ -221,7 +221,7 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
 <span class="sd">            *tf.data.Dataset*, all the datatypes must be supported in TensorFlow, which is</span>
 <span class="sd">            true for all python primitives types.</span>
 <span class="sd">          </span>
-<span class="sd">          accelerated_map_f (func or polus.IAccelerated_Map): A function or interface, that</span>
+<span class="sd">          accelerated_map_f (func or `polus.data.IAccelerated_Map`): A function or interface, that</span>
 <span class="sd">            describe a transformation to be applied to the samples from the *source_generator*.</span>
 <span class="sd">            By default, this function will execute in the best hardware found on the host device,</span>
 <span class="sd">            i.e., it should be used for mapping computations that should run on a GPU, e.g., </span>
@@ -766,7 +766,7 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
 <span class="sd">            *tf.data.Dataset*, all the datatypes must be supported in TensorFlow, which is</span>
 <span class="sd">            true for all python primitives types.</span>
 <span class="sd">          </span>
-<span class="sd">          accelerated_map_f (func or polus.IAccelerated_Map): A function or interface, that</span>
+<span class="sd">          accelerated_map_f (func or `polus.data.IAccelerated_Map`): A function or interface, that</span>
 <span class="sd">            describe a transformation to be applied to the samples from the *source_generator*.</span>
 <span class="sd">            By default, this function will execute in the best hardware found on the host device,</span>
 <span class="sd">            i.e., it should be used for mapping computations that should run on a GPU, e.g., </span>
@@ -908,7 +908,7 @@ is currently supported.</p>
 <span class="sd">            *tf.data.Dataset*, all the datatypes must be supported in TensorFlow, which is</span>
 <span class="sd">            true for all python primitives types.</span>
 <span class="sd">          </span>
-<span class="sd">          accelerated_map_f (func or polus.IAccelerated_Map): A function or interface, that</span>
+<span class="sd">          accelerated_map_f (func or `polus.data.IAccelerated_Map`): A function or interface, that</span>
 <span class="sd">            describe a transformation to be applied to the samples from the *source_generator*.</span>
 <span class="sd">            By default, this function will execute in the best hardware found on the host device,</span>
 <span class="sd">            i.e., it should be used for mapping computations that should run on a GPU, e.g., </span>
@@ -951,7 +951,7 @@ is currently supported.</p>
 <strong>dictionary of samples</strong>. Since this generator will be converted into a 
 <em>tf.data.Dataset</em>, all the datatypes must be supported in TensorFlow, which is
 true for all python primitives types.</li>
-<li><strong>accelerated_map_f (func or <a href="../polus.html#IAccelerated_Map">polus.IAccelerated_Map</a>):</strong>  A function or interface, that
+<li><strong>accelerated_map_f (func or <code><a href="#IAccelerated_Map">polus.data.IAccelerated_Map</a></code>):</strong>  A function or interface, that
 describe a transformation to be applied to the samples from the <em>source_generator</em>.
 By default, this function will execute in the best hardware found on the host device,
 i.e., it should be used for mapping computations that should run on a GPU, e.g., 
