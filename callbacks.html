@@ -1,0 +1,1904 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>polus.callbacks API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>polus.callbacks</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from polus.core import BaseLogger, get_jit_compile
+from timeit import default_timer as timer
+from collections import OrderedDict, defaultdict
+import tensorflow as tf
+import inspect
+import wandb
+
+class IOutput(BaseLogger):
+    def __init__(self):
+        super().__init__()
+        if self.__class__.__name__ == &#34;IOutputStream&#34;:
+            raise Exception(&#34;This is an interface that cannot be instantiated&#34;)
+            
+        self.data = OrderedDict()
+            
+    def write(self, key, value):
+        self.data[key] = value
+        
+    def flush(self):
+        _tmp = self.data
+        self.data = OrderedDict()
+        return _tmp
+
+class ICallback(BaseLogger):
+    &#34;&#34;&#34;
+    Interface
+    &#34;&#34;&#34;
+    def __init__(self):
+        super().__init__()
+        if self.__class__.__name__ == &#34;ICallback&#34;:
+            raise Exception(&#34;This is an interface that cannot be instantiated&#34;)
+            
+    def on_train_begin(self):
+        pass
+    
+    def on_epoch_begin(self, epoch):
+        pass
+    
+    def on_train_batch_begin(self, epoch, step):
+        pass
+    
+    def on_train_batch_end(self, epoch, step, loss):
+        pass
+    
+    def on_epoch_end(self, epoch):
+        pass
+    
+    def on_train_end(self):
+        pass
+    
+    
+    
+class CallbackCoordinator(ICallback):
+    def __init__(self, 
+                 callbacks, 
+                 trainer, 
+                 epochs,
+                 steps):
+        super().__init__()
+        self.callbacks = callbacks
+        self.trainer = trainer
+        self.epochs = epochs
+        self.steps = steps
+        
+        # This dict is shared across all the callbacks
+        self.shared_dict = {}
+        
+        self.logger.info(f&#34;{len(self.callbacks)} callbacks were registered to be used&#34;)
+        
+        # store the callbacks that are outputStream
+        self.output_streamers = []
+        
+        for c in self.callbacks:
+            # add cordinator to the callbacks
+            c.add_coordinator(self)
+            if isinstance(c, IOutput):
+                self.output_streamers.append(c)
+    
+    def has_callback(self, callback_class):
+        for c in self.callbacks:
+            if isinstance(c, callback_class):
+                return True
+        return False
+    
+    def on_train_begin(self):
+        for c in self.callbacks:
+            c.on_train_begin()
+    
+    def on_epoch_begin(self, epoch):
+        for c in self.callbacks:
+            c.on_epoch_begin(epoch)
+    
+    def on_train_batch_begin(self, epoch, step):
+        for c in self.callbacks:
+            c.on_train_batch_begin(epoch, step)
+    
+    def on_train_batch_end(self, epoch, step, loss):
+        for c in self.callbacks:
+            c.on_train_batch_end(epoch, step, loss)
+    
+    def on_epoch_end(self, epoch):
+        for c in self.callbacks:
+            c.on_epoch_end(epoch)
+    
+    def on_train_end(self):
+        for c in self.callbacks:
+            c.on_train_end()
+        
+class Callback(ICallback):
+    def __init__(self):
+        super().__init__()
+        self.coordinator = None # it is undifined when instantiated
+        
+    def add_coordinator(self, coordinator):
+        self.coordinator = coordinator
+
+class TimerCallback(Callback):
+    &#34;&#34;&#34;
+    This callback only measures the time elapsed between the begin and end of a batch.
+    Then the resulting measure is writed in all the OutputStreamers presented in the coordinator.
+    &#34;&#34;&#34;
+    def __init__(self):
+        super().__init__()
+        self.start = None
+
+    def on_train_batch_begin(self, epoch, step):
+        self.start = timer()
+
+    def on_train_batch_end(self, epoch, step, loss):
+        for output in self.coordinator.output_streamers:
+            output.write(&#34;time&#34;, timer()-self.start)
+
+class LossSmoothCallback(Callback):
+    &#34;&#34;&#34;
+    Applies a smooth factor to the loss
+    &#34;&#34;&#34;
+    def __init__(self, beta = 0.97, output=False):
+        super().__init__()
+        self.beta = beta
+        self.mov_avg = 0
+        self.n = 0
+        self.smooth_loss = 0
+        self.output = output
+    
+    def __maybe_output(self):
+        if self.output:
+            for output in self.coordinator.output_streamers:
+                output.write(&#34;smooth loss&#34;, self.smooth_loss)
+    
+    def on_train_batch_end(self, epoch, step, loss):
+        
+        self.n += 1
+        self.mov_avg = self.beta * self.mov_avg + (1 - self.beta) * loss
+        self.smooth_loss = self.mov_avg / (1 - self.beta ** self.n)
+        
+        self.coordinator.shared_dict[&#34;smooth_loss&#34;] = self.smooth_loss
+        
+        self.__maybe_output()
+                
+    def on_epoch_end(self, epoch):
+        self.__maybe_output()
+
+class ValidationDataCallback(Callback):
+    def __init__(self, 
+                 tf_validation, 
+                 custom_inference_f=None,
+                 name=None,
+                 show_progress=False,
+                 validation_interval=1):
+        super().__init__()
+        self.tf_validation = tf_validation
+        self.name = name
+        self.custom_inference_f = custom_inference_f
+        self.show_progress = show_progress
+        self.validation_interval = validation_interval
+        
+    def on_train_begin(self):
+        if &#34;validation&#34; not in self.coordinator.shared_dict:
+            self.coordinator.shared_dict[&#34;validation&#34;] = {}
+        
+        if self.name is None:
+            self.name = len(self.coordinator.shared_dict[&#34;validation&#34;])
+        
+        self.coordinator.shared_dict[&#34;validation&#34;][self.name] = {metric.name:[] for metric in self.coordinator.trainer.metrics }
+        
+    def on_epoch_end(self, epoch):
+        
+        if not epoch%self.validation_interval:
+            # only do validation at X interval
+
+            self.logger.info(f&#34;Running validation for {self.name} set&#34;)
+            # make inference
+            for step, sample in enumerate(self.tf_validation):
+                if self.show_progress:
+                    print(f&#34;{step}&#34;, end=&#34;\r&#34;)
+
+                if self.custom_inference_f is not None:
+                    y = self.custom_inference_f(self.coordinator.trainer.model, sample)
+                else:
+                    y = self.coordinator.trainer.model(sample)
+
+                for metric in self.coordinator.trainer.metrics:
+                    metric.samples_from_batch(y)
+
+                del sample
+
+            for metric in self.coordinator.trainer.metrics:
+                self.coordinator.shared_dict[&#34;validation&#34;][self.name][metric.name].append(metric.evaluate())
+
+            for output in self.coordinator.output_streamers:
+                output.write(f&#34;Validation {self.name}&#34;, self.coordinator.shared_dict[&#34;validation&#34;][self.name])
+            
+            
+class SaveModelCallback(Callback):
+    def __init__(self, 
+                 strategy, 
+                 validation_name = None,
+                 metric_name = None,
+                 cache_folder = None,
+                 selection_dict_key=None):
+        super().__init__()
+        self.strategy = strategy
+        self.validation_name = validation_name
+        self.metric_name = metric_name
+        self.cache_folder = cache_folder
+        self.selection_dict_key = selection_dict_key
+        
+        if self.strategy not in [&#34;every&#34;, &#34;best&#34;, &#34;end&#34;]:
+            self.logger.warn(f&#34;The selected strategy ({strategy}) is not supported, so this callback will be ignored&#34;)
+            
+        if self.strategy == &#34;best&#34;:
+            self.best = 0
+        
+    def on_epoch_end(self, epoch):
+        
+        if self.strategy == &#34;best&#34;:
+            _last = self.coordinator.shared_dict[&#34;validation&#34;][self.validation_name][self.metric_name][-1]
+            if isinstance(_last, dict):
+                _metric = self.selection_dict_key(_last)
+            else:
+                _metric = _last
+            
+            if _metric &gt; self.best:
+                self.best = _metric
+                if self.cache_folder is None:
+                    self.coordinator.trainer.model.save(extension=f&#34;_{self.validation_name}_{self.metric_name}_best&#34;)
+                else:
+                    self.coordinator.trainer.model.save(extension=f&#34;_{self.validation_name}_{self.metric_name}_best&#34;, base_path=self.cache_folder)
+                    
+        elif self.strategy == &#34;every&#34;:
+            if self.cache_folder is None:
+                self.coordinator.trainer.model.save(extension=f&#34;_epoch_{epoch}&#34;)
+            else:
+                self.coordinator.trainer.model.save(extension=f&#34;_epoch_{epoch}&#34;, base_path=self.cache_folder)
+    
+    def on_train_end(self):
+        if self.strategy == &#34;end&#34;:
+            if self.cache_folder is None:
+                self.coordinator.trainer.model.save()
+            else:
+                self.coordinator.trainer.model.save(base_path=self.cache_folder)
+
+class EarlyStop(Callback):
+    def __init__(self, 
+                 patience = 3, 
+                 use_smooth_loss = True):
+        super().__init__()
+        self.current_patience = 0
+        self.patience = patience
+        self.last_loss = 1000
+        self.use_smooth_loss = use_smooth_loss
+        
+    def on_train_begin(self):
+        if self.use_smooth_loss and not self.coordinator.has_callback(LossSmoothCallback):
+            self.logger.warn(&#34;LossSmoothCallback was not found on the coordinator, which is a requirement to use smooth loss. Therefore this call back will use the normal loss&#34;)
+            self.use_smooth_loss = False
+            self.loss = []
+            
+    def on_train_batch_end(self, epoch, step, loss):
+        if not self.use_smooth_loss:
+            self.loss.append(loss)
+            
+    def on_epoch_end(self, epoch):
+        if self.use_smooth_loss:
+            loss = self.coordinator.shared_dict[&#34;smooth_loss&#34;]
+        else:
+            loss = sum(self.loss)/len(self.loss)
+            self.loss = [] # loss per epoch
+            
+        if self.last_loss &lt; loss:
+            self.current_patience += 1
+            
+        if self.current_patience &gt; self.patience:
+            self.coordinator.trainer.early_stop = True
+            self.logger.info(f&#34;The training will stop early since the loss did not improve in {self.patience} consecutive epochs&#34;)
+
+            
+class WandBLogCallback(Callback, IOutput):
+    
+    def __init__(self, project, init_args, entity=None, additional_info=None, model_config=None, model_name_prefix=&#34;&#34;):
+        super().__init__()
+        
+        self.project = project
+        self.entity = entity
+        self.init_args = init_args
+        self.additional_info = additional_info
+        self.model_config = model_config
+        self.model_name_prefix = model_name_prefix
+
+    def __flatdict(self, d):
+        
+        if isinstance(d, dict):
+            _temp = {}
+            for key, e in d.items():
+                _out = self.__flatdict(e)
+                if isinstance(_out, dict):
+                    for k, v in _out.items():
+                        _temp[f&#34;{key} {k}&#34;] = v
+                else:
+                     _temp[key] = _out
+            return _temp
+        elif isinstance(d, list):
+            return self.__flatdict(d[-1])
+        else: 
+            return d
+
+    
+    def on_train_begin(self):
+        if self.model_config is not None:
+            model_config = self.model_config
+        elif hasattr(self.coordinator.trainer.model, &#34;savable_config&#34;):
+            model_config = self.coordinator.trainer.model.savable_config
+        else:
+            model_config = {}
+            self.logger.warning(f&#34;The training will log information to WandB, however, the callback was unable to find the model configuration, you should explicitly set the model configuration or use @savable_model decorator&#34;)
+                
+        if self.entity is None:
+            wandb.init(project=self.project,
+                       config=model_config)
+        else:
+            wandb.init(project=self.project,
+                       entity=self.entity,
+                       config=model_config)
+        
+        wandb.config.update(self.init_args) 
+        wandb.config.update(self.additional_info) 
+        
+        # add optimizer and loss
+        if inspect.isfunction(self.coordinator.trainer.loss) or isinstance(self.coordinator.trainer.loss, tf.types.experimental.GenericFunction):
+            _loss = {&#34;name&#34;:self.coordinator.trainer.loss.__name__}
+        else:
+            _loss = self.coordinator.trainer.loss.__dict__
+            _loss[&#34;name&#34;] = self.coordinator.trainer.loss.__class__.__name__   
+        
+        _optimizer = self.coordinator.trainer.optimizer.__dict__
+        _optimizer[&#34;name&#34;] = self.coordinator.trainer.optimizer.__class__.__name__
+        
+        other_data = {&#34;loss&#34;: _loss,
+                      &#34;optimizer&#34;: _optimizer}
+        
+        wandb.config.update(other_data) 
+        
+        # set the model name to the name generated by the wandb callback
+        self.coordinator.trainer.model.set_name(wandb.run.name)#f&#34;{self.model_name_prefix}_{wandb.run.name}&#34;)
+        
+    def on_train_batch_end(self, epoch, step, loss):
+        
+        # store other metrics that other callback have produced
+        data = self.__flatdict(self.flush())
+        
+        data[&#34;loss&#34;] = loss
+        
+        wandb.log(data)
+            
+    def on_epoch_end(self, epoch):
+        # store other metrics that other callback have produced
+        data = self.__flatdict(self.flush())
+        
+        data[&#34;epoch&#34;] = epoch
+        
+        wandb.log(data)
+        
+class ConsoleLogCallback(Callback, IOutput):
+    def __init__(self, log_on_train_step=False):
+        super().__init__()
+        self.log_on_train_step = log_on_train_step
+        self.loss_per_epoch = defaultdict(list)
+    
+    def __dict2srt(self, d, sep=&#34; - &#34;):
+        # Maybe redo this code, to be more automatic, assume a dict is open and a list prints the last element
+        _tmp = &#34;&#34;
+        if isinstance(d, dict):
+            #for k,v in d.items():
+                ## recursion
+            _temp = []
+            for key, e in d.items():
+                _out = self.__dict2srt(e, &#34;, &#34;)
+                if isinstance(e, dict) or (isinstance(e, list) and isinstance(e[0], dict)):
+                    _out = f&#34;[{_out}]&#34;
+                _temp.append(f&#39;{key}: {_out}&#39;)
+            _tmp = sep.join(_temp)
+
+            #_tmp += f&#34; - {k}: [{list_str}]&#34;
+        elif isinstance(d, list):
+            _tmp += self.__dict2srt(d[-1], &#34;, &#34;)
+        else: 
+            _tmp += f&#34;{d:.3f}&#34;
+                
+        return _tmp
+    
+    def on_train_begin(self):
+        self.logger.info(f&#34;Begin training of the model \&#34;{self.coordinator.trainer.model.name}\&#34; for {self.coordinator.epochs} epochs&#34;)
+        jit_compiler_flag = get_jit_compile()
+        self.logger.debug(f&#34;The training step will be build with jit_compiler={jit_compiler_flag}&#34;)
+        
+        
+    def on_epoch_begin(self, epoch):
+        self.logger.info(f&#34;Begin epoch {epoch}&#34;)
+    
+    def on_train_batch_end(self, epoch, step, loss):
+        
+        self.loss_per_epoch[epoch].append(loss)
+        
+        _tmp = f&#34;{step}/{self.coordinator.steps} - loss: {loss:.3f} - &#34;
+        
+        # Maybe redo this code, to be more automatic, assume a dict is open and a list prints the last element
+        _tmp += self.__dict2srt(self.flush())
+        
+        if self.log_on_train_step:
+            self.logger.info(_tmp)
+        else:
+            print(_tmp, end=&#34;\r&#34;)
+    
+    def on_epoch_end(self, epoch):
+        
+        _len = len(self.loss_per_epoch[epoch])
+        
+        if _len==0:
+            avg_loss = 0
+        else:
+            avg_loss = sum(self.loss_per_epoch[epoch])/_len
+        
+        _tmp = f&#34;Average loss: {avg_loss:.3f} - &#34;
+
+        # print the reminder of the messages that other callbacks may have set  
+        _tmp += self.__dict2srt(self.flush())
+        
+        self.logger.info(_tmp)
+    
+    def on_train_end(self):
+        self.logger.info(f&#34;End of the training&#34;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="polus.callbacks.Callback"><code class="flex name class">
+<span>class <span class="ident">Callback</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Interface</p>
+<p>From: <a href="https://www.toptal.com/python/in-depth-python-logging">https://www.toptal.com/python/in-depth-python-logging</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Callback(ICallback):
+    def __init__(self):
+        super().__init__()
+        self.coordinator = None # it is undifined when instantiated
+        
+    def add_coordinator(self, coordinator):
+        self.coordinator = coordinator</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.callbacks.ICallback" href="#polus.callbacks.ICallback">ICallback</a></li>
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="polus.callbacks.ConsoleLogCallback" href="#polus.callbacks.ConsoleLogCallback">ConsoleLogCallback</a></li>
+<li><a title="polus.callbacks.EarlyStop" href="#polus.callbacks.EarlyStop">EarlyStop</a></li>
+<li><a title="polus.callbacks.LossSmoothCallback" href="#polus.callbacks.LossSmoothCallback">LossSmoothCallback</a></li>
+<li><a title="polus.callbacks.SaveModelCallback" href="#polus.callbacks.SaveModelCallback">SaveModelCallback</a></li>
+<li><a title="polus.callbacks.TimerCallback" href="#polus.callbacks.TimerCallback">TimerCallback</a></li>
+<li><a title="polus.callbacks.ValidationDataCallback" href="#polus.callbacks.ValidationDataCallback">ValidationDataCallback</a></li>
+<li><a title="polus.callbacks.WandBLogCallback" href="#polus.callbacks.WandBLogCallback">WandBLogCallback</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.callbacks.Callback.add_coordinator"><code class="name flex">
+<span>def <span class="ident">add_coordinator</span></span>(<span>self, coordinator)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_coordinator(self, coordinator):
+    self.coordinator = coordinator</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.callbacks.CallbackCoordinator"><code class="flex name class">
+<span>class <span class="ident">CallbackCoordinator</span></span>
+<span>(</span><span>callbacks, trainer, epochs, steps)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Interface</p>
+<p>From: <a href="https://www.toptal.com/python/in-depth-python-logging">https://www.toptal.com/python/in-depth-python-logging</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CallbackCoordinator(ICallback):
+    def __init__(self, 
+                 callbacks, 
+                 trainer, 
+                 epochs,
+                 steps):
+        super().__init__()
+        self.callbacks = callbacks
+        self.trainer = trainer
+        self.epochs = epochs
+        self.steps = steps
+        
+        # This dict is shared across all the callbacks
+        self.shared_dict = {}
+        
+        self.logger.info(f&#34;{len(self.callbacks)} callbacks were registered to be used&#34;)
+        
+        # store the callbacks that are outputStream
+        self.output_streamers = []
+        
+        for c in self.callbacks:
+            # add cordinator to the callbacks
+            c.add_coordinator(self)
+            if isinstance(c, IOutput):
+                self.output_streamers.append(c)
+    
+    def has_callback(self, callback_class):
+        for c in self.callbacks:
+            if isinstance(c, callback_class):
+                return True
+        return False
+    
+    def on_train_begin(self):
+        for c in self.callbacks:
+            c.on_train_begin()
+    
+    def on_epoch_begin(self, epoch):
+        for c in self.callbacks:
+            c.on_epoch_begin(epoch)
+    
+    def on_train_batch_begin(self, epoch, step):
+        for c in self.callbacks:
+            c.on_train_batch_begin(epoch, step)
+    
+    def on_train_batch_end(self, epoch, step, loss):
+        for c in self.callbacks:
+            c.on_train_batch_end(epoch, step, loss)
+    
+    def on_epoch_end(self, epoch):
+        for c in self.callbacks:
+            c.on_epoch_end(epoch)
+    
+    def on_train_end(self):
+        for c in self.callbacks:
+            c.on_train_end()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.callbacks.ICallback" href="#polus.callbacks.ICallback">ICallback</a></li>
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.callbacks.CallbackCoordinator.has_callback"><code class="name flex">
+<span>def <span class="ident">has_callback</span></span>(<span>self, callback_class)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_callback(self, callback_class):
+    for c in self.callbacks:
+        if isinstance(c, callback_class):
+            return True
+    return False</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.CallbackCoordinator.on_epoch_begin"><code class="name flex">
+<span>def <span class="ident">on_epoch_begin</span></span>(<span>self, epoch)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_epoch_begin(self, epoch):
+    for c in self.callbacks:
+        c.on_epoch_begin(epoch)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.CallbackCoordinator.on_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_epoch_end</span></span>(<span>self, epoch)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_epoch_end(self, epoch):
+    for c in self.callbacks:
+        c.on_epoch_end(epoch)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.CallbackCoordinator.on_train_batch_begin"><code class="name flex">
+<span>def <span class="ident">on_train_batch_begin</span></span>(<span>self, epoch, step)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_batch_begin(self, epoch, step):
+    for c in self.callbacks:
+        c.on_train_batch_begin(epoch, step)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.CallbackCoordinator.on_train_batch_end"><code class="name flex">
+<span>def <span class="ident">on_train_batch_end</span></span>(<span>self, epoch, step, loss)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_batch_end(self, epoch, step, loss):
+    for c in self.callbacks:
+        c.on_train_batch_end(epoch, step, loss)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.CallbackCoordinator.on_train_begin"><code class="name flex">
+<span>def <span class="ident">on_train_begin</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_begin(self):
+    for c in self.callbacks:
+        c.on_train_begin()</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.CallbackCoordinator.on_train_end"><code class="name flex">
+<span>def <span class="ident">on_train_end</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_end(self):
+    for c in self.callbacks:
+        c.on_train_end()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.callbacks.ConsoleLogCallback"><code class="flex name class">
+<span>class <span class="ident">ConsoleLogCallback</span></span>
+<span>(</span><span>log_on_train_step=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Interface</p>
+<p>From: <a href="https://www.toptal.com/python/in-depth-python-logging">https://www.toptal.com/python/in-depth-python-logging</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ConsoleLogCallback(Callback, IOutput):
+    def __init__(self, log_on_train_step=False):
+        super().__init__()
+        self.log_on_train_step = log_on_train_step
+        self.loss_per_epoch = defaultdict(list)
+    
+    def __dict2srt(self, d, sep=&#34; - &#34;):
+        # Maybe redo this code, to be more automatic, assume a dict is open and a list prints the last element
+        _tmp = &#34;&#34;
+        if isinstance(d, dict):
+            #for k,v in d.items():
+                ## recursion
+            _temp = []
+            for key, e in d.items():
+                _out = self.__dict2srt(e, &#34;, &#34;)
+                if isinstance(e, dict) or (isinstance(e, list) and isinstance(e[0], dict)):
+                    _out = f&#34;[{_out}]&#34;
+                _temp.append(f&#39;{key}: {_out}&#39;)
+            _tmp = sep.join(_temp)
+
+            #_tmp += f&#34; - {k}: [{list_str}]&#34;
+        elif isinstance(d, list):
+            _tmp += self.__dict2srt(d[-1], &#34;, &#34;)
+        else: 
+            _tmp += f&#34;{d:.3f}&#34;
+                
+        return _tmp
+    
+    def on_train_begin(self):
+        self.logger.info(f&#34;Begin training of the model \&#34;{self.coordinator.trainer.model.name}\&#34; for {self.coordinator.epochs} epochs&#34;)
+        jit_compiler_flag = get_jit_compile()
+        self.logger.debug(f&#34;The training step will be build with jit_compiler={jit_compiler_flag}&#34;)
+        
+        
+    def on_epoch_begin(self, epoch):
+        self.logger.info(f&#34;Begin epoch {epoch}&#34;)
+    
+    def on_train_batch_end(self, epoch, step, loss):
+        
+        self.loss_per_epoch[epoch].append(loss)
+        
+        _tmp = f&#34;{step}/{self.coordinator.steps} - loss: {loss:.3f} - &#34;
+        
+        # Maybe redo this code, to be more automatic, assume a dict is open and a list prints the last element
+        _tmp += self.__dict2srt(self.flush())
+        
+        if self.log_on_train_step:
+            self.logger.info(_tmp)
+        else:
+            print(_tmp, end=&#34;\r&#34;)
+    
+    def on_epoch_end(self, epoch):
+        
+        _len = len(self.loss_per_epoch[epoch])
+        
+        if _len==0:
+            avg_loss = 0
+        else:
+            avg_loss = sum(self.loss_per_epoch[epoch])/_len
+        
+        _tmp = f&#34;Average loss: {avg_loss:.3f} - &#34;
+
+        # print the reminder of the messages that other callbacks may have set  
+        _tmp += self.__dict2srt(self.flush())
+        
+        self.logger.info(_tmp)
+    
+    def on_train_end(self):
+        self.logger.info(f&#34;End of the training&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.callbacks.Callback" href="#polus.callbacks.Callback">Callback</a></li>
+<li><a title="polus.callbacks.ICallback" href="#polus.callbacks.ICallback">ICallback</a></li>
+<li><a title="polus.callbacks.IOutput" href="#polus.callbacks.IOutput">IOutput</a></li>
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.callbacks.ConsoleLogCallback.on_epoch_begin"><code class="name flex">
+<span>def <span class="ident">on_epoch_begin</span></span>(<span>self, epoch)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_epoch_begin(self, epoch):
+    self.logger.info(f&#34;Begin epoch {epoch}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.ConsoleLogCallback.on_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_epoch_end</span></span>(<span>self, epoch)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_epoch_end(self, epoch):
+    
+    _len = len(self.loss_per_epoch[epoch])
+    
+    if _len==0:
+        avg_loss = 0
+    else:
+        avg_loss = sum(self.loss_per_epoch[epoch])/_len
+    
+    _tmp = f&#34;Average loss: {avg_loss:.3f} - &#34;
+
+    # print the reminder of the messages that other callbacks may have set  
+    _tmp += self.__dict2srt(self.flush())
+    
+    self.logger.info(_tmp)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.ConsoleLogCallback.on_train_batch_end"><code class="name flex">
+<span>def <span class="ident">on_train_batch_end</span></span>(<span>self, epoch, step, loss)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_batch_end(self, epoch, step, loss):
+    
+    self.loss_per_epoch[epoch].append(loss)
+    
+    _tmp = f&#34;{step}/{self.coordinator.steps} - loss: {loss:.3f} - &#34;
+    
+    # Maybe redo this code, to be more automatic, assume a dict is open and a list prints the last element
+    _tmp += self.__dict2srt(self.flush())
+    
+    if self.log_on_train_step:
+        self.logger.info(_tmp)
+    else:
+        print(_tmp, end=&#34;\r&#34;)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.ConsoleLogCallback.on_train_begin"><code class="name flex">
+<span>def <span class="ident">on_train_begin</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_begin(self):
+    self.logger.info(f&#34;Begin training of the model \&#34;{self.coordinator.trainer.model.name}\&#34; for {self.coordinator.epochs} epochs&#34;)
+    jit_compiler_flag = get_jit_compile()
+    self.logger.debug(f&#34;The training step will be build with jit_compiler={jit_compiler_flag}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.ConsoleLogCallback.on_train_end"><code class="name flex">
+<span>def <span class="ident">on_train_end</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_end(self):
+    self.logger.info(f&#34;End of the training&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.callbacks.EarlyStop"><code class="flex name class">
+<span>class <span class="ident">EarlyStop</span></span>
+<span>(</span><span>patience=3, use_smooth_loss=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Interface</p>
+<p>From: <a href="https://www.toptal.com/python/in-depth-python-logging">https://www.toptal.com/python/in-depth-python-logging</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EarlyStop(Callback):
+    def __init__(self, 
+                 patience = 3, 
+                 use_smooth_loss = True):
+        super().__init__()
+        self.current_patience = 0
+        self.patience = patience
+        self.last_loss = 1000
+        self.use_smooth_loss = use_smooth_loss
+        
+    def on_train_begin(self):
+        if self.use_smooth_loss and not self.coordinator.has_callback(LossSmoothCallback):
+            self.logger.warn(&#34;LossSmoothCallback was not found on the coordinator, which is a requirement to use smooth loss. Therefore this call back will use the normal loss&#34;)
+            self.use_smooth_loss = False
+            self.loss = []
+            
+    def on_train_batch_end(self, epoch, step, loss):
+        if not self.use_smooth_loss:
+            self.loss.append(loss)
+            
+    def on_epoch_end(self, epoch):
+        if self.use_smooth_loss:
+            loss = self.coordinator.shared_dict[&#34;smooth_loss&#34;]
+        else:
+            loss = sum(self.loss)/len(self.loss)
+            self.loss = [] # loss per epoch
+            
+        if self.last_loss &lt; loss:
+            self.current_patience += 1
+            
+        if self.current_patience &gt; self.patience:
+            self.coordinator.trainer.early_stop = True
+            self.logger.info(f&#34;The training will stop early since the loss did not improve in {self.patience} consecutive epochs&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.callbacks.Callback" href="#polus.callbacks.Callback">Callback</a></li>
+<li><a title="polus.callbacks.ICallback" href="#polus.callbacks.ICallback">ICallback</a></li>
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.callbacks.EarlyStop.on_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_epoch_end</span></span>(<span>self, epoch)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_epoch_end(self, epoch):
+    if self.use_smooth_loss:
+        loss = self.coordinator.shared_dict[&#34;smooth_loss&#34;]
+    else:
+        loss = sum(self.loss)/len(self.loss)
+        self.loss = [] # loss per epoch
+        
+    if self.last_loss &lt; loss:
+        self.current_patience += 1
+        
+    if self.current_patience &gt; self.patience:
+        self.coordinator.trainer.early_stop = True
+        self.logger.info(f&#34;The training will stop early since the loss did not improve in {self.patience} consecutive epochs&#34;)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.EarlyStop.on_train_batch_end"><code class="name flex">
+<span>def <span class="ident">on_train_batch_end</span></span>(<span>self, epoch, step, loss)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_batch_end(self, epoch, step, loss):
+    if not self.use_smooth_loss:
+        self.loss.append(loss)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.EarlyStop.on_train_begin"><code class="name flex">
+<span>def <span class="ident">on_train_begin</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_begin(self):
+    if self.use_smooth_loss and not self.coordinator.has_callback(LossSmoothCallback):
+        self.logger.warn(&#34;LossSmoothCallback was not found on the coordinator, which is a requirement to use smooth loss. Therefore this call back will use the normal loss&#34;)
+        self.use_smooth_loss = False
+        self.loss = []</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.callbacks.ICallback"><code class="flex name class">
+<span>class <span class="ident">ICallback</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Interface</p>
+<p>From: <a href="https://www.toptal.com/python/in-depth-python-logging">https://www.toptal.com/python/in-depth-python-logging</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ICallback(BaseLogger):
+    &#34;&#34;&#34;
+    Interface
+    &#34;&#34;&#34;
+    def __init__(self):
+        super().__init__()
+        if self.__class__.__name__ == &#34;ICallback&#34;:
+            raise Exception(&#34;This is an interface that cannot be instantiated&#34;)
+            
+    def on_train_begin(self):
+        pass
+    
+    def on_epoch_begin(self, epoch):
+        pass
+    
+    def on_train_batch_begin(self, epoch, step):
+        pass
+    
+    def on_train_batch_end(self, epoch, step, loss):
+        pass
+    
+    def on_epoch_end(self, epoch):
+        pass
+    
+    def on_train_end(self):
+        pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="polus.callbacks.Callback" href="#polus.callbacks.Callback">Callback</a></li>
+<li><a title="polus.callbacks.CallbackCoordinator" href="#polus.callbacks.CallbackCoordinator">CallbackCoordinator</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.callbacks.ICallback.on_epoch_begin"><code class="name flex">
+<span>def <span class="ident">on_epoch_begin</span></span>(<span>self, epoch)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_epoch_begin(self, epoch):
+    pass</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.ICallback.on_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_epoch_end</span></span>(<span>self, epoch)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_epoch_end(self, epoch):
+    pass</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.ICallback.on_train_batch_begin"><code class="name flex">
+<span>def <span class="ident">on_train_batch_begin</span></span>(<span>self, epoch, step)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_batch_begin(self, epoch, step):
+    pass</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.ICallback.on_train_batch_end"><code class="name flex">
+<span>def <span class="ident">on_train_batch_end</span></span>(<span>self, epoch, step, loss)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_batch_end(self, epoch, step, loss):
+    pass</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.ICallback.on_train_begin"><code class="name flex">
+<span>def <span class="ident">on_train_begin</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_begin(self):
+    pass</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.ICallback.on_train_end"><code class="name flex">
+<span>def <span class="ident">on_train_end</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_end(self):
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.callbacks.IOutput"><code class="flex name class">
+<span>class <span class="ident">IOutput</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>From: <a href="https://www.toptal.com/python/in-depth-python-logging">https://www.toptal.com/python/in-depth-python-logging</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class IOutput(BaseLogger):
+    def __init__(self):
+        super().__init__()
+        if self.__class__.__name__ == &#34;IOutputStream&#34;:
+            raise Exception(&#34;This is an interface that cannot be instantiated&#34;)
+            
+        self.data = OrderedDict()
+            
+    def write(self, key, value):
+        self.data[key] = value
+        
+    def flush(self):
+        _tmp = self.data
+        self.data = OrderedDict()
+        return _tmp</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="polus.callbacks.ConsoleLogCallback" href="#polus.callbacks.ConsoleLogCallback">ConsoleLogCallback</a></li>
+<li><a title="polus.callbacks.WandBLogCallback" href="#polus.callbacks.WandBLogCallback">WandBLogCallback</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.callbacks.IOutput.flush"><code class="name flex">
+<span>def <span class="ident">flush</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def flush(self):
+    _tmp = self.data
+    self.data = OrderedDict()
+    return _tmp</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.IOutput.write"><code class="name flex">
+<span>def <span class="ident">write</span></span>(<span>self, key, value)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def write(self, key, value):
+    self.data[key] = value</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.callbacks.LossSmoothCallback"><code class="flex name class">
+<span>class <span class="ident">LossSmoothCallback</span></span>
+<span>(</span><span>beta=0.97, output=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Applies a smooth factor to the loss</p>
+<p>From: <a href="https://www.toptal.com/python/in-depth-python-logging">https://www.toptal.com/python/in-depth-python-logging</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LossSmoothCallback(Callback):
+    &#34;&#34;&#34;
+    Applies a smooth factor to the loss
+    &#34;&#34;&#34;
+    def __init__(self, beta = 0.97, output=False):
+        super().__init__()
+        self.beta = beta
+        self.mov_avg = 0
+        self.n = 0
+        self.smooth_loss = 0
+        self.output = output
+    
+    def __maybe_output(self):
+        if self.output:
+            for output in self.coordinator.output_streamers:
+                output.write(&#34;smooth loss&#34;, self.smooth_loss)
+    
+    def on_train_batch_end(self, epoch, step, loss):
+        
+        self.n += 1
+        self.mov_avg = self.beta * self.mov_avg + (1 - self.beta) * loss
+        self.smooth_loss = self.mov_avg / (1 - self.beta ** self.n)
+        
+        self.coordinator.shared_dict[&#34;smooth_loss&#34;] = self.smooth_loss
+        
+        self.__maybe_output()
+                
+    def on_epoch_end(self, epoch):
+        self.__maybe_output()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.callbacks.Callback" href="#polus.callbacks.Callback">Callback</a></li>
+<li><a title="polus.callbacks.ICallback" href="#polus.callbacks.ICallback">ICallback</a></li>
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.callbacks.LossSmoothCallback.on_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_epoch_end</span></span>(<span>self, epoch)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_epoch_end(self, epoch):
+    self.__maybe_output()</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.LossSmoothCallback.on_train_batch_end"><code class="name flex">
+<span>def <span class="ident">on_train_batch_end</span></span>(<span>self, epoch, step, loss)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_batch_end(self, epoch, step, loss):
+    
+    self.n += 1
+    self.mov_avg = self.beta * self.mov_avg + (1 - self.beta) * loss
+    self.smooth_loss = self.mov_avg / (1 - self.beta ** self.n)
+    
+    self.coordinator.shared_dict[&#34;smooth_loss&#34;] = self.smooth_loss
+    
+    self.__maybe_output()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.callbacks.SaveModelCallback"><code class="flex name class">
+<span>class <span class="ident">SaveModelCallback</span></span>
+<span>(</span><span>strategy, validation_name=None, metric_name=None, cache_folder=None, selection_dict_key=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Interface</p>
+<p>From: <a href="https://www.toptal.com/python/in-depth-python-logging">https://www.toptal.com/python/in-depth-python-logging</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SaveModelCallback(Callback):
+    def __init__(self, 
+                 strategy, 
+                 validation_name = None,
+                 metric_name = None,
+                 cache_folder = None,
+                 selection_dict_key=None):
+        super().__init__()
+        self.strategy = strategy
+        self.validation_name = validation_name
+        self.metric_name = metric_name
+        self.cache_folder = cache_folder
+        self.selection_dict_key = selection_dict_key
+        
+        if self.strategy not in [&#34;every&#34;, &#34;best&#34;, &#34;end&#34;]:
+            self.logger.warn(f&#34;The selected strategy ({strategy}) is not supported, so this callback will be ignored&#34;)
+            
+        if self.strategy == &#34;best&#34;:
+            self.best = 0
+        
+    def on_epoch_end(self, epoch):
+        
+        if self.strategy == &#34;best&#34;:
+            _last = self.coordinator.shared_dict[&#34;validation&#34;][self.validation_name][self.metric_name][-1]
+            if isinstance(_last, dict):
+                _metric = self.selection_dict_key(_last)
+            else:
+                _metric = _last
+            
+            if _metric &gt; self.best:
+                self.best = _metric
+                if self.cache_folder is None:
+                    self.coordinator.trainer.model.save(extension=f&#34;_{self.validation_name}_{self.metric_name}_best&#34;)
+                else:
+                    self.coordinator.trainer.model.save(extension=f&#34;_{self.validation_name}_{self.metric_name}_best&#34;, base_path=self.cache_folder)
+                    
+        elif self.strategy == &#34;every&#34;:
+            if self.cache_folder is None:
+                self.coordinator.trainer.model.save(extension=f&#34;_epoch_{epoch}&#34;)
+            else:
+                self.coordinator.trainer.model.save(extension=f&#34;_epoch_{epoch}&#34;, base_path=self.cache_folder)
+    
+    def on_train_end(self):
+        if self.strategy == &#34;end&#34;:
+            if self.cache_folder is None:
+                self.coordinator.trainer.model.save()
+            else:
+                self.coordinator.trainer.model.save(base_path=self.cache_folder)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.callbacks.Callback" href="#polus.callbacks.Callback">Callback</a></li>
+<li><a title="polus.callbacks.ICallback" href="#polus.callbacks.ICallback">ICallback</a></li>
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.callbacks.SaveModelCallback.on_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_epoch_end</span></span>(<span>self, epoch)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_epoch_end(self, epoch):
+    
+    if self.strategy == &#34;best&#34;:
+        _last = self.coordinator.shared_dict[&#34;validation&#34;][self.validation_name][self.metric_name][-1]
+        if isinstance(_last, dict):
+            _metric = self.selection_dict_key(_last)
+        else:
+            _metric = _last
+        
+        if _metric &gt; self.best:
+            self.best = _metric
+            if self.cache_folder is None:
+                self.coordinator.trainer.model.save(extension=f&#34;_{self.validation_name}_{self.metric_name}_best&#34;)
+            else:
+                self.coordinator.trainer.model.save(extension=f&#34;_{self.validation_name}_{self.metric_name}_best&#34;, base_path=self.cache_folder)
+                
+    elif self.strategy == &#34;every&#34;:
+        if self.cache_folder is None:
+            self.coordinator.trainer.model.save(extension=f&#34;_epoch_{epoch}&#34;)
+        else:
+            self.coordinator.trainer.model.save(extension=f&#34;_epoch_{epoch}&#34;, base_path=self.cache_folder)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.SaveModelCallback.on_train_end"><code class="name flex">
+<span>def <span class="ident">on_train_end</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_end(self):
+    if self.strategy == &#34;end&#34;:
+        if self.cache_folder is None:
+            self.coordinator.trainer.model.save()
+        else:
+            self.coordinator.trainer.model.save(base_path=self.cache_folder)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.callbacks.TimerCallback"><code class="flex name class">
+<span>class <span class="ident">TimerCallback</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>This callback only measures the time elapsed between the begin and end of a batch.
+Then the resulting measure is writed in all the OutputStreamers presented in the coordinator.</p>
+<p>From: <a href="https://www.toptal.com/python/in-depth-python-logging">https://www.toptal.com/python/in-depth-python-logging</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TimerCallback(Callback):
+    &#34;&#34;&#34;
+    This callback only measures the time elapsed between the begin and end of a batch.
+    Then the resulting measure is writed in all the OutputStreamers presented in the coordinator.
+    &#34;&#34;&#34;
+    def __init__(self):
+        super().__init__()
+        self.start = None
+
+    def on_train_batch_begin(self, epoch, step):
+        self.start = timer()
+
+    def on_train_batch_end(self, epoch, step, loss):
+        for output in self.coordinator.output_streamers:
+            output.write(&#34;time&#34;, timer()-self.start)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.callbacks.Callback" href="#polus.callbacks.Callback">Callback</a></li>
+<li><a title="polus.callbacks.ICallback" href="#polus.callbacks.ICallback">ICallback</a></li>
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.callbacks.TimerCallback.on_train_batch_begin"><code class="name flex">
+<span>def <span class="ident">on_train_batch_begin</span></span>(<span>self, epoch, step)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_batch_begin(self, epoch, step):
+    self.start = timer()</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.TimerCallback.on_train_batch_end"><code class="name flex">
+<span>def <span class="ident">on_train_batch_end</span></span>(<span>self, epoch, step, loss)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_batch_end(self, epoch, step, loss):
+    for output in self.coordinator.output_streamers:
+        output.write(&#34;time&#34;, timer()-self.start)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.callbacks.ValidationDataCallback"><code class="flex name class">
+<span>class <span class="ident">ValidationDataCallback</span></span>
+<span>(</span><span>tf_validation, custom_inference_f=None, name=None, show_progress=False, validation_interval=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Interface</p>
+<p>From: <a href="https://www.toptal.com/python/in-depth-python-logging">https://www.toptal.com/python/in-depth-python-logging</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ValidationDataCallback(Callback):
+    def __init__(self, 
+                 tf_validation, 
+                 custom_inference_f=None,
+                 name=None,
+                 show_progress=False,
+                 validation_interval=1):
+        super().__init__()
+        self.tf_validation = tf_validation
+        self.name = name
+        self.custom_inference_f = custom_inference_f
+        self.show_progress = show_progress
+        self.validation_interval = validation_interval
+        
+    def on_train_begin(self):
+        if &#34;validation&#34; not in self.coordinator.shared_dict:
+            self.coordinator.shared_dict[&#34;validation&#34;] = {}
+        
+        if self.name is None:
+            self.name = len(self.coordinator.shared_dict[&#34;validation&#34;])
+        
+        self.coordinator.shared_dict[&#34;validation&#34;][self.name] = {metric.name:[] for metric in self.coordinator.trainer.metrics }
+        
+    def on_epoch_end(self, epoch):
+        
+        if not epoch%self.validation_interval:
+            # only do validation at X interval
+
+            self.logger.info(f&#34;Running validation for {self.name} set&#34;)
+            # make inference
+            for step, sample in enumerate(self.tf_validation):
+                if self.show_progress:
+                    print(f&#34;{step}&#34;, end=&#34;\r&#34;)
+
+                if self.custom_inference_f is not None:
+                    y = self.custom_inference_f(self.coordinator.trainer.model, sample)
+                else:
+                    y = self.coordinator.trainer.model(sample)
+
+                for metric in self.coordinator.trainer.metrics:
+                    metric.samples_from_batch(y)
+
+                del sample
+
+            for metric in self.coordinator.trainer.metrics:
+                self.coordinator.shared_dict[&#34;validation&#34;][self.name][metric.name].append(metric.evaluate())
+
+            for output in self.coordinator.output_streamers:
+                output.write(f&#34;Validation {self.name}&#34;, self.coordinator.shared_dict[&#34;validation&#34;][self.name])</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.callbacks.Callback" href="#polus.callbacks.Callback">Callback</a></li>
+<li><a title="polus.callbacks.ICallback" href="#polus.callbacks.ICallback">ICallback</a></li>
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.callbacks.ValidationDataCallback.on_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_epoch_end</span></span>(<span>self, epoch)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_epoch_end(self, epoch):
+    
+    if not epoch%self.validation_interval:
+        # only do validation at X interval
+
+        self.logger.info(f&#34;Running validation for {self.name} set&#34;)
+        # make inference
+        for step, sample in enumerate(self.tf_validation):
+            if self.show_progress:
+                print(f&#34;{step}&#34;, end=&#34;\r&#34;)
+
+            if self.custom_inference_f is not None:
+                y = self.custom_inference_f(self.coordinator.trainer.model, sample)
+            else:
+                y = self.coordinator.trainer.model(sample)
+
+            for metric in self.coordinator.trainer.metrics:
+                metric.samples_from_batch(y)
+
+            del sample
+
+        for metric in self.coordinator.trainer.metrics:
+            self.coordinator.shared_dict[&#34;validation&#34;][self.name][metric.name].append(metric.evaluate())
+
+        for output in self.coordinator.output_streamers:
+            output.write(f&#34;Validation {self.name}&#34;, self.coordinator.shared_dict[&#34;validation&#34;][self.name])</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.ValidationDataCallback.on_train_begin"><code class="name flex">
+<span>def <span class="ident">on_train_begin</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_begin(self):
+    if &#34;validation&#34; not in self.coordinator.shared_dict:
+        self.coordinator.shared_dict[&#34;validation&#34;] = {}
+    
+    if self.name is None:
+        self.name = len(self.coordinator.shared_dict[&#34;validation&#34;])
+    
+    self.coordinator.shared_dict[&#34;validation&#34;][self.name] = {metric.name:[] for metric in self.coordinator.trainer.metrics }</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.callbacks.WandBLogCallback"><code class="flex name class">
+<span>class <span class="ident">WandBLogCallback</span></span>
+<span>(</span><span>project, init_args, entity=None, additional_info=None, model_config=None, model_name_prefix='')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Interface</p>
+<p>From: <a href="https://www.toptal.com/python/in-depth-python-logging">https://www.toptal.com/python/in-depth-python-logging</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WandBLogCallback(Callback, IOutput):
+    
+    def __init__(self, project, init_args, entity=None, additional_info=None, model_config=None, model_name_prefix=&#34;&#34;):
+        super().__init__()
+        
+        self.project = project
+        self.entity = entity
+        self.init_args = init_args
+        self.additional_info = additional_info
+        self.model_config = model_config
+        self.model_name_prefix = model_name_prefix
+
+    def __flatdict(self, d):
+        
+        if isinstance(d, dict):
+            _temp = {}
+            for key, e in d.items():
+                _out = self.__flatdict(e)
+                if isinstance(_out, dict):
+                    for k, v in _out.items():
+                        _temp[f&#34;{key} {k}&#34;] = v
+                else:
+                     _temp[key] = _out
+            return _temp
+        elif isinstance(d, list):
+            return self.__flatdict(d[-1])
+        else: 
+            return d
+
+    
+    def on_train_begin(self):
+        if self.model_config is not None:
+            model_config = self.model_config
+        elif hasattr(self.coordinator.trainer.model, &#34;savable_config&#34;):
+            model_config = self.coordinator.trainer.model.savable_config
+        else:
+            model_config = {}
+            self.logger.warning(f&#34;The training will log information to WandB, however, the callback was unable to find the model configuration, you should explicitly set the model configuration or use @savable_model decorator&#34;)
+                
+        if self.entity is None:
+            wandb.init(project=self.project,
+                       config=model_config)
+        else:
+            wandb.init(project=self.project,
+                       entity=self.entity,
+                       config=model_config)
+        
+        wandb.config.update(self.init_args) 
+        wandb.config.update(self.additional_info) 
+        
+        # add optimizer and loss
+        if inspect.isfunction(self.coordinator.trainer.loss) or isinstance(self.coordinator.trainer.loss, tf.types.experimental.GenericFunction):
+            _loss = {&#34;name&#34;:self.coordinator.trainer.loss.__name__}
+        else:
+            _loss = self.coordinator.trainer.loss.__dict__
+            _loss[&#34;name&#34;] = self.coordinator.trainer.loss.__class__.__name__   
+        
+        _optimizer = self.coordinator.trainer.optimizer.__dict__
+        _optimizer[&#34;name&#34;] = self.coordinator.trainer.optimizer.__class__.__name__
+        
+        other_data = {&#34;loss&#34;: _loss,
+                      &#34;optimizer&#34;: _optimizer}
+        
+        wandb.config.update(other_data) 
+        
+        # set the model name to the name generated by the wandb callback
+        self.coordinator.trainer.model.set_name(wandb.run.name)#f&#34;{self.model_name_prefix}_{wandb.run.name}&#34;)
+        
+    def on_train_batch_end(self, epoch, step, loss):
+        
+        # store other metrics that other callback have produced
+        data = self.__flatdict(self.flush())
+        
+        data[&#34;loss&#34;] = loss
+        
+        wandb.log(data)
+            
+    def on_epoch_end(self, epoch):
+        # store other metrics that other callback have produced
+        data = self.__flatdict(self.flush())
+        
+        data[&#34;epoch&#34;] = epoch
+        
+        wandb.log(data)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.callbacks.Callback" href="#polus.callbacks.Callback">Callback</a></li>
+<li><a title="polus.callbacks.ICallback" href="#polus.callbacks.ICallback">ICallback</a></li>
+<li><a title="polus.callbacks.IOutput" href="#polus.callbacks.IOutput">IOutput</a></li>
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.callbacks.WandBLogCallback.on_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_epoch_end</span></span>(<span>self, epoch)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_epoch_end(self, epoch):
+    # store other metrics that other callback have produced
+    data = self.__flatdict(self.flush())
+    
+    data[&#34;epoch&#34;] = epoch
+    
+    wandb.log(data)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.WandBLogCallback.on_train_batch_end"><code class="name flex">
+<span>def <span class="ident">on_train_batch_end</span></span>(<span>self, epoch, step, loss)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_batch_end(self, epoch, step, loss):
+    
+    # store other metrics that other callback have produced
+    data = self.__flatdict(self.flush())
+    
+    data[&#34;loss&#34;] = loss
+    
+    wandb.log(data)</code></pre>
+</details>
+</dd>
+<dt id="polus.callbacks.WandBLogCallback.on_train_begin"><code class="name flex">
+<span>def <span class="ident">on_train_begin</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_begin(self):
+    if self.model_config is not None:
+        model_config = self.model_config
+    elif hasattr(self.coordinator.trainer.model, &#34;savable_config&#34;):
+        model_config = self.coordinator.trainer.model.savable_config
+    else:
+        model_config = {}
+        self.logger.warning(f&#34;The training will log information to WandB, however, the callback was unable to find the model configuration, you should explicitly set the model configuration or use @savable_model decorator&#34;)
+            
+    if self.entity is None:
+        wandb.init(project=self.project,
+                   config=model_config)
+    else:
+        wandb.init(project=self.project,
+                   entity=self.entity,
+                   config=model_config)
+    
+    wandb.config.update(self.init_args) 
+    wandb.config.update(self.additional_info) 
+    
+    # add optimizer and loss
+    if inspect.isfunction(self.coordinator.trainer.loss) or isinstance(self.coordinator.trainer.loss, tf.types.experimental.GenericFunction):
+        _loss = {&#34;name&#34;:self.coordinator.trainer.loss.__name__}
+    else:
+        _loss = self.coordinator.trainer.loss.__dict__
+        _loss[&#34;name&#34;] = self.coordinator.trainer.loss.__class__.__name__   
+    
+    _optimizer = self.coordinator.trainer.optimizer.__dict__
+    _optimizer[&#34;name&#34;] = self.coordinator.trainer.optimizer.__class__.__name__
+    
+    other_data = {&#34;loss&#34;: _loss,
+                  &#34;optimizer&#34;: _optimizer}
+    
+    wandb.config.update(other_data) 
+    
+    # set the model name to the name generated by the wandb callback
+    self.coordinator.trainer.model.set_name(wandb.run.name)#f&#34;{self.model_name_prefix}_{wandb.run.name}&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="polus" href="index.html">polus</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="polus.callbacks.Callback" href="#polus.callbacks.Callback">Callback</a></code></h4>
+<ul class="">
+<li><code><a title="polus.callbacks.Callback.add_coordinator" href="#polus.callbacks.Callback.add_coordinator">add_coordinator</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.callbacks.CallbackCoordinator" href="#polus.callbacks.CallbackCoordinator">CallbackCoordinator</a></code></h4>
+<ul class="">
+<li><code><a title="polus.callbacks.CallbackCoordinator.has_callback" href="#polus.callbacks.CallbackCoordinator.has_callback">has_callback</a></code></li>
+<li><code><a title="polus.callbacks.CallbackCoordinator.on_epoch_begin" href="#polus.callbacks.CallbackCoordinator.on_epoch_begin">on_epoch_begin</a></code></li>
+<li><code><a title="polus.callbacks.CallbackCoordinator.on_epoch_end" href="#polus.callbacks.CallbackCoordinator.on_epoch_end">on_epoch_end</a></code></li>
+<li><code><a title="polus.callbacks.CallbackCoordinator.on_train_batch_begin" href="#polus.callbacks.CallbackCoordinator.on_train_batch_begin">on_train_batch_begin</a></code></li>
+<li><code><a title="polus.callbacks.CallbackCoordinator.on_train_batch_end" href="#polus.callbacks.CallbackCoordinator.on_train_batch_end">on_train_batch_end</a></code></li>
+<li><code><a title="polus.callbacks.CallbackCoordinator.on_train_begin" href="#polus.callbacks.CallbackCoordinator.on_train_begin">on_train_begin</a></code></li>
+<li><code><a title="polus.callbacks.CallbackCoordinator.on_train_end" href="#polus.callbacks.CallbackCoordinator.on_train_end">on_train_end</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.callbacks.ConsoleLogCallback" href="#polus.callbacks.ConsoleLogCallback">ConsoleLogCallback</a></code></h4>
+<ul class="">
+<li><code><a title="polus.callbacks.ConsoleLogCallback.on_epoch_begin" href="#polus.callbacks.ConsoleLogCallback.on_epoch_begin">on_epoch_begin</a></code></li>
+<li><code><a title="polus.callbacks.ConsoleLogCallback.on_epoch_end" href="#polus.callbacks.ConsoleLogCallback.on_epoch_end">on_epoch_end</a></code></li>
+<li><code><a title="polus.callbacks.ConsoleLogCallback.on_train_batch_end" href="#polus.callbacks.ConsoleLogCallback.on_train_batch_end">on_train_batch_end</a></code></li>
+<li><code><a title="polus.callbacks.ConsoleLogCallback.on_train_begin" href="#polus.callbacks.ConsoleLogCallback.on_train_begin">on_train_begin</a></code></li>
+<li><code><a title="polus.callbacks.ConsoleLogCallback.on_train_end" href="#polus.callbacks.ConsoleLogCallback.on_train_end">on_train_end</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.callbacks.EarlyStop" href="#polus.callbacks.EarlyStop">EarlyStop</a></code></h4>
+<ul class="">
+<li><code><a title="polus.callbacks.EarlyStop.on_epoch_end" href="#polus.callbacks.EarlyStop.on_epoch_end">on_epoch_end</a></code></li>
+<li><code><a title="polus.callbacks.EarlyStop.on_train_batch_end" href="#polus.callbacks.EarlyStop.on_train_batch_end">on_train_batch_end</a></code></li>
+<li><code><a title="polus.callbacks.EarlyStop.on_train_begin" href="#polus.callbacks.EarlyStop.on_train_begin">on_train_begin</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.callbacks.ICallback" href="#polus.callbacks.ICallback">ICallback</a></code></h4>
+<ul class="">
+<li><code><a title="polus.callbacks.ICallback.on_epoch_begin" href="#polus.callbacks.ICallback.on_epoch_begin">on_epoch_begin</a></code></li>
+<li><code><a title="polus.callbacks.ICallback.on_epoch_end" href="#polus.callbacks.ICallback.on_epoch_end">on_epoch_end</a></code></li>
+<li><code><a title="polus.callbacks.ICallback.on_train_batch_begin" href="#polus.callbacks.ICallback.on_train_batch_begin">on_train_batch_begin</a></code></li>
+<li><code><a title="polus.callbacks.ICallback.on_train_batch_end" href="#polus.callbacks.ICallback.on_train_batch_end">on_train_batch_end</a></code></li>
+<li><code><a title="polus.callbacks.ICallback.on_train_begin" href="#polus.callbacks.ICallback.on_train_begin">on_train_begin</a></code></li>
+<li><code><a title="polus.callbacks.ICallback.on_train_end" href="#polus.callbacks.ICallback.on_train_end">on_train_end</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.callbacks.IOutput" href="#polus.callbacks.IOutput">IOutput</a></code></h4>
+<ul class="">
+<li><code><a title="polus.callbacks.IOutput.flush" href="#polus.callbacks.IOutput.flush">flush</a></code></li>
+<li><code><a title="polus.callbacks.IOutput.write" href="#polus.callbacks.IOutput.write">write</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.callbacks.LossSmoothCallback" href="#polus.callbacks.LossSmoothCallback">LossSmoothCallback</a></code></h4>
+<ul class="">
+<li><code><a title="polus.callbacks.LossSmoothCallback.on_epoch_end" href="#polus.callbacks.LossSmoothCallback.on_epoch_end">on_epoch_end</a></code></li>
+<li><code><a title="polus.callbacks.LossSmoothCallback.on_train_batch_end" href="#polus.callbacks.LossSmoothCallback.on_train_batch_end">on_train_batch_end</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.callbacks.SaveModelCallback" href="#polus.callbacks.SaveModelCallback">SaveModelCallback</a></code></h4>
+<ul class="">
+<li><code><a title="polus.callbacks.SaveModelCallback.on_epoch_end" href="#polus.callbacks.SaveModelCallback.on_epoch_end">on_epoch_end</a></code></li>
+<li><code><a title="polus.callbacks.SaveModelCallback.on_train_end" href="#polus.callbacks.SaveModelCallback.on_train_end">on_train_end</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.callbacks.TimerCallback" href="#polus.callbacks.TimerCallback">TimerCallback</a></code></h4>
+<ul class="">
+<li><code><a title="polus.callbacks.TimerCallback.on_train_batch_begin" href="#polus.callbacks.TimerCallback.on_train_batch_begin">on_train_batch_begin</a></code></li>
+<li><code><a title="polus.callbacks.TimerCallback.on_train_batch_end" href="#polus.callbacks.TimerCallback.on_train_batch_end">on_train_batch_end</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.callbacks.ValidationDataCallback" href="#polus.callbacks.ValidationDataCallback">ValidationDataCallback</a></code></h4>
+<ul class="">
+<li><code><a title="polus.callbacks.ValidationDataCallback.on_epoch_end" href="#polus.callbacks.ValidationDataCallback.on_epoch_end">on_epoch_end</a></code></li>
+<li><code><a title="polus.callbacks.ValidationDataCallback.on_train_begin" href="#polus.callbacks.ValidationDataCallback.on_train_begin">on_train_begin</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.callbacks.WandBLogCallback" href="#polus.callbacks.WandBLogCallback">WandBLogCallback</a></code></h4>
+<ul class="">
+<li><code><a title="polus.callbacks.WandBLogCallback.on_epoch_end" href="#polus.callbacks.WandBLogCallback.on_epoch_end">on_epoch_end</a></code></li>
+<li><code><a title="polus.callbacks.WandBLogCallback.on_train_batch_end" href="#polus.callbacks.WandBLogCallback.on_train_batch_end">on_train_batch_end</a></code></li>
+<li><code><a title="polus.callbacks.WandBLogCallback.on_train_begin" href="#polus.callbacks.WandBLogCallback.on_train_begin">on_train_begin</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

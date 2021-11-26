@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>polus.training API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>polus.training</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import tensorflow as tf
+
+from polus.core import BaseLogger, get_jit_compile
+from polus.callbacks import CallbackCoordinator
+
+class BaseTrainer(BaseLogger):
+    &#34;&#34;&#34;
+    Base trainer class, this class implements an abstraction
+    of all the logic needed to perform a gradient descent type
+    of training.
+    
+    This class should not be instantiated but instead it should be
+    extended by some concrete training procedure, e.g. a ClassifierTrainer
+    is a trainer that implements the logic needed to train models under simple
+    classification problems.
+    
+    &#34;&#34;&#34;
+    def __init__(self, 
+                 model,
+                 optimizer, 
+                 loss,
+                 metrics = [],
+                 post_process_prediction = None,
+                 post_process_grads = None):
+        &#34;&#34;&#34;
+        Constructs all the necessary attributes for the training procedure
+
+        Args:
+          model (tf.keras.models.Model): it corresponds to the model instance
+            that we aim to train. Furthermore the call to the model should
+            behave as if is in inference mode.
+
+          optimizer (tf.keras.optimizers.Optimizer): it corresponds to the
+            optimizer instance that we want to use to update the model varibles.
+
+          loss (func): it must be a function that returns a scalar tensor, the function
+            args are free and can be defined in runtime depending on the training
+            procedure
+
+          metrics: it is a list of polus.metrics.IMetric instances, describe what 
+            measurements should be taken
+            
+        Raises:
+          Exception: if this class is diractly instantiated, since this class acts only as an abstraction
+        
+        &#34;&#34;&#34;
+        if self.__class__.__name__ == &#34;BaseTrainer&#34;:
+            raise Exception(&#34;This is an abstraction that cannot be instantiated&#34;)
+            
+        super().__init__()
+        
+        self.model = model
+        self.loss = loss
+        self.optimizer = optimizer
+        self.post_process_logits = post_process_prediction
+        self.post_process_grads = post_process_grads
+        
+        self.metrics = metrics
+        self.early_stop = False
+        
+        # an internal variable that holds the number of runned steps
+        self.step_counter = tf.Variable(0)
+    
+        # choosing the training weights
+        if not hasattr(self, &#34;trainable_weights&#34;):
+            self.logger.warn((f&#34;Since no specific trainable_weights were defined&#34; 
+                              f&#34; during the {self.__class__.__name__} instantiation,&#34;
+                              f&#34; the trainer will optimizer all the variables&#34;
+                              f&#34; found on the model instance&#34;))
+            
+            self.trainable_weights = model.trainable_weights
+            #raise ValueError(f&#34;{self.__class__.__name__} must define self.trainable_weights before call the super!!!&#34;)
+        #self.trainable_weights = None
+
+    def __str__(self):
+        return &#39;Trainer&#39;
+    
+    
+    def foward_without_grads(self, *inputs):
+        &#34;&#34;&#34;
+        Foward computation that we dont want to store variables 
+        and the respective intermidiate steps for the gradients
+        
+        Note that by default this function is optional, and it
+        should be overrided in any case that we want to have
+        computations that do not interfere in the error propagation
+        
+        Args:
+          inputs (list &lt;objects&gt;): These are the model inputs
+            normally these would be a list of tf.Tensors or a list
+            of dictionary of tf.Tensor.
+            
+        Returns:
+          (list &lt;objects&gt;): These are the inputs that are given to the
+          forward_with_grads function, i.e. the inputs that are fed to the model
+          that we want to train.
+        &#34;&#34;&#34;
+        return inputs
+    
+    def foward_with_grads(self, *inputs):
+        &#34;&#34;&#34;
+        Describes the computations required to produce the final loss 
+        value from a predifined model or models.
+        
+        Note, that foward_with_grads may use self.post_process_logits 
+        and self.loss
+        
+        This method can be further decorated with tf.function with 
+        input_signature so that it can be called from lr_finder 
+        and train_step without rebuilding the computation graph
+        
+        Args:
+          inputs (list &lt;objects&gt;): These are the model inputs
+            normally these would be a list of tf.Tensors or a list
+            of dictionary of tf.Tensor.
+            
+        Returns:
+          (list &lt;objects&gt;): inputs that are given to the self.loss
+            function. 
+        
+        &#34;&#34;&#34;
+        raise NotImplementedError(&#34;foward_with_grads function must be implemented in order to compute a loss value for optimization&#34;)
+    
+    @tf.function(jit_compile=get_jit_compile())#()
+    def train_step(self, *inputs):
+        &#34;&#34;&#34;
+        Describes a static computation tensorflow graph that
+        implements a generic training step, which encapsulates
+        the forward and backpropagation computations, along side
+        with the gradient estimation and respective optimization.
+        
+        Note: that internally this method also increments the 
+        self.step_counter tf.Variable, which can then be used by
+        the forward_* methods for implementing more complex logic
+        
+        Args:
+          inputs (list &lt;objects&gt;): list of tensors or list of dict 
+          with tensors, this corresponds to the data that is
+          outputed by the tf.Dataset.
+          
+        Returns (float): scalar error value that corresponds to
+          the value outputed by the self.loss function
+        
+        &#34;&#34;&#34;
+        self.logger.debug(&#34;train_step was traced (May appear twice, more than that means that that training step is receving inputs with different shapes or dtypes)&#34;)
+        
+        with tf.GradientTape() as tape:           
+
+            with tape.stop_recording():
+                inputs = self.foward_without_grads(*inputs)
+            
+            inputs = self.foward_with_grads(*inputs)
+            
+            loss_value = self.loss(*inputs)
+        
+        # using auto-diff to get the gradients
+        grads = tape.gradient(loss_value, self.trainable_weights)
+        
+        if self.post_process_grads is not None:
+            self.logger.info(&#34;Post process of the gradients was added to the training loop&#34;)
+            grads = self.post_process_grads(grads)
+            
+        self.optimizer.apply_gradients(zip(grads, self.trainable_weights))
+        
+        ## internally increments the step counter
+        self.step_counter.assign_add(1)
+        
+        return loss_value
+    
+    def lr_finder(self, tf_dataset, use_lr_found=False):
+        &#34;&#34;&#34;
+        Implements the lr_finder &#34;magic trick&#34;, famoused by
+        fast.ai
+        
+        
+        &#34;&#34;&#34;
+        pass
+    
+    def train(self, 
+              tf_dataset, 
+              epochs,
+              callbacks=[],
+              custom_data_transform_f=None,
+              steps = None,
+              learning_rate = None):
+        
+        if steps is None:
+            N_STEPS = tf.data.experimental.cardinality(tf_dataset).numpy()
+        else:
+            N_STEPS = steps
+        
+        if not isinstance(callbacks, CallbackCoordinator):
+            callbacks = CallbackCoordinator(callbacks,
+                                            trainer = self,
+                                            epochs = epochs,
+                                            steps = N_STEPS)
+        
+        callbacks.on_train_begin()
+        
+        for epoch in range(epochs):
+            callbacks.on_epoch_begin(epoch)
+            
+            for step, data in enumerate(tf_dataset):
+                callbacks.on_train_batch_begin(epoch, step)
+                
+                if custom_data_transform_f is not None:
+                    data = custom_data_transform_f(data)
+                
+                loss = self.train_step(*data)
+                
+                callbacks.on_train_batch_end(epoch, step, loss)
+
+            callbacks.on_epoch_end(epoch)
+            
+            if self.early_stop:
+                break
+                
+        callbacks.on_train_end()
+        
+        
+class ClassifierTrainer(BaseTrainer):
+    
+    def __init__(self, 
+                 model,
+                 trainable_weights = None,
+                 *args,
+                 **kwargs):
+        
+        if trainable_weights is None:
+            self.trainable_weights = model.trainable_weights
+        else:
+            self.trainable_weights = trainable_weights
+        
+        super().__init__(model, *args, **kwargs)
+    
+    def foward_with_grads(self, x, y):
+        
+        logits = self.model(x, training=True)
+            
+        if self.post_process_logits is not None:
+            self.logger.info(&#34;Post process step of the logits was added to the training loop&#34;)
+            logits = self.post_process_logits(logits)
+
+        return y, logits#self.loss(y, logits)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="polus.training.BaseTrainer"><code class="flex name class">
+<span>class <span class="ident">BaseTrainer</span></span>
+<span>(</span><span>model, optimizer, loss, metrics=[], post_process_prediction=None, post_process_grads=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base trainer class, this class implements an abstraction
+of all the logic needed to perform a gradient descent type
+of training.</p>
+<p>This class should not be instantiated but instead it should be
+extended by some concrete training procedure, e.g. a ClassifierTrainer
+is a trainer that implements the logic needed to train models under simple
+classification problems.</p>
+<p>Constructs all the necessary attributes for the training procedure</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>model</code></strong> :&ensp;<code>tf.keras.models.Model</code></dt>
+<dd>it corresponds to the model instance
+that we aim to train. Furthermore the call to the model should
+behave as if is in inference mode.</dd>
+<dt><strong><code>optimizer</code></strong> :&ensp;<code>tf.keras.optimizers.Optimizer</code></dt>
+<dd>it corresponds to the
+optimizer instance that we want to use to update the model varibles.</dd>
+<dt><strong><code>loss</code></strong> :&ensp;<code>func</code></dt>
+<dd>it must be a function that returns a scalar tensor, the function
+args are free and can be defined in runtime depending on the training
+procedure</dd>
+<dt><strong><code>metrics</code></strong></dt>
+<dd>it is a list of polus.metrics.IMetric instances, describe what
+measurements should be taken</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>Exception</code></dt>
+<dd>if this class is diractly instantiated, since this class acts only as an abstraction</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BaseTrainer(BaseLogger):
+    &#34;&#34;&#34;
+    Base trainer class, this class implements an abstraction
+    of all the logic needed to perform a gradient descent type
+    of training.
+    
+    This class should not be instantiated but instead it should be
+    extended by some concrete training procedure, e.g. a ClassifierTrainer
+    is a trainer that implements the logic needed to train models under simple
+    classification problems.
+    
+    &#34;&#34;&#34;
+    def __init__(self, 
+                 model,
+                 optimizer, 
+                 loss,
+                 metrics = [],
+                 post_process_prediction = None,
+                 post_process_grads = None):
+        &#34;&#34;&#34;
+        Constructs all the necessary attributes for the training procedure
+
+        Args:
+          model (tf.keras.models.Model): it corresponds to the model instance
+            that we aim to train. Furthermore the call to the model should
+            behave as if is in inference mode.
+
+          optimizer (tf.keras.optimizers.Optimizer): it corresponds to the
+            optimizer instance that we want to use to update the model varibles.
+
+          loss (func): it must be a function that returns a scalar tensor, the function
+            args are free and can be defined in runtime depending on the training
+            procedure
+
+          metrics: it is a list of polus.metrics.IMetric instances, describe what 
+            measurements should be taken
+            
+        Raises:
+          Exception: if this class is diractly instantiated, since this class acts only as an abstraction
+        
+        &#34;&#34;&#34;
+        if self.__class__.__name__ == &#34;BaseTrainer&#34;:
+            raise Exception(&#34;This is an abstraction that cannot be instantiated&#34;)
+            
+        super().__init__()
+        
+        self.model = model
+        self.loss = loss
+        self.optimizer = optimizer
+        self.post_process_logits = post_process_prediction
+        self.post_process_grads = post_process_grads
+        
+        self.metrics = metrics
+        self.early_stop = False
+        
+        # an internal variable that holds the number of runned steps
+        self.step_counter = tf.Variable(0)
+    
+        # choosing the training weights
+        if not hasattr(self, &#34;trainable_weights&#34;):
+            self.logger.warn((f&#34;Since no specific trainable_weights were defined&#34; 
+                              f&#34; during the {self.__class__.__name__} instantiation,&#34;
+                              f&#34; the trainer will optimizer all the variables&#34;
+                              f&#34; found on the model instance&#34;))
+            
+            self.trainable_weights = model.trainable_weights
+            #raise ValueError(f&#34;{self.__class__.__name__} must define self.trainable_weights before call the super!!!&#34;)
+        #self.trainable_weights = None
+
+    def __str__(self):
+        return &#39;Trainer&#39;
+    
+    
+    def foward_without_grads(self, *inputs):
+        &#34;&#34;&#34;
+        Foward computation that we dont want to store variables 
+        and the respective intermidiate steps for the gradients
+        
+        Note that by default this function is optional, and it
+        should be overrided in any case that we want to have
+        computations that do not interfere in the error propagation
+        
+        Args:
+          inputs (list &lt;objects&gt;): These are the model inputs
+            normally these would be a list of tf.Tensors or a list
+            of dictionary of tf.Tensor.
+            
+        Returns:
+          (list &lt;objects&gt;): These are the inputs that are given to the
+          forward_with_grads function, i.e. the inputs that are fed to the model
+          that we want to train.
+        &#34;&#34;&#34;
+        return inputs
+    
+    def foward_with_grads(self, *inputs):
+        &#34;&#34;&#34;
+        Describes the computations required to produce the final loss 
+        value from a predifined model or models.
+        
+        Note, that foward_with_grads may use self.post_process_logits 
+        and self.loss
+        
+        This method can be further decorated with tf.function with 
+        input_signature so that it can be called from lr_finder 
+        and train_step without rebuilding the computation graph
+        
+        Args:
+          inputs (list &lt;objects&gt;): These are the model inputs
+            normally these would be a list of tf.Tensors or a list
+            of dictionary of tf.Tensor.
+            
+        Returns:
+          (list &lt;objects&gt;): inputs that are given to the self.loss
+            function. 
+        
+        &#34;&#34;&#34;
+        raise NotImplementedError(&#34;foward_with_grads function must be implemented in order to compute a loss value for optimization&#34;)
+    
+    @tf.function(jit_compile=get_jit_compile())#()
+    def train_step(self, *inputs):
+        &#34;&#34;&#34;
+        Describes a static computation tensorflow graph that
+        implements a generic training step, which encapsulates
+        the forward and backpropagation computations, along side
+        with the gradient estimation and respective optimization.
+        
+        Note: that internally this method also increments the 
+        self.step_counter tf.Variable, which can then be used by
+        the forward_* methods for implementing more complex logic
+        
+        Args:
+          inputs (list &lt;objects&gt;): list of tensors or list of dict 
+          with tensors, this corresponds to the data that is
+          outputed by the tf.Dataset.
+          
+        Returns (float): scalar error value that corresponds to
+          the value outputed by the self.loss function
+        
+        &#34;&#34;&#34;
+        self.logger.debug(&#34;train_step was traced (May appear twice, more than that means that that training step is receving inputs with different shapes or dtypes)&#34;)
+        
+        with tf.GradientTape() as tape:           
+
+            with tape.stop_recording():
+                inputs = self.foward_without_grads(*inputs)
+            
+            inputs = self.foward_with_grads(*inputs)
+            
+            loss_value = self.loss(*inputs)
+        
+        # using auto-diff to get the gradients
+        grads = tape.gradient(loss_value, self.trainable_weights)
+        
+        if self.post_process_grads is not None:
+            self.logger.info(&#34;Post process of the gradients was added to the training loop&#34;)
+            grads = self.post_process_grads(grads)
+            
+        self.optimizer.apply_gradients(zip(grads, self.trainable_weights))
+        
+        ## internally increments the step counter
+        self.step_counter.assign_add(1)
+        
+        return loss_value
+    
+    def lr_finder(self, tf_dataset, use_lr_found=False):
+        &#34;&#34;&#34;
+        Implements the lr_finder &#34;magic trick&#34;, famoused by
+        fast.ai
+        
+        
+        &#34;&#34;&#34;
+        pass
+    
+    def train(self, 
+              tf_dataset, 
+              epochs,
+              callbacks=[],
+              custom_data_transform_f=None,
+              steps = None,
+              learning_rate = None):
+        
+        if steps is None:
+            N_STEPS = tf.data.experimental.cardinality(tf_dataset).numpy()
+        else:
+            N_STEPS = steps
+        
+        if not isinstance(callbacks, CallbackCoordinator):
+            callbacks = CallbackCoordinator(callbacks,
+                                            trainer = self,
+                                            epochs = epochs,
+                                            steps = N_STEPS)
+        
+        callbacks.on_train_begin()
+        
+        for epoch in range(epochs):
+            callbacks.on_epoch_begin(epoch)
+            
+            for step, data in enumerate(tf_dataset):
+                callbacks.on_train_batch_begin(epoch, step)
+                
+                if custom_data_transform_f is not None:
+                    data = custom_data_transform_f(data)
+                
+                loss = self.train_step(*data)
+                
+                callbacks.on_train_batch_end(epoch, step, loss)
+
+            callbacks.on_epoch_end(epoch)
+            
+            if self.early_stop:
+                break
+                
+        callbacks.on_train_end()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="polus.ir.training.EfficientDenseRetrievalTrainer" href="ir/training.html#polus.ir.training.EfficientDenseRetrievalTrainer">EfficientDenseRetrievalTrainer</a></li>
+<li><a title="polus.training.ClassifierTrainer" href="#polus.training.ClassifierTrainer">ClassifierTrainer</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.training.BaseTrainer.foward_with_grads"><code class="name flex">
+<span>def <span class="ident">foward_with_grads</span></span>(<span>self, *inputs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Describes the computations required to produce the final loss
+value from a predifined model or models.</p>
+<p>Note, that foward_with_grads may use self.post_process_logits
+and self.loss</p>
+<p>This method can be further decorated with tf.function with
+input_signature so that it can be called from lr_finder
+and train_step without rebuilding the computation graph</p>
+<h2 id="args">Args</h2>
+<p>inputs (list <objects>): These are the model inputs
+normally these would be a list of tf.Tensors or a list
+of dictionary of tf.Tensor.</p>
+<h2 id="returns">Returns</h2>
+<p>(list <objects>): inputs that are given to the self.loss
+function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def foward_with_grads(self, *inputs):
+    &#34;&#34;&#34;
+    Describes the computations required to produce the final loss 
+    value from a predifined model or models.
+    
+    Note, that foward_with_grads may use self.post_process_logits 
+    and self.loss
+    
+    This method can be further decorated with tf.function with 
+    input_signature so that it can be called from lr_finder 
+    and train_step without rebuilding the computation graph
+    
+    Args:
+      inputs (list &lt;objects&gt;): These are the model inputs
+        normally these would be a list of tf.Tensors or a list
+        of dictionary of tf.Tensor.
+        
+    Returns:
+      (list &lt;objects&gt;): inputs that are given to the self.loss
+        function. 
+    
+    &#34;&#34;&#34;
+    raise NotImplementedError(&#34;foward_with_grads function must be implemented in order to compute a loss value for optimization&#34;)</code></pre>
+</details>
+</dd>
+<dt id="polus.training.BaseTrainer.foward_without_grads"><code class="name flex">
+<span>def <span class="ident">foward_without_grads</span></span>(<span>self, *inputs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Foward computation that we dont want to store variables
+and the respective intermidiate steps for the gradients</p>
+<p>Note that by default this function is optional, and it
+should be overrided in any case that we want to have
+computations that do not interfere in the error propagation</p>
+<h2 id="args">Args</h2>
+<p>inputs (list <objects>): These are the model inputs
+normally these would be a list of tf.Tensors or a list
+of dictionary of tf.Tensor.</p>
+<h2 id="returns">Returns</h2>
+<p>(list <objects>): These are the inputs that are given to the
+forward_with_grads function, i.e. the inputs that are fed to the model
+that we want to train.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def foward_without_grads(self, *inputs):
+    &#34;&#34;&#34;
+    Foward computation that we dont want to store variables 
+    and the respective intermidiate steps for the gradients
+    
+    Note that by default this function is optional, and it
+    should be overrided in any case that we want to have
+    computations that do not interfere in the error propagation
+    
+    Args:
+      inputs (list &lt;objects&gt;): These are the model inputs
+        normally these would be a list of tf.Tensors or a list
+        of dictionary of tf.Tensor.
+        
+    Returns:
+      (list &lt;objects&gt;): These are the inputs that are given to the
+      forward_with_grads function, i.e. the inputs that are fed to the model
+      that we want to train.
+    &#34;&#34;&#34;
+    return inputs</code></pre>
+</details>
+</dd>
+<dt id="polus.training.BaseTrainer.lr_finder"><code class="name flex">
+<span>def <span class="ident">lr_finder</span></span>(<span>self, tf_dataset, use_lr_found=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implements the lr_finder "magic trick", famoused by
+fast.ai</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def lr_finder(self, tf_dataset, use_lr_found=False):
+    &#34;&#34;&#34;
+    Implements the lr_finder &#34;magic trick&#34;, famoused by
+    fast.ai
+    
+    
+    &#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="polus.training.BaseTrainer.train"><code class="name flex">
+<span>def <span class="ident">train</span></span>(<span>self, tf_dataset, epochs, callbacks=[], custom_data_transform_f=None, steps=None, learning_rate=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def train(self, 
+          tf_dataset, 
+          epochs,
+          callbacks=[],
+          custom_data_transform_f=None,
+          steps = None,
+          learning_rate = None):
+    
+    if steps is None:
+        N_STEPS = tf.data.experimental.cardinality(tf_dataset).numpy()
+    else:
+        N_STEPS = steps
+    
+    if not isinstance(callbacks, CallbackCoordinator):
+        callbacks = CallbackCoordinator(callbacks,
+                                        trainer = self,
+                                        epochs = epochs,
+                                        steps = N_STEPS)
+    
+    callbacks.on_train_begin()
+    
+    for epoch in range(epochs):
+        callbacks.on_epoch_begin(epoch)
+        
+        for step, data in enumerate(tf_dataset):
+            callbacks.on_train_batch_begin(epoch, step)
+            
+            if custom_data_transform_f is not None:
+                data = custom_data_transform_f(data)
+            
+            loss = self.train_step(*data)
+            
+            callbacks.on_train_batch_end(epoch, step, loss)
+
+        callbacks.on_epoch_end(epoch)
+        
+        if self.early_stop:
+            break
+            
+    callbacks.on_train_end()</code></pre>
+</details>
+</dd>
+<dt id="polus.training.BaseTrainer.train_step"><code class="name flex">
+<span>def <span class="ident">train_step</span></span>(<span>self, *inputs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Describes a static computation tensorflow graph that
+implements a generic training step, which encapsulates
+the forward and backpropagation computations, along side
+with the gradient estimation and respective optimization.</p>
+<p>Note: that internally this method also increments the
+self.step_counter tf.Variable, which can then be used by
+the forward_* methods for implementing more complex logic</p>
+<h2 id="args">Args</h2>
+<p>inputs (list <objects>): list of tensors or list of dict
+with tensors, this corresponds to the data that is
+outputed by the tf.Dataset.
+Returns (float): scalar error value that corresponds to
+the value outputed by the self.loss function</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@tf.function(jit_compile=get_jit_compile())#()
+def train_step(self, *inputs):
+    &#34;&#34;&#34;
+    Describes a static computation tensorflow graph that
+    implements a generic training step, which encapsulates
+    the forward and backpropagation computations, along side
+    with the gradient estimation and respective optimization.
+    
+    Note: that internally this method also increments the 
+    self.step_counter tf.Variable, which can then be used by
+    the forward_* methods for implementing more complex logic
+    
+    Args:
+      inputs (list &lt;objects&gt;): list of tensors or list of dict 
+      with tensors, this corresponds to the data that is
+      outputed by the tf.Dataset.
+      
+    Returns (float): scalar error value that corresponds to
+      the value outputed by the self.loss function
+    
+    &#34;&#34;&#34;
+    self.logger.debug(&#34;train_step was traced (May appear twice, more than that means that that training step is receving inputs with different shapes or dtypes)&#34;)
+    
+    with tf.GradientTape() as tape:           
+
+        with tape.stop_recording():
+            inputs = self.foward_without_grads(*inputs)
+        
+        inputs = self.foward_with_grads(*inputs)
+        
+        loss_value = self.loss(*inputs)
+    
+    # using auto-diff to get the gradients
+    grads = tape.gradient(loss_value, self.trainable_weights)
+    
+    if self.post_process_grads is not None:
+        self.logger.info(&#34;Post process of the gradients was added to the training loop&#34;)
+        grads = self.post_process_grads(grads)
+        
+    self.optimizer.apply_gradients(zip(grads, self.trainable_weights))
+    
+    ## internally increments the step counter
+    self.step_counter.assign_add(1)
+    
+    return loss_value</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.training.ClassifierTrainer"><code class="flex name class">
+<span>class <span class="ident">ClassifierTrainer</span></span>
+<span>(</span><span>model, trainable_weights=None, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base trainer class, this class implements an abstraction
+of all the logic needed to perform a gradient descent type
+of training.</p>
+<p>This class should not be instantiated but instead it should be
+extended by some concrete training procedure, e.g. a ClassifierTrainer
+is a trainer that implements the logic needed to train models under simple
+classification problems.</p>
+<p>Constructs all the necessary attributes for the training procedure</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>model</code></strong> :&ensp;<code>tf.keras.models.Model</code></dt>
+<dd>it corresponds to the model instance
+that we aim to train. Furthermore the call to the model should
+behave as if is in inference mode.</dd>
+<dt><strong><code>optimizer</code></strong> :&ensp;<code>tf.keras.optimizers.Optimizer</code></dt>
+<dd>it corresponds to the
+optimizer instance that we want to use to update the model varibles.</dd>
+<dt><strong><code>loss</code></strong> :&ensp;<code>func</code></dt>
+<dd>it must be a function that returns a scalar tensor, the function
+args are free and can be defined in runtime depending on the training
+procedure</dd>
+<dt><strong><code>metrics</code></strong></dt>
+<dd>it is a list of polus.metrics.IMetric instances, describe what
+measurements should be taken</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>Exception</code></dt>
+<dd>if this class is diractly instantiated, since this class acts only as an abstraction</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ClassifierTrainer(BaseTrainer):
+    
+    def __init__(self, 
+                 model,
+                 trainable_weights = None,
+                 *args,
+                 **kwargs):
+        
+        if trainable_weights is None:
+            self.trainable_weights = model.trainable_weights
+        else:
+            self.trainable_weights = trainable_weights
+        
+        super().__init__(model, *args, **kwargs)
+    
+    def foward_with_grads(self, x, y):
+        
+        logits = self.model(x, training=True)
+            
+        if self.post_process_logits is not None:
+            self.logger.info(&#34;Post process step of the logits was added to the training loop&#34;)
+            logits = self.post_process_logits(logits)
+
+        return y, logits#self.loss(y, logits)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.training.BaseTrainer" href="#polus.training.BaseTrainer">BaseTrainer</a></li>
+<li><a title="polus.core.BaseLogger" href="core.html#polus.core.BaseLogger">BaseLogger</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="polus.training.BaseTrainer" href="#polus.training.BaseTrainer">BaseTrainer</a></b></code>:
+<ul class="hlist">
+<li><code><a title="polus.training.BaseTrainer.foward_with_grads" href="#polus.training.BaseTrainer.foward_with_grads">foward_with_grads</a></code></li>
+<li><code><a title="polus.training.BaseTrainer.foward_without_grads" href="#polus.training.BaseTrainer.foward_without_grads">foward_without_grads</a></code></li>
+<li><code><a title="polus.training.BaseTrainer.lr_finder" href="#polus.training.BaseTrainer.lr_finder">lr_finder</a></code></li>
+<li><code><a title="polus.training.BaseTrainer.train_step" href="#polus.training.BaseTrainer.train_step">train_step</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="polus" href="index.html">polus</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="polus.training.BaseTrainer" href="#polus.training.BaseTrainer">BaseTrainer</a></code></h4>
+<ul class="">
+<li><code><a title="polus.training.BaseTrainer.foward_with_grads" href="#polus.training.BaseTrainer.foward_with_grads">foward_with_grads</a></code></li>
+<li><code><a title="polus.training.BaseTrainer.foward_without_grads" href="#polus.training.BaseTrainer.foward_without_grads">foward_without_grads</a></code></li>
+<li><code><a title="polus.training.BaseTrainer.lr_finder" href="#polus.training.BaseTrainer.lr_finder">lr_finder</a></code></li>
+<li><code><a title="polus.training.BaseTrainer.train" href="#polus.training.BaseTrainer.train">train</a></code></li>
+<li><code><a title="polus.training.BaseTrainer.train_step" href="#polus.training.BaseTrainer.train_step">train_step</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.training.ClassifierTrainer" href="#polus.training.ClassifierTrainer">ClassifierTrainer</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

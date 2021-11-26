@@ -1,0 +1,3957 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>polus.ner.elements API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>polus.ner.elements</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from copy import deepcopy
+import json
+
+
+#
+# A span is a tuple of two integer values (start, end).
+# Its aim is to represent the location of a contiguous text span.
+#
+# Empty spans are valid because empty passages do exist in the NLM-Chem
+# dataset.
+#
+def assert_valid_span(span):
+    assert isinstance(span, tuple)
+    assert len(span) == 2
+    start, end = span
+    assert isinstance(start, int) and (start &gt;= 0)
+    assert isinstance(end, int) and (end &gt;= start)
+
+
+def span_overlaps_span(span1, span2):
+    assert_valid_span(span1)
+    assert_valid_span(span2)
+    if (span1[1] &lt;= span2[0]) or (span1[0] &gt;= span2[1]):
+        return False
+    else:
+        return True
+
+
+def span_contains_span(span1, span2):
+    assert_valid_span(span1)
+    assert_valid_span(span2)
+    if (span1[0] &lt;= span2[0]) and (span1[1] &gt;= span2[1]):
+        return True
+    else:
+        return False
+
+
+def add_offset_to_spans(spans, offset):
+    return [
+        (start + offset, end + offset)
+        for (start, end) in spans
+    ]
+
+
+class Entity:
+    r&#34;&#34;&#34;
+    An Entity has a textual mention, a span (start and end offsets),
+    and a type.
+    
+    Example (taken from NLM-Chem, dev subset, PMCID 4200806):
+        text: &#39;tyrosine&#39;
+        span: (2914, 2922)
+        typ: &#39;Chemical&#39;
+    
+    &gt;&gt;&gt; Entity(&#39;tyrosine&#39;, (2914, 2922), &#39;Chemical&#39;)
+    
+    Example (taken from NLM-Chem, train subset, PMCID 5600090):
+        text: &#39;MIDA boronate ester&#39;
+        span: (758, 777)
+        typ: &#39;Chemical&#39;
+    
+    &gt;&gt;&gt; Entity(&#39;MIDA boronate ester&#39;, (758, 777), &#39;Chemical&#39;)
+    &#34;&#34;&#34;
+    
+    def __init__(self, text, span, typ):
+        assert isinstance(text, str)
+        assert_valid_span(span)
+        assert isinstance(typ, str)
+        
+        start, end = span
+        n_characters = end - start
+        assert len(text) == n_characters
+        
+        self.text = text
+        self.span = span
+        self.start = start
+        self.end = end
+        self.n_characters = n_characters
+        self.typ = typ
+    
+    def __repr__(self):
+        return &#39;Entity{}&#39;.format((self.text, self.span, self.typ))
+    
+    def __len__(self):
+        return self.n_characters
+    
+    def __eq__(self, other):
+        r&#34;&#34;&#34;
+        Compare two entities to check if they have:
+            - the same text
+            - the same span
+            - the same type
+        &#34;&#34;&#34;
+        assert type(other) is Entity
+        if ((self.text == other.text) and
+            (self.span == other.span) and
+            (self.typ == other.typ)):
+            return True
+        else:
+            return False
+    
+    def __hash__(self):
+        return hash((self.text, self.span, self.typ))
+    
+    def __lt__(self, other):
+        r&#34;&#34;&#34;
+        This magic method allows to easily sort a list of Entity
+        objects with the sorted() function.
+        
+        Attributes sorting priority:
+            1. start
+            2. end
+            3. typ
+            4. text
+        &#34;&#34;&#34;
+        assert type(other) is Entity
+        if self.start &lt; other.start:
+            return True
+        elif self.start == other.start:
+            if self.end &lt; other.end:
+                return True
+            elif self.end == other.end:
+                if self.typ &lt; other.typ:
+                    return True
+                elif self.typ == other.typ:
+                    if self.text &lt; other.text:
+                        return True
+        return False
+    
+    def to_normalized_entity(self):
+        return NormalizedEntity(self.text, self.span, self.typ)
+    
+    def json(self, i=1):
+        assert isinstance(i, int)
+        return {
+            &#39;id&#39;: str(i),
+            &#39;infons&#39;: {
+                &#39;type&#39;: self.typ
+            },
+            &#39;locations&#39;: [
+                {
+                    &#39;length&#39;: self.n_characters,
+                    &#39;offset&#39;: self.start
+                }
+            ],
+            &#39;text&#39;: self.text
+        }
+    
+    def pretty_json(self, i=1):
+        return json.dumps(self.json(i), indent=4, sort_keys=True)
+
+
+class EntitySet:
+    r&#34;&#34;&#34;
+    A set of Entity objects.
+    
+    Example (taken from NLM-Chem, train subset, PMCID 1253656):
+    
+    &gt;&gt;&gt; e1 = Entity(&#39;Carbaryl&#39;, (43, 51), &#39;Chemical&#39;)
+    &gt;&gt;&gt; e2 = Entity(&#39;Naphthalene&#39;, (52, 63), &#39;Chemical&#39;)
+    &gt;&gt;&gt; e3 = Entity(&#39;Chlorpyrifos&#39;, (68, 80), &#39;Chemical&#39;)
+    &gt;&gt;&gt;
+    &gt;&gt;&gt; es = EntitySet([e1, e2, e3])
+    &#34;&#34;&#34;
+    
+    def __init__(self, entities=None):
+        self.entities = set()
+        if entities is not None:
+            self.update(entities)
+    
+    def __len__(self):
+        return len(self.entities)
+    
+    def __str__(self):
+        s = &#39;&#39;
+        for e in self.get(sort=True, make_deepcopy=False):
+            s += &#39;{}\n&#39;.format(e)
+        return s.strip()
+    
+    def __eq__(self, other):
+        assert type(other) is EntitySet
+        return self.entities == other.entities
+    
+    def __iter__(self):
+        for e in self.entities:
+            yield e
+    
+    def has(self, e):
+        assert type(e) is Entity
+        return e in self.entities
+    
+    def add(self, e):
+        assert type(e) is Entity
+        self.entities.add(e)
+    
+    def update(self, entities):
+        assert isinstance(entities, list) or isinstance(entities, set)
+        for e in entities:
+            self.add(e)
+    
+    def get(self, sort=False, make_deepcopy=False):
+        entities = self.entities
+        if sort:
+            entities = sorted(entities)
+        if make_deepcopy:
+            entities = deepcopy(entities)
+        return entities
+    
+    def union(self, other, make_deepcopy=False):
+        assert type(other) is EntitySet
+        es = EntitySet(self.entities.union(other.entities))
+        if make_deepcopy:
+            es = deepcopy(es)
+        return es
+    
+    def intersection(self, other, make_deepcopy=False):
+        assert type(other) is EntitySet
+        es = EntitySet(self.entities.intersection(other.entities))
+        if make_deepcopy:
+            es = deepcopy(es)
+        return es
+    
+    def difference(self, other, make_deepcopy=False):
+        assert type(other) is EntitySet
+        es = EntitySet(self.entities.difference(other.entities))
+        if make_deepcopy:
+            es = deepcopy(es)
+        return es
+    
+    def to_normalized_entity_set(self):
+        return NormalizedEntitySet([e.to_normalized_entity() for e in self.entities])
+    
+    def json(self, start=1):
+        entities = self.get(sort=True, make_deepcopy=False)
+        return [e.json(i) for i, e in enumerate(entities, start=start)]
+    
+    def pretty_json(self, start=1):
+        return json.dumps(self.json(start), indent=4, sort_keys=True)
+
+
+class NormalizedEntity(Entity):
+    r&#34;&#34;&#34;
+    A NormalizedEntity inherits from Entity.
+    
+    Besides having a textual mention, a span, and a type, additionally
+    has a list of identifiers (for normalization).
+    
+    Note: it has to be a list of identifiers (not a set) because the
+          order of the identifiers matters. For example, if the entity
+          text mention refers to three diferent terms, its identifiers
+          follow their order of appearance (see Example 2 below).
+    
+    Example 1 (taken from NLM-Chem, dev subset, PMCID 4200806):
+        text: &#39;tyrosine&#39;
+        span: (2914, 2922)
+        typ: &#39;Chemical&#39;
+        identifiers: [&#39;MESH:D014443&#39;]
+    
+    &gt;&gt;&gt; NormalizedEntity(&#39;tyrosine&#39;, (2914, 2922), &#39;Chemical&#39;, [&#39;MESH:D014443&#39;])
+    
+    Example 2 (taken from NLM-Chem, train subset, PMCID 5600090):
+        text: &#39;MIDA boronate ester&#39;
+        span: (758, 777)
+        typ: &#39;Chemical&#39;
+        identifiers: [&#39;MESH:C533766&#39;, &#39;MESH:D001897&#39;, &#39;MESH:D004952&#39;]
+    
+    &gt;&gt;&gt; NormalizedEntity(&#39;MIDA boronate ester&#39;, (758, 777), &#39;Chemical&#39;, [&#39;MESH:C533766&#39;, &#39;MESH:D001897&#39;, &#39;MESH:D004952&#39;])
+    
+    Example 3 (taken from NLM-Chem, train subset, PMCID 4988499)
+        text: &#39;cyclic, aromatic, and monoterpenoid enones, enals, and enols&#39;
+        span: (2793, 2853)
+        typ: &#39;Chemical&#39;
+        identifiers: [&#39;MESH:D007659&#39;, &#39;MESH:D000447&#39;, &#39;-&#39;]
+    
+    &gt;&gt;&gt; NormalizedEntity(&#39;cyclic, aromatic, and monoterpenoid enones, enals, and enols&#39;, (2793, 2853), &#39;Chemical&#39;, [&#39;MESH:D007659&#39;, &#39;MESH:D000447&#39;, &#39;-&#39;])
+    &#34;&#34;&#34;
+    
+    def __init__(self, text, span, typ, identifiers=None):
+        super().__init__(text, span, typ)
+        self.set_identifiers(identifiers)
+    
+    def set_identifiers(self, identifiers):
+        if identifiers is None:
+            identifiers = list()
+        
+        assert isinstance(identifiers, list)
+        for i in identifiers:
+            assert isinstance(i, str)
+        #
+        # If the identifiers list is empty, it means there are no
+        # identifiers.
+        # In this case, add the &#39;-&#39; identifier meaning there is no
+        # identifier.
+        #
+        if len(identifiers) == 0:
+            identifiers = [&#39;-&#39;]
+        
+        self.identifiers = identifiers
+        self.identifiers_str = &#39;,&#39;.join(identifiers)
+    
+    def __repr__(self):
+        return &#39;NormalizedEntity{}&#39;.format((self.text, self.span, self.typ,
+                                            self.identifiers))
+    
+    def __eq__(self, other):
+        r&#34;&#34;&#34;
+        Compare two normalized entities to check if they have:
+            - the same text
+            - the same span
+            - the same type
+            - the same identifiers
+        &#34;&#34;&#34;
+        assert type(other) is NormalizedEntity
+        if ((self.text == other.text) and
+            (self.span == other.span) and
+            (self.typ == other.typ) and
+            (self.identifiers == other.identifiers)):
+            return True
+        else:
+            return False
+    
+    def __hash__(self):
+        return hash((self.text, self.span, self.typ, self.identifiers_str))
+    
+    def __lt__(self, other):
+        r&#34;&#34;&#34;
+        This magic method allows to easily sort a list of
+        NormalizedEntity objects with the sorted() function.
+        
+        Attributes sorting priority:
+            1. start
+            2. end
+            3. typ
+            4. text
+            5. identifiers_str
+        &#34;&#34;&#34;
+        assert type(other) is NormalizedEntity
+        if self.start &lt; other.start:
+            return True
+        elif self.start == other.start:
+            if self.end &lt; other.end:
+                return True
+            elif self.end == other.end:
+                if self.typ &lt; other.typ:
+                    return True
+                elif self.typ == other.typ:
+                    if self.text &lt; other.text:
+                        return True
+                    elif self.text == other.text:
+                        if self.identifiers_str &lt; other.identifiers_str:
+                            return True
+        return False
+    
+    def to_entity(self):
+        return Entity(self.text, self.span, self.typ)
+    
+    def json(self, i=1):
+        assert isinstance(i, int)
+        return {
+            &#39;id&#39;: str(i),
+            &#39;infons&#39;: {
+                &#39;identifier&#39;: self.identifiers_str,
+                &#39;type&#39;: self.typ
+            },
+            &#39;locations&#39;: [
+                {
+                    &#39;length&#39;: self.n_characters,
+                    &#39;offset&#39;: self.start
+                }
+            ],
+            &#39;text&#39;: self.text
+        }
+
+
+class NormalizedEntitySet(EntitySet):
+    r&#34;&#34;&#34;
+    A set of NormalizedEntity objects.
+    
+    Example (taken from NLM-Chem, train subset, PMCID 1253656):
+    
+    &gt;&gt;&gt; ne1 = NormalizedEntity(&#39;Carbaryl&#39;, (43, 51), &#39;Chemical&#39;, [&#39;MESH:D012721&#39;])
+    &gt;&gt;&gt; ne2 = NormalizedEntity(&#39;Naphthalene&#39;, (52, 63), &#39;Chemical&#39;, [&#39;MESH:C031721&#39;])
+    &gt;&gt;&gt; ne3 = NormalizedEntity(&#39;Chlorpyrifos&#39;, (68, 80), &#39;Chemical&#39;, [&#39;MESH:D004390&#39;])
+    &gt;&gt;&gt;
+    &gt;&gt;&gt; nes = NormalizedEntitySet([ne1, ne2, ne3])
+    &#34;&#34;&#34;
+    
+    def __init__(self, entities=None):
+        super().__init__(entities)
+    
+    def __eq__(self, other):
+        assert type(other) is NormalizedEntitySet
+        return self.entities == other.entities
+    
+    def has(self, e):
+        assert type(e) is NormalizedEntity
+        return e in self.entities
+    
+    def add(self, e):
+        assert type(e) is NormalizedEntity
+        self.entities.add(e)
+    
+    def union(self, other, make_deepcopy=False):
+        assert type(other) is NormalizedEntitySet
+        nes = NormalizedEntitySet(self.entities.union(other.entities))
+        if make_deepcopy:
+            nes = deepcopy(nes)
+        return nes
+    
+    def intersection(self, other, make_deepcopy=False):
+        assert type(other) is NormalizedEntitySet
+        nes = NormalizedEntitySet(self.entities.intersection(other.entities))
+        if make_deepcopy:
+            nes = deepcopy(nes)
+        return nes
+    
+    def difference(self, other, make_deepcopy=False):
+        assert type(other) is NormalizedEntitySet
+        nes = NormalizedEntitySet(self.entities.difference(other.entities))
+        if make_deepcopy:
+            nes = deepcopy(nes)
+        return nes
+    
+    def to_entity_set(self):
+        return EntitySet([e.to_entity() for e in self.entities])
+
+
+class IndexingIdentifier:
+    r&#34;&#34;&#34;
+    An IndexingIdentifier has a single identifier (for example,
+    a MeSH ID), and a type (for example, &#34;MeSH_Indexing_Chemical&#34;).
+    
+    Example (taken from NLM-Chem, train subset, PMCID 1253656):
+      identifier: &#39;MESH:D009281&#39;
+      typ: &#39;MeSH_Indexing_Chemical&#39;
+    
+    &gt;&gt;&gt; IndexingIdentifier(&#39;MESH:D009281&#39;, &#39;MeSH_Indexing_Chemical&#39;)
+    &#34;&#34;&#34;
+    
+    def __init__(self, identifier, typ):
+        assert isinstance(identifier, str)
+        assert isinstance(typ, str)
+        #
+        # Only one identifier is allowed.
+        #
+        assert &#39;,&#39; not in identifier
+        assert &#39;|&#39; not in identifier
+        
+        self.identifier = identifier
+        self.typ = typ
+    
+    def __repr__(self):
+        return &#39;IndexingIdentifier{}&#39;.format((self.identifier, self.typ))
+    
+    def __eq__(self, other):
+        assert isinstance(other, IndexingIdentifier)
+        if (self.identifier == other.identifier) and (self.typ == other.typ):
+            return True
+        else:
+            return False
+    
+    def __hash__(self):
+        return hash((self.identifier, self.typ))
+    
+    def __lt__(self, other):
+        r&#34;&#34;&#34;
+        This magic method allows to easily sort a list of
+        IndexingIdentifier objects with the sorted() function.
+        
+        Attributes sorting priority:
+          1. identifier
+          2. typ
+        &#34;&#34;&#34;
+        assert isinstance(other, IndexingIdentifier)
+        if self.identifier &lt; other.identifier:
+            return True
+        elif self.identifier == other.identifier:
+            if self.typ &lt; other.typ:
+                return True
+        return False
+    
+    def json(self, i=1):
+        assert isinstance(i, int)
+        
+        if self.typ == &#39;MeSH_Indexing_Chemical&#39;:
+            prefix = &#39;MIC&#39;
+        else:
+            prefix = &#39;II&#39;
+        
+        return {
+            &#39;id&#39;: &#39;{}{}&#39;.format(prefix, i),
+            &#39;infons&#39;: {
+                &#39;identifier&#39;: self.identifier,
+                &#39;type&#39;: self.typ
+            },
+            &#39;locations&#39;: [],
+            &#39;text&#39;: &#39;&#39;
+        }
+    
+    def pretty_json(self, i=1):
+        return json.dumps(self.json(i), indent=4, sort_keys=True)
+
+
+class IndexingIdentifierSet:
+    r&#34;&#34;&#34;
+    A set of IndexingIdentifier objects.
+    
+    Example (taken from NLM-Chem, train subset, PMCID 1253656):
+    
+    &gt;&gt;&gt; ii1 = IndexingIdentifier(&#39;MESH:D009281&#39;, &#39;MeSH_Indexing_Chemical&#39;)
+    &gt;&gt;&gt; ii2 = IndexingIdentifier(&#39;MESH:D009284&#39;, &#39;MeSH_Indexing_Chemical&#39;)
+    &gt;&gt;&gt; ii3 = IndexingIdentifier(&#39;MESH:D011728&#39;, &#39;MeSH_Indexing_Chemical&#39;)
+    &gt;&gt;&gt; ii4 = IndexingIdentifier(&#39;MESH:C031721&#39;, &#39;MeSH_Indexing_Chemical&#39;)
+    &gt;&gt;&gt;
+    &gt;&gt;&gt; iis = IndexingIdentifierSet([ii1, ii2, ii3, ii4])
+    &#34;&#34;&#34;
+    
+    def __init__(self, indexing_identifiers=None):
+        self.indexing_identifiers = set()
+        if indexing_identifiers is not None:
+            self.update(indexing_identifiers)
+    
+    def __len__(self):
+        return len(self.indexing_identifiers)
+    
+    def __str__(self):
+        s = &#39;&#39;
+        for ii in self.get(sort=True, make_deepcopy=False):
+            s += &#39;{}\n&#39;.format(ii)
+        return s.strip()
+    
+    def __eq__(self, other):
+        assert isinstance(other, IndexingIdentifierSet)
+        return self.indexing_identifiers == other.indexing_identifiers
+    
+    def __iter__(self):
+        for ii in self.indexing_identifiers:
+            yield ii
+    
+    def has(self, ii):
+        assert isinstance(ii, IndexingIdentifier)
+        return ii in self.indexing_identifiers
+    
+    def add(self, ii):
+        assert isinstance(ii, IndexingIdentifier)
+        self.indexing_identifiers.add(ii)
+    
+    def update(self, indexing_identifiers):
+        assert isinstance(indexing_identifiers, list) or isinstance(indexing_identifiers, set)
+        for ii in indexing_identifiers:
+            self.add(ii)
+    
+    def get(self, sort=False, make_deepcopy=False):
+        indexing_identifiers = self.indexing_identifiers
+        if sort:
+            indexing_identifiers = sorted(indexing_identifiers)
+        if make_deepcopy:
+            indexing_identifiers = deepcopy(indexing_identifiers)
+        return indexing_identifiers
+    
+    def union(self, other, make_deepcopy=False):
+        assert isinstance(other, IndexingIdentifierSet)
+        iis = IndexingIdentifierSet(self.indexing_identifiers.union(other.indexing_identifiers))
+        if make_deepcopy:
+            iis = deepcopy(iis)
+        return iis
+    
+    def intersection(self, other, make_deepcopy=False):
+        assert isinstance(other, IndexingIdentifierSet)
+        iis = IndexingIdentifierSet(self.indexing_identifiers.intersection(other.indexing_identifiers))
+        if make_deepcopy:
+            iis = deepcopy(iis)
+        return iis
+    
+    def difference(self, other, make_deepcopy=False):
+        assert isinstance(other, IndexingIdentifierSet)
+        iis = IndexingIdentifierSet(self.indexing_identifiers.difference(other.indexing_identifiers))
+        if make_deepcopy:
+            iis = deepcopy(iis)
+        return iis
+    
+    def json(self, start=1):
+        indexing_identifiers = self.get(sort=True, make_deepcopy=False)
+        return [ii.json(i) for i, ii in enumerate(indexing_identifiers, start=start)]
+    
+    def pretty_json(self, start=1):
+        return json.dumps(self.json(start), indent=4, sort_keys=True)
+
+
+class Passage:
+    r&#34;&#34;&#34;
+    A Passage is initialized with a text, a span (start and end
+    offsets), a type (abstract, fig_caption, footnote, front,
+    paragraph, ref, table_caption, title, etc), and a section type
+    (ABSTRACT, INTRO, METHODS, RESULTS, etc). Note that, in the
+    NLM-Chem dataset, frequently the section types are undefined.
+    
+    At first, a Passage has no annotations. But these can be added
+    iteratively. Annotations are NormalizedEntity or IndexingIdentifier
+    objects.
+    &#34;&#34;&#34;
+    
+    def __init__(self, text, span, typ, section_type):
+        assert isinstance(text, str)
+        assert_valid_span(span)
+        assert isinstance(typ, str)
+        assert isinstance(section_type, str)
+        
+        start, end = span
+        n_characters = end - start
+        assert len(text) == n_characters
+        
+        self.text = text
+        self.span = span
+        self.start = start
+        self.end = end
+        self.n_characters = n_characters
+        self.typ = typ
+        self.section_type = section_type
+        self.nes = NormalizedEntitySet()
+        self.iis = IndexingIdentifierSet()
+    
+    def __str__(self):
+        s = &#39;Passage {} ({}, {}): {}.&#39;
+        return s.format(self.span, repr(self.typ),
+                        repr(self.section_type), repr(self.text))
+    
+    def add_entity(self, e):
+        assert type(e) is NormalizedEntity
+        #
+        # Make sure the NormalizedEntity text matches the Passage text
+        # (in the respective NormalizedEntity span).
+        #
+        offset = self.start
+        e_start = e.start - offset
+        e_end = e.end - offset
+        assert e_end &lt;= self.n_characters
+        assert e.text == self.text[e_start:e_end]
+        self.nes.add(e)
+    
+    def add_entities(self, entities):
+        for e in entities:
+            self.add_entity(e)
+    
+    def add_indexing_identifier(self, ii):
+        self.iis.add(ii)
+    
+    def add_indexing_identifiers(self, indexing_identifiers):
+        for ii in indexing_identifiers:
+            self.add_indexing_identifier(ii)
+    
+    def entities(self, sort=False, make_deepcopy=False):
+        return self.nes.get(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def indexing_identifiers(self, sort=False, make_deepcopy=False):
+        return self.iis.get(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def get_entity_set(self):
+        return self.nes.to_entity_set()
+    
+    def json(self, nes_i=1, iis_i=1):
+        return {
+            &#39;annotations&#39;: self.nes.json(nes_i) + self.iis.json(iis_i),
+            &#39;infons&#39;: {
+                &#39;section_type&#39;: self.section_type,
+                &#39;type&#39;: self.typ
+            },
+            &#39;offset&#39;: self.start,
+            &#39;text&#39;: self.text
+        }
+    
+    def pretty_json(self, nes_i=1, iis_i=1):
+        return json.dumps(self.json(nes_i, iis_i), indent=4, sort_keys=True)
+
+
+class PassageOrderedList:
+    r&#34;&#34;&#34;
+    This class contains a list of Passage objects ordered by their
+    span offsets. Also Passage objects cannot overlap, that is, the
+    Passage objects must be disjoint.
+    
+    Example (made-up):
+    
+    &gt;&gt;&gt; p1 = Passage(&#39;The title.&#39;, (0, 10), &#39;front&#39;, &#39;TITLE&#39;)
+    &gt;&gt;&gt; p2 = Passage(&#39;An abstract.&#39;, (11, 23), &#39;abstract&#39;, &#39;ABSTRACT&#39;)
+    &gt;&gt;&gt; p3 = Passage(&#39;A first paragraph.&#39;, (24, 42), &#39;paragraph&#39;, &#39;INTRO&#39;)
+    &gt;&gt;&gt; p4 = Passage(&#39;A second paragraph.&#39;, (43, 62), &#39;paragraph&#39;, &#39;INTRO&#39;)
+    &gt;&gt;&gt;
+    &gt;&gt;&gt; pol = PassageOrderedList()
+    &gt;&gt;&gt; pol.add(p3)
+    &gt;&gt;&gt; pol.add(p2)
+    &gt;&gt;&gt; pol.add(p4)
+    &gt;&gt;&gt; pol.add(p1)
+    &#34;&#34;&#34;
+    
+    def __init__(self):
+        self.passages = list()
+    
+    def __len__(self):
+        return len(self.passages)
+    
+    def __iter__(self):
+        for p in self.passages:
+            yield p
+    
+    def __str__(self):
+        s = &#39;&#39;
+        for p in self:
+            s += &#39;{}\n&#39;.format(p)
+        return s.strip()
+    
+    def add(self, p):
+        assert isinstance(p, Passage)
+        #
+        # Assert that this passage does not overlap with any other
+        # passage.
+        #
+        for other in self.passages:
+            assert not span_overlaps_span(p.span, other.span)
+        #
+        # Find the position to insert the current passage so all the
+        # passages are ordered by their span offsets.
+        #
+        found = False
+        i = 0
+        for i, other in enumerate(self.passages):
+            if p.start &lt; other.start:
+                found = True
+                break
+        if found:
+            self.passages = self.passages[:i] + [p] + self.passages[i:]
+        else:
+            self.passages += [p]
+    
+    def span(self):
+        r&#34;&#34;&#34;
+        Return the span containing all the passages.
+        The start offset is always zero.
+        &#34;&#34;&#34;
+        start = 0
+        if len(self.passages) == 0:
+            end = 0
+        else:
+            end = self.passages[-1].end
+        return (start, end)
+    
+    def text(self):
+        r&#34;&#34;&#34;
+        Return the whole text containing all the text passages.
+        &#34;&#34;&#34;
+        _, n = self.span()
+        text = [&#39; &#39;] * n
+        
+        for p in self.passages:
+            text[p.start:p.end] = p.text
+        
+        return &#39;&#39;.join(text)
+    
+    def passages_texts(self):
+        passages_texts = list()
+        for passage in self:
+            passages_texts.append(passage.text)
+        return passages_texts
+    
+    def passages_spans(self):
+        passages_spans = list()
+        for passage in self:
+            passages_spans.append(passage.span)
+        return passages_spans
+    
+    def passages_entities(self, sort=False, make_deepcopy=False):
+        passages_entities = list()
+        for passage in self:
+            entities = passage.entities(sort=sort, make_deepcopy=make_deepcopy)
+            passages_entities.append(entities)
+        return passages_entities
+    
+    def nes(self):
+        nes = NormalizedEntitySet()
+        for p in self.passages:
+            for e in p.nes:
+                nes.add(e)
+        return nes
+    
+    def iis(self):
+        iis = IndexingIdentifierSet()
+        for p in self.passages:
+            for ii in p.iis:
+                iis.add(ii)
+        return iis
+    
+    def entities(self, sort=False, make_deepcopy=False):
+        return self.nes().get(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def indexing_identifiers(self, sort=False, make_deepcopy=False):
+        return self.iis().get(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def get_entity_set(self):
+        return self.nes().to_entity_set()
+    
+    def json(self):
+        d = list()
+        nes_i = 1
+        iis_i = 1
+        for p in self:
+            d.append(p.json(nes_i, iis_i))
+            nes_i += len(p.nes)
+            iis_i += len(p.iis)
+        return d
+    
+    def pretty_json(self):
+        return json.dumps(self.json(), indent=4, sort_keys=True)
+
+
+class Document:
+    r&#34;&#34;&#34;
+    A Document contains an identifier and a PassageOrderedList object.
+    &#34;&#34;&#34;
+    
+    def __init__(self, identifier):
+        assert isinstance(identifier, str)
+        self.identifier = identifier
+        self.pol = PassageOrderedList()
+        self.n_passages = 0
+    
+    def __iter__(self):
+        for p in self.pol:
+            yield p
+    
+    def __str__(self):
+        s = &#39;Document {} with &#39;.format(repr(self.identifier))
+        if self.n_passages == 0:
+            s += &#39;no passages.&#39;
+        elif self.n_passages == 1:
+            s += &#39;1 passage.&#39;
+        else:
+            s += &#39;{} passages.&#39;.format(self.n_passages)
+        return s
+    
+    def add_passage(self, p):
+        self.pol.add(p)
+        self.n_passages += 1
+    
+    def add_passages(self, passages):
+        for p in passages:
+            self.add_passage(p)
+    
+    def span(self):
+        return self.pol.span()
+    
+    def text(self):
+        return self.pol.text()
+    
+    def passages_texts(self):
+        return self.pol.passages_texts()
+    
+    def passages_spans(self):
+        return self.pol.passages_spans()
+    
+    def passages_entities(self, sort=False, make_deepcopy=False):
+        return self.pol.passages_entities(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def nes(self):
+        return self.pol.nes()
+    
+    def iis(self):
+        return self.pol.iis()
+    
+    def entities(self, sort=False, make_deepcopy=False):
+        return self.pol.entities(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def indexing_identifiers(self, sort=False, make_deepcopy=False):
+        return self.pol.indexing_identifiers(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def get_entity_set(self):
+        return self.pol.get_entity_set()
+    
+    def clear_entities(self):
+        r&#34;&#34;&#34;
+        Remove all the entities from the document.
+        &#34;&#34;&#34;
+        for p in self:
+            p.nes = NormalizedEntitySet()
+    
+    def set_entities(self, entities):
+        #
+        # This step is just done to verify that the input is valid.
+        #
+        entities = NormalizedEntitySet(entities).get()
+        
+        for p in self:
+            #
+            # First, delete existent entities.
+            #
+            p.nes = NormalizedEntitySet()
+            #
+            # Then, add only the entities that are within the respective
+            # span.
+            #
+            span_entities = get_entities_within_span(entities, p.span)
+            p.add_entities(span_entities)
+    
+    def set_indexing_identifiers(self, indexing_identifiers):
+        err = &#39;You cannot set indexing identifiers for a document without passages.&#39;
+        assert self.n_passages &gt; 0, err
+        #
+        # First, delete existent indexing identifiers from all passages.
+        #
+        for p in self:
+            p.iis = IndexingIdentifierSet()
+        #
+        # Then, add the new indexing identifiers only in the first
+        # passage.
+        #
+        for p in self:
+            break
+        p.iis = IndexingIdentifierSet(indexing_identifiers)
+    
+    def set_mesh_indexing_identifiers(self, mesh_indexing_identifiers):
+        self.set_indexing_identifiers([
+            IndexingIdentifier(mii, typ=&#39;MeSH_Indexing_Chemical&#39;)
+            for mii in mesh_indexing_identifiers
+        ])
+    
+    def json(self):
+        return {
+            &#39;id&#39;: self.identifier,
+            &#39;passages&#39;: self.pol.json()
+        }
+    
+    def pretty_json(self):
+        return json.dumps(self.json(), indent=4, sort_keys=True)
+
+
+def sort_identifiers(identifiers):
+    #
+    # The identifiers are for example a list of PMCIDs.
+    #
+    assert isinstance(identifiers, list) or isinstance(identifiers, dict)
+    for i in identifiers:
+        assert isinstance(i, str)
+    
+    return sorted(sorted(identifiers), key=len)
+
+
+class Collection:
+    r&#34;&#34;&#34;
+    A set of documents, using the above defined Document class.
+    Each document is associated with a specific identifier.
+    The identifier has to be a string.
+    For example, a PMCID (PubMed Central ID) is a valid identifier.
+    &#34;&#34;&#34;
+    
+    def __init__(self):
+        self.i2d = dict()
+        self.n_documents = 0
+    
+    def __len__(self):
+        return self.n_documents
+    
+    def __getitem__(self, key):
+        return self.i2d[key]
+    
+    def __iter__(self):
+        for i in self.ids():
+            yield (i, self[i])
+    
+    def __str__(self):
+        return self.corpus + &#39;_&#39; + self.group
+    
+    def add_metadata(self, corpus, group):
+        r&#34;&#34;&#34;
+        Allow the collection to know the corpus where it belongs.
+        &#34;&#34;&#34;
+        self.corpus = corpus
+        self.group = group
+        #
+        # This is needed to chain generator names.
+        #
+        self.__name__ = self.corpus + &#39;_&#39; + self.group
+    
+    def add(self, i, d, make_deepcopy=False):
+        r&#34;&#34;&#34;
+        Add document with the respective identifier.
+        &#34;&#34;&#34;
+        assert isinstance(i, str)
+        assert isinstance(d, Document)
+        assert i not in self.i2d
+        if make_deepcopy:
+            d = deepcopy(d)
+        self.i2d[i] = d
+        self.n_documents += 1
+    
+    def get(self, i):
+        return self.i2d[i]
+    
+    def ids(self):
+        r&#34;&#34;&#34;
+        Return a sorted list with the identifiers.
+        &#34;&#34;&#34;
+        return sort_identifiers(self.i2d)
+    
+    def clear_entities(self):
+        r&#34;&#34;&#34;
+        Remove the entities from all the documents. This is useful in
+        the inference phase. It serves as a sanity measure.
+        &#34;&#34;&#34;
+        for i, d in self:
+            d.clear_entities()
+    
+    def json(self):
+        return {
+            &#39;documents&#39;: [d.json() for _, d in self]
+        }
+    
+    def pretty_json(self):
+        return json.dumps(self.json(), indent=4, sort_keys=True)
+
+
+def merge_collections(*args, make_deepcopy=False):
+    #
+    # Merge a list of Collection objects.
+    # The collections cannot share equal identifiers. That is, they must
+    # be disjoint.
+    #
+    merged = Collection()
+    for c in args:
+        assert isinstance(c, Collection)
+        for i, d in c:
+            merged.add(i, d, make_deepcopy=make_deepcopy)
+    return merged
+
+
+def get_non_overlapping_and_overlapping_entities(entities):
+    #
+    # This is a lazy function to get the (i) non overlapping and
+    # (ii) overlapping entities.
+    #
+    non_overlapping_entities = list()
+    overlapping_entities = list()
+    n = len(entities)
+    for i in range(n):
+        entity = entities[i]
+        others = entities[:i] + entities[i+1:]
+        overlap = False
+        for other in others:
+            if span_overlaps_span(entity.span, other.span):
+                overlap = True
+                break
+        if overlap:
+            overlapping_entities.append(entity)
+        else:
+            non_overlapping_entities.append(entity)
+    
+    return non_overlapping_entities, overlapping_entities
+
+
+def get_entities_within_span(entities, span):
+    #
+    # This is a lazy function to get only the entities that are within
+    # a given span.
+    # Entities that are outside the given span are filtered out.
+    #
+    filtered_entities = list()
+    
+    for e in entities:
+        if span_contains_span(span, e.span):
+            filtered_entities.append(e)
+    
+    return filtered_entities</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="polus.ner.elements.add_offset_to_spans"><code class="name flex">
+<span>def <span class="ident">add_offset_to_spans</span></span>(<span>spans, offset)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_offset_to_spans(spans, offset):
+    return [
+        (start + offset, end + offset)
+        for (start, end) in spans
+    ]</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.assert_valid_span"><code class="name flex">
+<span>def <span class="ident">assert_valid_span</span></span>(<span>span)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def assert_valid_span(span):
+    assert isinstance(span, tuple)
+    assert len(span) == 2
+    start, end = span
+    assert isinstance(start, int) and (start &gt;= 0)
+    assert isinstance(end, int) and (end &gt;= start)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.get_entities_within_span"><code class="name flex">
+<span>def <span class="ident">get_entities_within_span</span></span>(<span>entities, span)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_entities_within_span(entities, span):
+    #
+    # This is a lazy function to get only the entities that are within
+    # a given span.
+    # Entities that are outside the given span are filtered out.
+    #
+    filtered_entities = list()
+    
+    for e in entities:
+        if span_contains_span(span, e.span):
+            filtered_entities.append(e)
+    
+    return filtered_entities</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.get_non_overlapping_and_overlapping_entities"><code class="name flex">
+<span>def <span class="ident">get_non_overlapping_and_overlapping_entities</span></span>(<span>entities)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_non_overlapping_and_overlapping_entities(entities):
+    #
+    # This is a lazy function to get the (i) non overlapping and
+    # (ii) overlapping entities.
+    #
+    non_overlapping_entities = list()
+    overlapping_entities = list()
+    n = len(entities)
+    for i in range(n):
+        entity = entities[i]
+        others = entities[:i] + entities[i+1:]
+        overlap = False
+        for other in others:
+            if span_overlaps_span(entity.span, other.span):
+                overlap = True
+                break
+        if overlap:
+            overlapping_entities.append(entity)
+        else:
+            non_overlapping_entities.append(entity)
+    
+    return non_overlapping_entities, overlapping_entities</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.merge_collections"><code class="name flex">
+<span>def <span class="ident">merge_collections</span></span>(<span>*args, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def merge_collections(*args, make_deepcopy=False):
+    #
+    # Merge a list of Collection objects.
+    # The collections cannot share equal identifiers. That is, they must
+    # be disjoint.
+    #
+    merged = Collection()
+    for c in args:
+        assert isinstance(c, Collection)
+        for i, d in c:
+            merged.add(i, d, make_deepcopy=make_deepcopy)
+    return merged</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.sort_identifiers"><code class="name flex">
+<span>def <span class="ident">sort_identifiers</span></span>(<span>identifiers)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sort_identifiers(identifiers):
+    #
+    # The identifiers are for example a list of PMCIDs.
+    #
+    assert isinstance(identifiers, list) or isinstance(identifiers, dict)
+    for i in identifiers:
+        assert isinstance(i, str)
+    
+    return sorted(sorted(identifiers), key=len)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.span_contains_span"><code class="name flex">
+<span>def <span class="ident">span_contains_span</span></span>(<span>span1, span2)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def span_contains_span(span1, span2):
+    assert_valid_span(span1)
+    assert_valid_span(span2)
+    if (span1[0] &lt;= span2[0]) and (span1[1] &gt;= span2[1]):
+        return True
+    else:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.span_overlaps_span"><code class="name flex">
+<span>def <span class="ident">span_overlaps_span</span></span>(<span>span1, span2)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def span_overlaps_span(span1, span2):
+    assert_valid_span(span1)
+    assert_valid_span(span2)
+    if (span1[1] &lt;= span2[0]) or (span1[0] &gt;= span2[1]):
+        return False
+    else:
+        return True</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="polus.ner.elements.Collection"><code class="flex name class">
+<span>class <span class="ident">Collection</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A set of documents, using the above defined Document class.
+Each document is associated with a specific identifier.
+The identifier has to be a string.
+For example, a PMCID (PubMed Central ID) is a valid identifier.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Collection:
+    r&#34;&#34;&#34;
+    A set of documents, using the above defined Document class.
+    Each document is associated with a specific identifier.
+    The identifier has to be a string.
+    For example, a PMCID (PubMed Central ID) is a valid identifier.
+    &#34;&#34;&#34;
+    
+    def __init__(self):
+        self.i2d = dict()
+        self.n_documents = 0
+    
+    def __len__(self):
+        return self.n_documents
+    
+    def __getitem__(self, key):
+        return self.i2d[key]
+    
+    def __iter__(self):
+        for i in self.ids():
+            yield (i, self[i])
+    
+    def __str__(self):
+        return self.corpus + &#39;_&#39; + self.group
+    
+    def add_metadata(self, corpus, group):
+        r&#34;&#34;&#34;
+        Allow the collection to know the corpus where it belongs.
+        &#34;&#34;&#34;
+        self.corpus = corpus
+        self.group = group
+        #
+        # This is needed to chain generator names.
+        #
+        self.__name__ = self.corpus + &#39;_&#39; + self.group
+    
+    def add(self, i, d, make_deepcopy=False):
+        r&#34;&#34;&#34;
+        Add document with the respective identifier.
+        &#34;&#34;&#34;
+        assert isinstance(i, str)
+        assert isinstance(d, Document)
+        assert i not in self.i2d
+        if make_deepcopy:
+            d = deepcopy(d)
+        self.i2d[i] = d
+        self.n_documents += 1
+    
+    def get(self, i):
+        return self.i2d[i]
+    
+    def ids(self):
+        r&#34;&#34;&#34;
+        Return a sorted list with the identifiers.
+        &#34;&#34;&#34;
+        return sort_identifiers(self.i2d)
+    
+    def clear_entities(self):
+        r&#34;&#34;&#34;
+        Remove the entities from all the documents. This is useful in
+        the inference phase. It serves as a sanity measure.
+        &#34;&#34;&#34;
+        for i, d in self:
+            d.clear_entities()
+    
+    def json(self):
+        return {
+            &#39;documents&#39;: [d.json() for _, d in self]
+        }
+    
+    def pretty_json(self):
+        return json.dumps(self.json(), indent=4, sort_keys=True)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.ner.elements.Collection.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>self, i, d, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add document with the respective identifier.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(self, i, d, make_deepcopy=False):
+    r&#34;&#34;&#34;
+    Add document with the respective identifier.
+    &#34;&#34;&#34;
+    assert isinstance(i, str)
+    assert isinstance(d, Document)
+    assert i not in self.i2d
+    if make_deepcopy:
+        d = deepcopy(d)
+    self.i2d[i] = d
+    self.n_documents += 1</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Collection.add_metadata"><code class="name flex">
+<span>def <span class="ident">add_metadata</span></span>(<span>self, corpus, group)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Allow the collection to know the corpus where it belongs.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_metadata(self, corpus, group):
+    r&#34;&#34;&#34;
+    Allow the collection to know the corpus where it belongs.
+    &#34;&#34;&#34;
+    self.corpus = corpus
+    self.group = group
+    #
+    # This is needed to chain generator names.
+    #
+    self.__name__ = self.corpus + &#39;_&#39; + self.group</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Collection.clear_entities"><code class="name flex">
+<span>def <span class="ident">clear_entities</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove the entities from all the documents. This is useful in
+the inference phase. It serves as a sanity measure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear_entities(self):
+    r&#34;&#34;&#34;
+    Remove the entities from all the documents. This is useful in
+    the inference phase. It serves as a sanity measure.
+    &#34;&#34;&#34;
+    for i, d in self:
+        d.clear_entities()</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Collection.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, i)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(self, i):
+    return self.i2d[i]</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Collection.ids"><code class="name flex">
+<span>def <span class="ident">ids</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a sorted list with the identifiers.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ids(self):
+    r&#34;&#34;&#34;
+    Return a sorted list with the identifiers.
+    &#34;&#34;&#34;
+    return sort_identifiers(self.i2d)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Collection.json"><code class="name flex">
+<span>def <span class="ident">json</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def json(self):
+    return {
+        &#39;documents&#39;: [d.json() for _, d in self]
+    }</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Collection.pretty_json"><code class="name flex">
+<span>def <span class="ident">pretty_json</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pretty_json(self):
+    return json.dumps(self.json(), indent=4, sort_keys=True)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.ner.elements.Document"><code class="flex name class">
+<span>class <span class="ident">Document</span></span>
+<span>(</span><span>identifier)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A Document contains an identifier and a PassageOrderedList object.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Document:
+    r&#34;&#34;&#34;
+    A Document contains an identifier and a PassageOrderedList object.
+    &#34;&#34;&#34;
+    
+    def __init__(self, identifier):
+        assert isinstance(identifier, str)
+        self.identifier = identifier
+        self.pol = PassageOrderedList()
+        self.n_passages = 0
+    
+    def __iter__(self):
+        for p in self.pol:
+            yield p
+    
+    def __str__(self):
+        s = &#39;Document {} with &#39;.format(repr(self.identifier))
+        if self.n_passages == 0:
+            s += &#39;no passages.&#39;
+        elif self.n_passages == 1:
+            s += &#39;1 passage.&#39;
+        else:
+            s += &#39;{} passages.&#39;.format(self.n_passages)
+        return s
+    
+    def add_passage(self, p):
+        self.pol.add(p)
+        self.n_passages += 1
+    
+    def add_passages(self, passages):
+        for p in passages:
+            self.add_passage(p)
+    
+    def span(self):
+        return self.pol.span()
+    
+    def text(self):
+        return self.pol.text()
+    
+    def passages_texts(self):
+        return self.pol.passages_texts()
+    
+    def passages_spans(self):
+        return self.pol.passages_spans()
+    
+    def passages_entities(self, sort=False, make_deepcopy=False):
+        return self.pol.passages_entities(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def nes(self):
+        return self.pol.nes()
+    
+    def iis(self):
+        return self.pol.iis()
+    
+    def entities(self, sort=False, make_deepcopy=False):
+        return self.pol.entities(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def indexing_identifiers(self, sort=False, make_deepcopy=False):
+        return self.pol.indexing_identifiers(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def get_entity_set(self):
+        return self.pol.get_entity_set()
+    
+    def clear_entities(self):
+        r&#34;&#34;&#34;
+        Remove all the entities from the document.
+        &#34;&#34;&#34;
+        for p in self:
+            p.nes = NormalizedEntitySet()
+    
+    def set_entities(self, entities):
+        #
+        # This step is just done to verify that the input is valid.
+        #
+        entities = NormalizedEntitySet(entities).get()
+        
+        for p in self:
+            #
+            # First, delete existent entities.
+            #
+            p.nes = NormalizedEntitySet()
+            #
+            # Then, add only the entities that are within the respective
+            # span.
+            #
+            span_entities = get_entities_within_span(entities, p.span)
+            p.add_entities(span_entities)
+    
+    def set_indexing_identifiers(self, indexing_identifiers):
+        err = &#39;You cannot set indexing identifiers for a document without passages.&#39;
+        assert self.n_passages &gt; 0, err
+        #
+        # First, delete existent indexing identifiers from all passages.
+        #
+        for p in self:
+            p.iis = IndexingIdentifierSet()
+        #
+        # Then, add the new indexing identifiers only in the first
+        # passage.
+        #
+        for p in self:
+            break
+        p.iis = IndexingIdentifierSet(indexing_identifiers)
+    
+    def set_mesh_indexing_identifiers(self, mesh_indexing_identifiers):
+        self.set_indexing_identifiers([
+            IndexingIdentifier(mii, typ=&#39;MeSH_Indexing_Chemical&#39;)
+            for mii in mesh_indexing_identifiers
+        ])
+    
+    def json(self):
+        return {
+            &#39;id&#39;: self.identifier,
+            &#39;passages&#39;: self.pol.json()
+        }
+    
+    def pretty_json(self):
+        return json.dumps(self.json(), indent=4, sort_keys=True)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.ner.elements.Document.add_passage"><code class="name flex">
+<span>def <span class="ident">add_passage</span></span>(<span>self, p)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_passage(self, p):
+    self.pol.add(p)
+    self.n_passages += 1</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.add_passages"><code class="name flex">
+<span>def <span class="ident">add_passages</span></span>(<span>self, passages)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_passages(self, passages):
+    for p in passages:
+        self.add_passage(p)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.clear_entities"><code class="name flex">
+<span>def <span class="ident">clear_entities</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove all the entities from the document.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear_entities(self):
+    r&#34;&#34;&#34;
+    Remove all the entities from the document.
+    &#34;&#34;&#34;
+    for p in self:
+        p.nes = NormalizedEntitySet()</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.entities"><code class="name flex">
+<span>def <span class="ident">entities</span></span>(<span>self, sort=False, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def entities(self, sort=False, make_deepcopy=False):
+    return self.pol.entities(sort=sort, make_deepcopy=make_deepcopy)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.get_entity_set"><code class="name flex">
+<span>def <span class="ident">get_entity_set</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_entity_set(self):
+    return self.pol.get_entity_set()</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.iis"><code class="name flex">
+<span>def <span class="ident">iis</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def iis(self):
+    return self.pol.iis()</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.indexing_identifiers"><code class="name flex">
+<span>def <span class="ident">indexing_identifiers</span></span>(<span>self, sort=False, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def indexing_identifiers(self, sort=False, make_deepcopy=False):
+    return self.pol.indexing_identifiers(sort=sort, make_deepcopy=make_deepcopy)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.json"><code class="name flex">
+<span>def <span class="ident">json</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def json(self):
+    return {
+        &#39;id&#39;: self.identifier,
+        &#39;passages&#39;: self.pol.json()
+    }</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.nes"><code class="name flex">
+<span>def <span class="ident">nes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def nes(self):
+    return self.pol.nes()</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.passages_entities"><code class="name flex">
+<span>def <span class="ident">passages_entities</span></span>(<span>self, sort=False, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def passages_entities(self, sort=False, make_deepcopy=False):
+    return self.pol.passages_entities(sort=sort, make_deepcopy=make_deepcopy)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.passages_spans"><code class="name flex">
+<span>def <span class="ident">passages_spans</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def passages_spans(self):
+    return self.pol.passages_spans()</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.passages_texts"><code class="name flex">
+<span>def <span class="ident">passages_texts</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def passages_texts(self):
+    return self.pol.passages_texts()</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.pretty_json"><code class="name flex">
+<span>def <span class="ident">pretty_json</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pretty_json(self):
+    return json.dumps(self.json(), indent=4, sort_keys=True)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.set_entities"><code class="name flex">
+<span>def <span class="ident">set_entities</span></span>(<span>self, entities)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_entities(self, entities):
+    #
+    # This step is just done to verify that the input is valid.
+    #
+    entities = NormalizedEntitySet(entities).get()
+    
+    for p in self:
+        #
+        # First, delete existent entities.
+        #
+        p.nes = NormalizedEntitySet()
+        #
+        # Then, add only the entities that are within the respective
+        # span.
+        #
+        span_entities = get_entities_within_span(entities, p.span)
+        p.add_entities(span_entities)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.set_indexing_identifiers"><code class="name flex">
+<span>def <span class="ident">set_indexing_identifiers</span></span>(<span>self, indexing_identifiers)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_indexing_identifiers(self, indexing_identifiers):
+    err = &#39;You cannot set indexing identifiers for a document without passages.&#39;
+    assert self.n_passages &gt; 0, err
+    #
+    # First, delete existent indexing identifiers from all passages.
+    #
+    for p in self:
+        p.iis = IndexingIdentifierSet()
+    #
+    # Then, add the new indexing identifiers only in the first
+    # passage.
+    #
+    for p in self:
+        break
+    p.iis = IndexingIdentifierSet(indexing_identifiers)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.set_mesh_indexing_identifiers"><code class="name flex">
+<span>def <span class="ident">set_mesh_indexing_identifiers</span></span>(<span>self, mesh_indexing_identifiers)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_mesh_indexing_identifiers(self, mesh_indexing_identifiers):
+    self.set_indexing_identifiers([
+        IndexingIdentifier(mii, typ=&#39;MeSH_Indexing_Chemical&#39;)
+        for mii in mesh_indexing_identifiers
+    ])</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.span"><code class="name flex">
+<span>def <span class="ident">span</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def span(self):
+    return self.pol.span()</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Document.text"><code class="name flex">
+<span>def <span class="ident">text</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def text(self):
+    return self.pol.text()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.ner.elements.Entity"><code class="flex name class">
+<span>class <span class="ident">Entity</span></span>
+<span>(</span><span>text, span, typ)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An Entity has a textual mention, a span (start and end offsets),
+and a type.</p>
+<p>Example (taken from NLM-Chem, dev subset, PMCID 4200806):
+text: 'tyrosine'
+span: (2914, 2922)
+typ: 'Chemical'</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; Entity('tyrosine', (2914, 2922), 'Chemical')
+</code></pre>
+<p>Example (taken from NLM-Chem, train subset, PMCID 5600090):
+text: 'MIDA boronate ester'
+span: (758, 777)
+typ: 'Chemical'</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; Entity('MIDA boronate ester', (758, 777), 'Chemical')
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Entity:
+    r&#34;&#34;&#34;
+    An Entity has a textual mention, a span (start and end offsets),
+    and a type.
+    
+    Example (taken from NLM-Chem, dev subset, PMCID 4200806):
+        text: &#39;tyrosine&#39;
+        span: (2914, 2922)
+        typ: &#39;Chemical&#39;
+    
+    &gt;&gt;&gt; Entity(&#39;tyrosine&#39;, (2914, 2922), &#39;Chemical&#39;)
+    
+    Example (taken from NLM-Chem, train subset, PMCID 5600090):
+        text: &#39;MIDA boronate ester&#39;
+        span: (758, 777)
+        typ: &#39;Chemical&#39;
+    
+    &gt;&gt;&gt; Entity(&#39;MIDA boronate ester&#39;, (758, 777), &#39;Chemical&#39;)
+    &#34;&#34;&#34;
+    
+    def __init__(self, text, span, typ):
+        assert isinstance(text, str)
+        assert_valid_span(span)
+        assert isinstance(typ, str)
+        
+        start, end = span
+        n_characters = end - start
+        assert len(text) == n_characters
+        
+        self.text = text
+        self.span = span
+        self.start = start
+        self.end = end
+        self.n_characters = n_characters
+        self.typ = typ
+    
+    def __repr__(self):
+        return &#39;Entity{}&#39;.format((self.text, self.span, self.typ))
+    
+    def __len__(self):
+        return self.n_characters
+    
+    def __eq__(self, other):
+        r&#34;&#34;&#34;
+        Compare two entities to check if they have:
+            - the same text
+            - the same span
+            - the same type
+        &#34;&#34;&#34;
+        assert type(other) is Entity
+        if ((self.text == other.text) and
+            (self.span == other.span) and
+            (self.typ == other.typ)):
+            return True
+        else:
+            return False
+    
+    def __hash__(self):
+        return hash((self.text, self.span, self.typ))
+    
+    def __lt__(self, other):
+        r&#34;&#34;&#34;
+        This magic method allows to easily sort a list of Entity
+        objects with the sorted() function.
+        
+        Attributes sorting priority:
+            1. start
+            2. end
+            3. typ
+            4. text
+        &#34;&#34;&#34;
+        assert type(other) is Entity
+        if self.start &lt; other.start:
+            return True
+        elif self.start == other.start:
+            if self.end &lt; other.end:
+                return True
+            elif self.end == other.end:
+                if self.typ &lt; other.typ:
+                    return True
+                elif self.typ == other.typ:
+                    if self.text &lt; other.text:
+                        return True
+        return False
+    
+    def to_normalized_entity(self):
+        return NormalizedEntity(self.text, self.span, self.typ)
+    
+    def json(self, i=1):
+        assert isinstance(i, int)
+        return {
+            &#39;id&#39;: str(i),
+            &#39;infons&#39;: {
+                &#39;type&#39;: self.typ
+            },
+            &#39;locations&#39;: [
+                {
+                    &#39;length&#39;: self.n_characters,
+                    &#39;offset&#39;: self.start
+                }
+            ],
+            &#39;text&#39;: self.text
+        }
+    
+    def pretty_json(self, i=1):
+        return json.dumps(self.json(i), indent=4, sort_keys=True)</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="polus.ner.elements.NormalizedEntity" href="#polus.ner.elements.NormalizedEntity">NormalizedEntity</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.ner.elements.Entity.json"><code class="name flex">
+<span>def <span class="ident">json</span></span>(<span>self, i=1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def json(self, i=1):
+    assert isinstance(i, int)
+    return {
+        &#39;id&#39;: str(i),
+        &#39;infons&#39;: {
+            &#39;type&#39;: self.typ
+        },
+        &#39;locations&#39;: [
+            {
+                &#39;length&#39;: self.n_characters,
+                &#39;offset&#39;: self.start
+            }
+        ],
+        &#39;text&#39;: self.text
+    }</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Entity.pretty_json"><code class="name flex">
+<span>def <span class="ident">pretty_json</span></span>(<span>self, i=1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pretty_json(self, i=1):
+    return json.dumps(self.json(i), indent=4, sort_keys=True)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Entity.to_normalized_entity"><code class="name flex">
+<span>def <span class="ident">to_normalized_entity</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_normalized_entity(self):
+    return NormalizedEntity(self.text, self.span, self.typ)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.ner.elements.EntitySet"><code class="flex name class">
+<span>class <span class="ident">EntitySet</span></span>
+<span>(</span><span>entities=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A set of Entity objects.</p>
+<p>Example (taken from NLM-Chem, train subset, PMCID 1253656):</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; e1 = Entity('Carbaryl', (43, 51), 'Chemical')
+&gt;&gt;&gt; e2 = Entity('Naphthalene', (52, 63), 'Chemical')
+&gt;&gt;&gt; e3 = Entity('Chlorpyrifos', (68, 80), 'Chemical')
+&gt;&gt;&gt;
+&gt;&gt;&gt; es = EntitySet([e1, e2, e3])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EntitySet:
+    r&#34;&#34;&#34;
+    A set of Entity objects.
+    
+    Example (taken from NLM-Chem, train subset, PMCID 1253656):
+    
+    &gt;&gt;&gt; e1 = Entity(&#39;Carbaryl&#39;, (43, 51), &#39;Chemical&#39;)
+    &gt;&gt;&gt; e2 = Entity(&#39;Naphthalene&#39;, (52, 63), &#39;Chemical&#39;)
+    &gt;&gt;&gt; e3 = Entity(&#39;Chlorpyrifos&#39;, (68, 80), &#39;Chemical&#39;)
+    &gt;&gt;&gt;
+    &gt;&gt;&gt; es = EntitySet([e1, e2, e3])
+    &#34;&#34;&#34;
+    
+    def __init__(self, entities=None):
+        self.entities = set()
+        if entities is not None:
+            self.update(entities)
+    
+    def __len__(self):
+        return len(self.entities)
+    
+    def __str__(self):
+        s = &#39;&#39;
+        for e in self.get(sort=True, make_deepcopy=False):
+            s += &#39;{}\n&#39;.format(e)
+        return s.strip()
+    
+    def __eq__(self, other):
+        assert type(other) is EntitySet
+        return self.entities == other.entities
+    
+    def __iter__(self):
+        for e in self.entities:
+            yield e
+    
+    def has(self, e):
+        assert type(e) is Entity
+        return e in self.entities
+    
+    def add(self, e):
+        assert type(e) is Entity
+        self.entities.add(e)
+    
+    def update(self, entities):
+        assert isinstance(entities, list) or isinstance(entities, set)
+        for e in entities:
+            self.add(e)
+    
+    def get(self, sort=False, make_deepcopy=False):
+        entities = self.entities
+        if sort:
+            entities = sorted(entities)
+        if make_deepcopy:
+            entities = deepcopy(entities)
+        return entities
+    
+    def union(self, other, make_deepcopy=False):
+        assert type(other) is EntitySet
+        es = EntitySet(self.entities.union(other.entities))
+        if make_deepcopy:
+            es = deepcopy(es)
+        return es
+    
+    def intersection(self, other, make_deepcopy=False):
+        assert type(other) is EntitySet
+        es = EntitySet(self.entities.intersection(other.entities))
+        if make_deepcopy:
+            es = deepcopy(es)
+        return es
+    
+    def difference(self, other, make_deepcopy=False):
+        assert type(other) is EntitySet
+        es = EntitySet(self.entities.difference(other.entities))
+        if make_deepcopy:
+            es = deepcopy(es)
+        return es
+    
+    def to_normalized_entity_set(self):
+        return NormalizedEntitySet([e.to_normalized_entity() for e in self.entities])
+    
+    def json(self, start=1):
+        entities = self.get(sort=True, make_deepcopy=False)
+        return [e.json(i) for i, e in enumerate(entities, start=start)]
+    
+    def pretty_json(self, start=1):
+        return json.dumps(self.json(start), indent=4, sort_keys=True)</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="polus.ner.elements.NormalizedEntitySet" href="#polus.ner.elements.NormalizedEntitySet">NormalizedEntitySet</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.ner.elements.EntitySet.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>self, e)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(self, e):
+    assert type(e) is Entity
+    self.entities.add(e)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.EntitySet.difference"><code class="name flex">
+<span>def <span class="ident">difference</span></span>(<span>self, other, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def difference(self, other, make_deepcopy=False):
+    assert type(other) is EntitySet
+    es = EntitySet(self.entities.difference(other.entities))
+    if make_deepcopy:
+        es = deepcopy(es)
+    return es</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.EntitySet.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, sort=False, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(self, sort=False, make_deepcopy=False):
+    entities = self.entities
+    if sort:
+        entities = sorted(entities)
+    if make_deepcopy:
+        entities = deepcopy(entities)
+    return entities</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.EntitySet.has"><code class="name flex">
+<span>def <span class="ident">has</span></span>(<span>self, e)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has(self, e):
+    assert type(e) is Entity
+    return e in self.entities</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.EntitySet.intersection"><code class="name flex">
+<span>def <span class="ident">intersection</span></span>(<span>self, other, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def intersection(self, other, make_deepcopy=False):
+    assert type(other) is EntitySet
+    es = EntitySet(self.entities.intersection(other.entities))
+    if make_deepcopy:
+        es = deepcopy(es)
+    return es</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.EntitySet.json"><code class="name flex">
+<span>def <span class="ident">json</span></span>(<span>self, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def json(self, start=1):
+    entities = self.get(sort=True, make_deepcopy=False)
+    return [e.json(i) for i, e in enumerate(entities, start=start)]</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.EntitySet.pretty_json"><code class="name flex">
+<span>def <span class="ident">pretty_json</span></span>(<span>self, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pretty_json(self, start=1):
+    return json.dumps(self.json(start), indent=4, sort_keys=True)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.EntitySet.to_normalized_entity_set"><code class="name flex">
+<span>def <span class="ident">to_normalized_entity_set</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_normalized_entity_set(self):
+    return NormalizedEntitySet([e.to_normalized_entity() for e in self.entities])</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.EntitySet.union"><code class="name flex">
+<span>def <span class="ident">union</span></span>(<span>self, other, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def union(self, other, make_deepcopy=False):
+    assert type(other) is EntitySet
+    es = EntitySet(self.entities.union(other.entities))
+    if make_deepcopy:
+        es = deepcopy(es)
+    return es</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.EntitySet.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, entities)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, entities):
+    assert isinstance(entities, list) or isinstance(entities, set)
+    for e in entities:
+        self.add(e)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.ner.elements.IndexingIdentifier"><code class="flex name class">
+<span>class <span class="ident">IndexingIdentifier</span></span>
+<span>(</span><span>identifier, typ)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An IndexingIdentifier has a single identifier (for example,
+a MeSH ID), and a type (for example, "MeSH_Indexing_Chemical").</p>
+<p>Example (taken from NLM-Chem, train subset, PMCID 1253656):
+identifier: 'MESH:D009281'
+typ: 'MeSH_Indexing_Chemical'</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; IndexingIdentifier('MESH:D009281', 'MeSH_Indexing_Chemical')
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class IndexingIdentifier:
+    r&#34;&#34;&#34;
+    An IndexingIdentifier has a single identifier (for example,
+    a MeSH ID), and a type (for example, &#34;MeSH_Indexing_Chemical&#34;).
+    
+    Example (taken from NLM-Chem, train subset, PMCID 1253656):
+      identifier: &#39;MESH:D009281&#39;
+      typ: &#39;MeSH_Indexing_Chemical&#39;
+    
+    &gt;&gt;&gt; IndexingIdentifier(&#39;MESH:D009281&#39;, &#39;MeSH_Indexing_Chemical&#39;)
+    &#34;&#34;&#34;
+    
+    def __init__(self, identifier, typ):
+        assert isinstance(identifier, str)
+        assert isinstance(typ, str)
+        #
+        # Only one identifier is allowed.
+        #
+        assert &#39;,&#39; not in identifier
+        assert &#39;|&#39; not in identifier
+        
+        self.identifier = identifier
+        self.typ = typ
+    
+    def __repr__(self):
+        return &#39;IndexingIdentifier{}&#39;.format((self.identifier, self.typ))
+    
+    def __eq__(self, other):
+        assert isinstance(other, IndexingIdentifier)
+        if (self.identifier == other.identifier) and (self.typ == other.typ):
+            return True
+        else:
+            return False
+    
+    def __hash__(self):
+        return hash((self.identifier, self.typ))
+    
+    def __lt__(self, other):
+        r&#34;&#34;&#34;
+        This magic method allows to easily sort a list of
+        IndexingIdentifier objects with the sorted() function.
+        
+        Attributes sorting priority:
+          1. identifier
+          2. typ
+        &#34;&#34;&#34;
+        assert isinstance(other, IndexingIdentifier)
+        if self.identifier &lt; other.identifier:
+            return True
+        elif self.identifier == other.identifier:
+            if self.typ &lt; other.typ:
+                return True
+        return False
+    
+    def json(self, i=1):
+        assert isinstance(i, int)
+        
+        if self.typ == &#39;MeSH_Indexing_Chemical&#39;:
+            prefix = &#39;MIC&#39;
+        else:
+            prefix = &#39;II&#39;
+        
+        return {
+            &#39;id&#39;: &#39;{}{}&#39;.format(prefix, i),
+            &#39;infons&#39;: {
+                &#39;identifier&#39;: self.identifier,
+                &#39;type&#39;: self.typ
+            },
+            &#39;locations&#39;: [],
+            &#39;text&#39;: &#39;&#39;
+        }
+    
+    def pretty_json(self, i=1):
+        return json.dumps(self.json(i), indent=4, sort_keys=True)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.ner.elements.IndexingIdentifier.json"><code class="name flex">
+<span>def <span class="ident">json</span></span>(<span>self, i=1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def json(self, i=1):
+    assert isinstance(i, int)
+    
+    if self.typ == &#39;MeSH_Indexing_Chemical&#39;:
+        prefix = &#39;MIC&#39;
+    else:
+        prefix = &#39;II&#39;
+    
+    return {
+        &#39;id&#39;: &#39;{}{}&#39;.format(prefix, i),
+        &#39;infons&#39;: {
+            &#39;identifier&#39;: self.identifier,
+            &#39;type&#39;: self.typ
+        },
+        &#39;locations&#39;: [],
+        &#39;text&#39;: &#39;&#39;
+    }</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.IndexingIdentifier.pretty_json"><code class="name flex">
+<span>def <span class="ident">pretty_json</span></span>(<span>self, i=1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pretty_json(self, i=1):
+    return json.dumps(self.json(i), indent=4, sort_keys=True)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.ner.elements.IndexingIdentifierSet"><code class="flex name class">
+<span>class <span class="ident">IndexingIdentifierSet</span></span>
+<span>(</span><span>indexing_identifiers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A set of IndexingIdentifier objects.</p>
+<p>Example (taken from NLM-Chem, train subset, PMCID 1253656):</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; ii1 = IndexingIdentifier('MESH:D009281', 'MeSH_Indexing_Chemical')
+&gt;&gt;&gt; ii2 = IndexingIdentifier('MESH:D009284', 'MeSH_Indexing_Chemical')
+&gt;&gt;&gt; ii3 = IndexingIdentifier('MESH:D011728', 'MeSH_Indexing_Chemical')
+&gt;&gt;&gt; ii4 = IndexingIdentifier('MESH:C031721', 'MeSH_Indexing_Chemical')
+&gt;&gt;&gt;
+&gt;&gt;&gt; iis = IndexingIdentifierSet([ii1, ii2, ii3, ii4])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class IndexingIdentifierSet:
+    r&#34;&#34;&#34;
+    A set of IndexingIdentifier objects.
+    
+    Example (taken from NLM-Chem, train subset, PMCID 1253656):
+    
+    &gt;&gt;&gt; ii1 = IndexingIdentifier(&#39;MESH:D009281&#39;, &#39;MeSH_Indexing_Chemical&#39;)
+    &gt;&gt;&gt; ii2 = IndexingIdentifier(&#39;MESH:D009284&#39;, &#39;MeSH_Indexing_Chemical&#39;)
+    &gt;&gt;&gt; ii3 = IndexingIdentifier(&#39;MESH:D011728&#39;, &#39;MeSH_Indexing_Chemical&#39;)
+    &gt;&gt;&gt; ii4 = IndexingIdentifier(&#39;MESH:C031721&#39;, &#39;MeSH_Indexing_Chemical&#39;)
+    &gt;&gt;&gt;
+    &gt;&gt;&gt; iis = IndexingIdentifierSet([ii1, ii2, ii3, ii4])
+    &#34;&#34;&#34;
+    
+    def __init__(self, indexing_identifiers=None):
+        self.indexing_identifiers = set()
+        if indexing_identifiers is not None:
+            self.update(indexing_identifiers)
+    
+    def __len__(self):
+        return len(self.indexing_identifiers)
+    
+    def __str__(self):
+        s = &#39;&#39;
+        for ii in self.get(sort=True, make_deepcopy=False):
+            s += &#39;{}\n&#39;.format(ii)
+        return s.strip()
+    
+    def __eq__(self, other):
+        assert isinstance(other, IndexingIdentifierSet)
+        return self.indexing_identifiers == other.indexing_identifiers
+    
+    def __iter__(self):
+        for ii in self.indexing_identifiers:
+            yield ii
+    
+    def has(self, ii):
+        assert isinstance(ii, IndexingIdentifier)
+        return ii in self.indexing_identifiers
+    
+    def add(self, ii):
+        assert isinstance(ii, IndexingIdentifier)
+        self.indexing_identifiers.add(ii)
+    
+    def update(self, indexing_identifiers):
+        assert isinstance(indexing_identifiers, list) or isinstance(indexing_identifiers, set)
+        for ii in indexing_identifiers:
+            self.add(ii)
+    
+    def get(self, sort=False, make_deepcopy=False):
+        indexing_identifiers = self.indexing_identifiers
+        if sort:
+            indexing_identifiers = sorted(indexing_identifiers)
+        if make_deepcopy:
+            indexing_identifiers = deepcopy(indexing_identifiers)
+        return indexing_identifiers
+    
+    def union(self, other, make_deepcopy=False):
+        assert isinstance(other, IndexingIdentifierSet)
+        iis = IndexingIdentifierSet(self.indexing_identifiers.union(other.indexing_identifiers))
+        if make_deepcopy:
+            iis = deepcopy(iis)
+        return iis
+    
+    def intersection(self, other, make_deepcopy=False):
+        assert isinstance(other, IndexingIdentifierSet)
+        iis = IndexingIdentifierSet(self.indexing_identifiers.intersection(other.indexing_identifiers))
+        if make_deepcopy:
+            iis = deepcopy(iis)
+        return iis
+    
+    def difference(self, other, make_deepcopy=False):
+        assert isinstance(other, IndexingIdentifierSet)
+        iis = IndexingIdentifierSet(self.indexing_identifiers.difference(other.indexing_identifiers))
+        if make_deepcopy:
+            iis = deepcopy(iis)
+        return iis
+    
+    def json(self, start=1):
+        indexing_identifiers = self.get(sort=True, make_deepcopy=False)
+        return [ii.json(i) for i, ii in enumerate(indexing_identifiers, start=start)]
+    
+    def pretty_json(self, start=1):
+        return json.dumps(self.json(start), indent=4, sort_keys=True)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.ner.elements.IndexingIdentifierSet.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>self, ii)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(self, ii):
+    assert isinstance(ii, IndexingIdentifier)
+    self.indexing_identifiers.add(ii)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.IndexingIdentifierSet.difference"><code class="name flex">
+<span>def <span class="ident">difference</span></span>(<span>self, other, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def difference(self, other, make_deepcopy=False):
+    assert isinstance(other, IndexingIdentifierSet)
+    iis = IndexingIdentifierSet(self.indexing_identifiers.difference(other.indexing_identifiers))
+    if make_deepcopy:
+        iis = deepcopy(iis)
+    return iis</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.IndexingIdentifierSet.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, sort=False, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(self, sort=False, make_deepcopy=False):
+    indexing_identifiers = self.indexing_identifiers
+    if sort:
+        indexing_identifiers = sorted(indexing_identifiers)
+    if make_deepcopy:
+        indexing_identifiers = deepcopy(indexing_identifiers)
+    return indexing_identifiers</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.IndexingIdentifierSet.has"><code class="name flex">
+<span>def <span class="ident">has</span></span>(<span>self, ii)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has(self, ii):
+    assert isinstance(ii, IndexingIdentifier)
+    return ii in self.indexing_identifiers</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.IndexingIdentifierSet.intersection"><code class="name flex">
+<span>def <span class="ident">intersection</span></span>(<span>self, other, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def intersection(self, other, make_deepcopy=False):
+    assert isinstance(other, IndexingIdentifierSet)
+    iis = IndexingIdentifierSet(self.indexing_identifiers.intersection(other.indexing_identifiers))
+    if make_deepcopy:
+        iis = deepcopy(iis)
+    return iis</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.IndexingIdentifierSet.json"><code class="name flex">
+<span>def <span class="ident">json</span></span>(<span>self, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def json(self, start=1):
+    indexing_identifiers = self.get(sort=True, make_deepcopy=False)
+    return [ii.json(i) for i, ii in enumerate(indexing_identifiers, start=start)]</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.IndexingIdentifierSet.pretty_json"><code class="name flex">
+<span>def <span class="ident">pretty_json</span></span>(<span>self, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pretty_json(self, start=1):
+    return json.dumps(self.json(start), indent=4, sort_keys=True)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.IndexingIdentifierSet.union"><code class="name flex">
+<span>def <span class="ident">union</span></span>(<span>self, other, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def union(self, other, make_deepcopy=False):
+    assert isinstance(other, IndexingIdentifierSet)
+    iis = IndexingIdentifierSet(self.indexing_identifiers.union(other.indexing_identifiers))
+    if make_deepcopy:
+        iis = deepcopy(iis)
+    return iis</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.IndexingIdentifierSet.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, indexing_identifiers)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, indexing_identifiers):
+    assert isinstance(indexing_identifiers, list) or isinstance(indexing_identifiers, set)
+    for ii in indexing_identifiers:
+        self.add(ii)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.ner.elements.NormalizedEntity"><code class="flex name class">
+<span>class <span class="ident">NormalizedEntity</span></span>
+<span>(</span><span>text, span, typ, identifiers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A NormalizedEntity inherits from Entity.</p>
+<p>Besides having a textual mention, a span, and a type, additionally
+has a list of identifiers (for normalization).</p>
+<p>Note: it has to be a list of identifiers (not a set) because the
+order of the identifiers matters. For example, if the entity
+text mention refers to three diferent terms, its identifiers
+follow their order of appearance (see Example 2 below).</p>
+<p>Example 1 (taken from NLM-Chem, dev subset, PMCID 4200806):
+text: 'tyrosine'
+span: (2914, 2922)
+typ: 'Chemical'
+identifiers: ['MESH:D014443']</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; NormalizedEntity('tyrosine', (2914, 2922), 'Chemical', ['MESH:D014443'])
+</code></pre>
+<p>Example 2 (taken from NLM-Chem, train subset, PMCID 5600090):
+text: 'MIDA boronate ester'
+span: (758, 777)
+typ: 'Chemical'
+identifiers: ['MESH:C533766', 'MESH:D001897', 'MESH:D004952']</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; NormalizedEntity('MIDA boronate ester', (758, 777), 'Chemical', ['MESH:C533766', 'MESH:D001897', 'MESH:D004952'])
+</code></pre>
+<p>Example 3 (taken from NLM-Chem, train subset, PMCID 4988499)
+text: 'cyclic, aromatic, and monoterpenoid enones, enals, and enols'
+span: (2793, 2853)
+typ: 'Chemical'
+identifiers: ['MESH:D007659', 'MESH:D000447', '-']</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; NormalizedEntity('cyclic, aromatic, and monoterpenoid enones, enals, and enols', (2793, 2853), 'Chemical', ['MESH:D007659', 'MESH:D000447', '-'])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NormalizedEntity(Entity):
+    r&#34;&#34;&#34;
+    A NormalizedEntity inherits from Entity.
+    
+    Besides having a textual mention, a span, and a type, additionally
+    has a list of identifiers (for normalization).
+    
+    Note: it has to be a list of identifiers (not a set) because the
+          order of the identifiers matters. For example, if the entity
+          text mention refers to three diferent terms, its identifiers
+          follow their order of appearance (see Example 2 below).
+    
+    Example 1 (taken from NLM-Chem, dev subset, PMCID 4200806):
+        text: &#39;tyrosine&#39;
+        span: (2914, 2922)
+        typ: &#39;Chemical&#39;
+        identifiers: [&#39;MESH:D014443&#39;]
+    
+    &gt;&gt;&gt; NormalizedEntity(&#39;tyrosine&#39;, (2914, 2922), &#39;Chemical&#39;, [&#39;MESH:D014443&#39;])
+    
+    Example 2 (taken from NLM-Chem, train subset, PMCID 5600090):
+        text: &#39;MIDA boronate ester&#39;
+        span: (758, 777)
+        typ: &#39;Chemical&#39;
+        identifiers: [&#39;MESH:C533766&#39;, &#39;MESH:D001897&#39;, &#39;MESH:D004952&#39;]
+    
+    &gt;&gt;&gt; NormalizedEntity(&#39;MIDA boronate ester&#39;, (758, 777), &#39;Chemical&#39;, [&#39;MESH:C533766&#39;, &#39;MESH:D001897&#39;, &#39;MESH:D004952&#39;])
+    
+    Example 3 (taken from NLM-Chem, train subset, PMCID 4988499)
+        text: &#39;cyclic, aromatic, and monoterpenoid enones, enals, and enols&#39;
+        span: (2793, 2853)
+        typ: &#39;Chemical&#39;
+        identifiers: [&#39;MESH:D007659&#39;, &#39;MESH:D000447&#39;, &#39;-&#39;]
+    
+    &gt;&gt;&gt; NormalizedEntity(&#39;cyclic, aromatic, and monoterpenoid enones, enals, and enols&#39;, (2793, 2853), &#39;Chemical&#39;, [&#39;MESH:D007659&#39;, &#39;MESH:D000447&#39;, &#39;-&#39;])
+    &#34;&#34;&#34;
+    
+    def __init__(self, text, span, typ, identifiers=None):
+        super().__init__(text, span, typ)
+        self.set_identifiers(identifiers)
+    
+    def set_identifiers(self, identifiers):
+        if identifiers is None:
+            identifiers = list()
+        
+        assert isinstance(identifiers, list)
+        for i in identifiers:
+            assert isinstance(i, str)
+        #
+        # If the identifiers list is empty, it means there are no
+        # identifiers.
+        # In this case, add the &#39;-&#39; identifier meaning there is no
+        # identifier.
+        #
+        if len(identifiers) == 0:
+            identifiers = [&#39;-&#39;]
+        
+        self.identifiers = identifiers
+        self.identifiers_str = &#39;,&#39;.join(identifiers)
+    
+    def __repr__(self):
+        return &#39;NormalizedEntity{}&#39;.format((self.text, self.span, self.typ,
+                                            self.identifiers))
+    
+    def __eq__(self, other):
+        r&#34;&#34;&#34;
+        Compare two normalized entities to check if they have:
+            - the same text
+            - the same span
+            - the same type
+            - the same identifiers
+        &#34;&#34;&#34;
+        assert type(other) is NormalizedEntity
+        if ((self.text == other.text) and
+            (self.span == other.span) and
+            (self.typ == other.typ) and
+            (self.identifiers == other.identifiers)):
+            return True
+        else:
+            return False
+    
+    def __hash__(self):
+        return hash((self.text, self.span, self.typ, self.identifiers_str))
+    
+    def __lt__(self, other):
+        r&#34;&#34;&#34;
+        This magic method allows to easily sort a list of
+        NormalizedEntity objects with the sorted() function.
+        
+        Attributes sorting priority:
+            1. start
+            2. end
+            3. typ
+            4. text
+            5. identifiers_str
+        &#34;&#34;&#34;
+        assert type(other) is NormalizedEntity
+        if self.start &lt; other.start:
+            return True
+        elif self.start == other.start:
+            if self.end &lt; other.end:
+                return True
+            elif self.end == other.end:
+                if self.typ &lt; other.typ:
+                    return True
+                elif self.typ == other.typ:
+                    if self.text &lt; other.text:
+                        return True
+                    elif self.text == other.text:
+                        if self.identifiers_str &lt; other.identifiers_str:
+                            return True
+        return False
+    
+    def to_entity(self):
+        return Entity(self.text, self.span, self.typ)
+    
+    def json(self, i=1):
+        assert isinstance(i, int)
+        return {
+            &#39;id&#39;: str(i),
+            &#39;infons&#39;: {
+                &#39;identifier&#39;: self.identifiers_str,
+                &#39;type&#39;: self.typ
+            },
+            &#39;locations&#39;: [
+                {
+                    &#39;length&#39;: self.n_characters,
+                    &#39;offset&#39;: self.start
+                }
+            ],
+            &#39;text&#39;: self.text
+        }</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.ner.elements.Entity" href="#polus.ner.elements.Entity">Entity</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.ner.elements.NormalizedEntity.json"><code class="name flex">
+<span>def <span class="ident">json</span></span>(<span>self, i=1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def json(self, i=1):
+    assert isinstance(i, int)
+    return {
+        &#39;id&#39;: str(i),
+        &#39;infons&#39;: {
+            &#39;identifier&#39;: self.identifiers_str,
+            &#39;type&#39;: self.typ
+        },
+        &#39;locations&#39;: [
+            {
+                &#39;length&#39;: self.n_characters,
+                &#39;offset&#39;: self.start
+            }
+        ],
+        &#39;text&#39;: self.text
+    }</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.NormalizedEntity.set_identifiers"><code class="name flex">
+<span>def <span class="ident">set_identifiers</span></span>(<span>self, identifiers)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_identifiers(self, identifiers):
+    if identifiers is None:
+        identifiers = list()
+    
+    assert isinstance(identifiers, list)
+    for i in identifiers:
+        assert isinstance(i, str)
+    #
+    # If the identifiers list is empty, it means there are no
+    # identifiers.
+    # In this case, add the &#39;-&#39; identifier meaning there is no
+    # identifier.
+    #
+    if len(identifiers) == 0:
+        identifiers = [&#39;-&#39;]
+    
+    self.identifiers = identifiers
+    self.identifiers_str = &#39;,&#39;.join(identifiers)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.NormalizedEntity.to_entity"><code class="name flex">
+<span>def <span class="ident">to_entity</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_entity(self):
+    return Entity(self.text, self.span, self.typ)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.ner.elements.NormalizedEntitySet"><code class="flex name class">
+<span>class <span class="ident">NormalizedEntitySet</span></span>
+<span>(</span><span>entities=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A set of NormalizedEntity objects.</p>
+<p>Example (taken from NLM-Chem, train subset, PMCID 1253656):</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; ne1 = NormalizedEntity('Carbaryl', (43, 51), 'Chemical', ['MESH:D012721'])
+&gt;&gt;&gt; ne2 = NormalizedEntity('Naphthalene', (52, 63), 'Chemical', ['MESH:C031721'])
+&gt;&gt;&gt; ne3 = NormalizedEntity('Chlorpyrifos', (68, 80), 'Chemical', ['MESH:D004390'])
+&gt;&gt;&gt;
+&gt;&gt;&gt; nes = NormalizedEntitySet([ne1, ne2, ne3])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NormalizedEntitySet(EntitySet):
+    r&#34;&#34;&#34;
+    A set of NormalizedEntity objects.
+    
+    Example (taken from NLM-Chem, train subset, PMCID 1253656):
+    
+    &gt;&gt;&gt; ne1 = NormalizedEntity(&#39;Carbaryl&#39;, (43, 51), &#39;Chemical&#39;, [&#39;MESH:D012721&#39;])
+    &gt;&gt;&gt; ne2 = NormalizedEntity(&#39;Naphthalene&#39;, (52, 63), &#39;Chemical&#39;, [&#39;MESH:C031721&#39;])
+    &gt;&gt;&gt; ne3 = NormalizedEntity(&#39;Chlorpyrifos&#39;, (68, 80), &#39;Chemical&#39;, [&#39;MESH:D004390&#39;])
+    &gt;&gt;&gt;
+    &gt;&gt;&gt; nes = NormalizedEntitySet([ne1, ne2, ne3])
+    &#34;&#34;&#34;
+    
+    def __init__(self, entities=None):
+        super().__init__(entities)
+    
+    def __eq__(self, other):
+        assert type(other) is NormalizedEntitySet
+        return self.entities == other.entities
+    
+    def has(self, e):
+        assert type(e) is NormalizedEntity
+        return e in self.entities
+    
+    def add(self, e):
+        assert type(e) is NormalizedEntity
+        self.entities.add(e)
+    
+    def union(self, other, make_deepcopy=False):
+        assert type(other) is NormalizedEntitySet
+        nes = NormalizedEntitySet(self.entities.union(other.entities))
+        if make_deepcopy:
+            nes = deepcopy(nes)
+        return nes
+    
+    def intersection(self, other, make_deepcopy=False):
+        assert type(other) is NormalizedEntitySet
+        nes = NormalizedEntitySet(self.entities.intersection(other.entities))
+        if make_deepcopy:
+            nes = deepcopy(nes)
+        return nes
+    
+    def difference(self, other, make_deepcopy=False):
+        assert type(other) is NormalizedEntitySet
+        nes = NormalizedEntitySet(self.entities.difference(other.entities))
+        if make_deepcopy:
+            nes = deepcopy(nes)
+        return nes
+    
+    def to_entity_set(self):
+        return EntitySet([e.to_entity() for e in self.entities])</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="polus.ner.elements.EntitySet" href="#polus.ner.elements.EntitySet">EntitySet</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.ner.elements.NormalizedEntitySet.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>self, e)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(self, e):
+    assert type(e) is NormalizedEntity
+    self.entities.add(e)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.NormalizedEntitySet.difference"><code class="name flex">
+<span>def <span class="ident">difference</span></span>(<span>self, other, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def difference(self, other, make_deepcopy=False):
+    assert type(other) is NormalizedEntitySet
+    nes = NormalizedEntitySet(self.entities.difference(other.entities))
+    if make_deepcopy:
+        nes = deepcopy(nes)
+    return nes</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.NormalizedEntitySet.has"><code class="name flex">
+<span>def <span class="ident">has</span></span>(<span>self, e)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has(self, e):
+    assert type(e) is NormalizedEntity
+    return e in self.entities</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.NormalizedEntitySet.intersection"><code class="name flex">
+<span>def <span class="ident">intersection</span></span>(<span>self, other, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def intersection(self, other, make_deepcopy=False):
+    assert type(other) is NormalizedEntitySet
+    nes = NormalizedEntitySet(self.entities.intersection(other.entities))
+    if make_deepcopy:
+        nes = deepcopy(nes)
+    return nes</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.NormalizedEntitySet.to_entity_set"><code class="name flex">
+<span>def <span class="ident">to_entity_set</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_entity_set(self):
+    return EntitySet([e.to_entity() for e in self.entities])</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.NormalizedEntitySet.union"><code class="name flex">
+<span>def <span class="ident">union</span></span>(<span>self, other, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def union(self, other, make_deepcopy=False):
+    assert type(other) is NormalizedEntitySet
+    nes = NormalizedEntitySet(self.entities.union(other.entities))
+    if make_deepcopy:
+        nes = deepcopy(nes)
+    return nes</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.ner.elements.Passage"><code class="flex name class">
+<span>class <span class="ident">Passage</span></span>
+<span>(</span><span>text, span, typ, section_type)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A Passage is initialized with a text, a span (start and end
+offsets), a type (abstract, fig_caption, footnote, front,
+paragraph, ref, table_caption, title, etc), and a section type
+(ABSTRACT, INTRO, METHODS, RESULTS, etc). Note that, in the
+NLM-Chem dataset, frequently the section types are undefined.</p>
+<p>At first, a Passage has no annotations. But these can be added
+iteratively. Annotations are NormalizedEntity or IndexingIdentifier
+objects.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Passage:
+    r&#34;&#34;&#34;
+    A Passage is initialized with a text, a span (start and end
+    offsets), a type (abstract, fig_caption, footnote, front,
+    paragraph, ref, table_caption, title, etc), and a section type
+    (ABSTRACT, INTRO, METHODS, RESULTS, etc). Note that, in the
+    NLM-Chem dataset, frequently the section types are undefined.
+    
+    At first, a Passage has no annotations. But these can be added
+    iteratively. Annotations are NormalizedEntity or IndexingIdentifier
+    objects.
+    &#34;&#34;&#34;
+    
+    def __init__(self, text, span, typ, section_type):
+        assert isinstance(text, str)
+        assert_valid_span(span)
+        assert isinstance(typ, str)
+        assert isinstance(section_type, str)
+        
+        start, end = span
+        n_characters = end - start
+        assert len(text) == n_characters
+        
+        self.text = text
+        self.span = span
+        self.start = start
+        self.end = end
+        self.n_characters = n_characters
+        self.typ = typ
+        self.section_type = section_type
+        self.nes = NormalizedEntitySet()
+        self.iis = IndexingIdentifierSet()
+    
+    def __str__(self):
+        s = &#39;Passage {} ({}, {}): {}.&#39;
+        return s.format(self.span, repr(self.typ),
+                        repr(self.section_type), repr(self.text))
+    
+    def add_entity(self, e):
+        assert type(e) is NormalizedEntity
+        #
+        # Make sure the NormalizedEntity text matches the Passage text
+        # (in the respective NormalizedEntity span).
+        #
+        offset = self.start
+        e_start = e.start - offset
+        e_end = e.end - offset
+        assert e_end &lt;= self.n_characters
+        assert e.text == self.text[e_start:e_end]
+        self.nes.add(e)
+    
+    def add_entities(self, entities):
+        for e in entities:
+            self.add_entity(e)
+    
+    def add_indexing_identifier(self, ii):
+        self.iis.add(ii)
+    
+    def add_indexing_identifiers(self, indexing_identifiers):
+        for ii in indexing_identifiers:
+            self.add_indexing_identifier(ii)
+    
+    def entities(self, sort=False, make_deepcopy=False):
+        return self.nes.get(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def indexing_identifiers(self, sort=False, make_deepcopy=False):
+        return self.iis.get(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def get_entity_set(self):
+        return self.nes.to_entity_set()
+    
+    def json(self, nes_i=1, iis_i=1):
+        return {
+            &#39;annotations&#39;: self.nes.json(nes_i) + self.iis.json(iis_i),
+            &#39;infons&#39;: {
+                &#39;section_type&#39;: self.section_type,
+                &#39;type&#39;: self.typ
+            },
+            &#39;offset&#39;: self.start,
+            &#39;text&#39;: self.text
+        }
+    
+    def pretty_json(self, nes_i=1, iis_i=1):
+        return json.dumps(self.json(nes_i, iis_i), indent=4, sort_keys=True)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.ner.elements.Passage.add_entities"><code class="name flex">
+<span>def <span class="ident">add_entities</span></span>(<span>self, entities)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_entities(self, entities):
+    for e in entities:
+        self.add_entity(e)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Passage.add_entity"><code class="name flex">
+<span>def <span class="ident">add_entity</span></span>(<span>self, e)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_entity(self, e):
+    assert type(e) is NormalizedEntity
+    #
+    # Make sure the NormalizedEntity text matches the Passage text
+    # (in the respective NormalizedEntity span).
+    #
+    offset = self.start
+    e_start = e.start - offset
+    e_end = e.end - offset
+    assert e_end &lt;= self.n_characters
+    assert e.text == self.text[e_start:e_end]
+    self.nes.add(e)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Passage.add_indexing_identifier"><code class="name flex">
+<span>def <span class="ident">add_indexing_identifier</span></span>(<span>self, ii)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_indexing_identifier(self, ii):
+    self.iis.add(ii)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Passage.add_indexing_identifiers"><code class="name flex">
+<span>def <span class="ident">add_indexing_identifiers</span></span>(<span>self, indexing_identifiers)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_indexing_identifiers(self, indexing_identifiers):
+    for ii in indexing_identifiers:
+        self.add_indexing_identifier(ii)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Passage.entities"><code class="name flex">
+<span>def <span class="ident">entities</span></span>(<span>self, sort=False, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def entities(self, sort=False, make_deepcopy=False):
+    return self.nes.get(sort=sort, make_deepcopy=make_deepcopy)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Passage.get_entity_set"><code class="name flex">
+<span>def <span class="ident">get_entity_set</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_entity_set(self):
+    return self.nes.to_entity_set()</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Passage.indexing_identifiers"><code class="name flex">
+<span>def <span class="ident">indexing_identifiers</span></span>(<span>self, sort=False, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def indexing_identifiers(self, sort=False, make_deepcopy=False):
+    return self.iis.get(sort=sort, make_deepcopy=make_deepcopy)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Passage.json"><code class="name flex">
+<span>def <span class="ident">json</span></span>(<span>self, nes_i=1, iis_i=1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def json(self, nes_i=1, iis_i=1):
+    return {
+        &#39;annotations&#39;: self.nes.json(nes_i) + self.iis.json(iis_i),
+        &#39;infons&#39;: {
+            &#39;section_type&#39;: self.section_type,
+            &#39;type&#39;: self.typ
+        },
+        &#39;offset&#39;: self.start,
+        &#39;text&#39;: self.text
+    }</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.Passage.pretty_json"><code class="name flex">
+<span>def <span class="ident">pretty_json</span></span>(<span>self, nes_i=1, iis_i=1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pretty_json(self, nes_i=1, iis_i=1):
+    return json.dumps(self.json(nes_i, iis_i), indent=4, sort_keys=True)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList"><code class="flex name class">
+<span>class <span class="ident">PassageOrderedList</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>This class contains a list of Passage objects ordered by their
+span offsets. Also Passage objects cannot overlap, that is, the
+Passage objects must be disjoint.</p>
+<p>Example (made-up):</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; p1 = Passage('The title.', (0, 10), 'front', 'TITLE')
+&gt;&gt;&gt; p2 = Passage('An abstract.', (11, 23), 'abstract', 'ABSTRACT')
+&gt;&gt;&gt; p3 = Passage('A first paragraph.', (24, 42), 'paragraph', 'INTRO')
+&gt;&gt;&gt; p4 = Passage('A second paragraph.', (43, 62), 'paragraph', 'INTRO')
+&gt;&gt;&gt;
+&gt;&gt;&gt; pol = PassageOrderedList()
+&gt;&gt;&gt; pol.add(p3)
+&gt;&gt;&gt; pol.add(p2)
+&gt;&gt;&gt; pol.add(p4)
+&gt;&gt;&gt; pol.add(p1)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PassageOrderedList:
+    r&#34;&#34;&#34;
+    This class contains a list of Passage objects ordered by their
+    span offsets. Also Passage objects cannot overlap, that is, the
+    Passage objects must be disjoint.
+    
+    Example (made-up):
+    
+    &gt;&gt;&gt; p1 = Passage(&#39;The title.&#39;, (0, 10), &#39;front&#39;, &#39;TITLE&#39;)
+    &gt;&gt;&gt; p2 = Passage(&#39;An abstract.&#39;, (11, 23), &#39;abstract&#39;, &#39;ABSTRACT&#39;)
+    &gt;&gt;&gt; p3 = Passage(&#39;A first paragraph.&#39;, (24, 42), &#39;paragraph&#39;, &#39;INTRO&#39;)
+    &gt;&gt;&gt; p4 = Passage(&#39;A second paragraph.&#39;, (43, 62), &#39;paragraph&#39;, &#39;INTRO&#39;)
+    &gt;&gt;&gt;
+    &gt;&gt;&gt; pol = PassageOrderedList()
+    &gt;&gt;&gt; pol.add(p3)
+    &gt;&gt;&gt; pol.add(p2)
+    &gt;&gt;&gt; pol.add(p4)
+    &gt;&gt;&gt; pol.add(p1)
+    &#34;&#34;&#34;
+    
+    def __init__(self):
+        self.passages = list()
+    
+    def __len__(self):
+        return len(self.passages)
+    
+    def __iter__(self):
+        for p in self.passages:
+            yield p
+    
+    def __str__(self):
+        s = &#39;&#39;
+        for p in self:
+            s += &#39;{}\n&#39;.format(p)
+        return s.strip()
+    
+    def add(self, p):
+        assert isinstance(p, Passage)
+        #
+        # Assert that this passage does not overlap with any other
+        # passage.
+        #
+        for other in self.passages:
+            assert not span_overlaps_span(p.span, other.span)
+        #
+        # Find the position to insert the current passage so all the
+        # passages are ordered by their span offsets.
+        #
+        found = False
+        i = 0
+        for i, other in enumerate(self.passages):
+            if p.start &lt; other.start:
+                found = True
+                break
+        if found:
+            self.passages = self.passages[:i] + [p] + self.passages[i:]
+        else:
+            self.passages += [p]
+    
+    def span(self):
+        r&#34;&#34;&#34;
+        Return the span containing all the passages.
+        The start offset is always zero.
+        &#34;&#34;&#34;
+        start = 0
+        if len(self.passages) == 0:
+            end = 0
+        else:
+            end = self.passages[-1].end
+        return (start, end)
+    
+    def text(self):
+        r&#34;&#34;&#34;
+        Return the whole text containing all the text passages.
+        &#34;&#34;&#34;
+        _, n = self.span()
+        text = [&#39; &#39;] * n
+        
+        for p in self.passages:
+            text[p.start:p.end] = p.text
+        
+        return &#39;&#39;.join(text)
+    
+    def passages_texts(self):
+        passages_texts = list()
+        for passage in self:
+            passages_texts.append(passage.text)
+        return passages_texts
+    
+    def passages_spans(self):
+        passages_spans = list()
+        for passage in self:
+            passages_spans.append(passage.span)
+        return passages_spans
+    
+    def passages_entities(self, sort=False, make_deepcopy=False):
+        passages_entities = list()
+        for passage in self:
+            entities = passage.entities(sort=sort, make_deepcopy=make_deepcopy)
+            passages_entities.append(entities)
+        return passages_entities
+    
+    def nes(self):
+        nes = NormalizedEntitySet()
+        for p in self.passages:
+            for e in p.nes:
+                nes.add(e)
+        return nes
+    
+    def iis(self):
+        iis = IndexingIdentifierSet()
+        for p in self.passages:
+            for ii in p.iis:
+                iis.add(ii)
+        return iis
+    
+    def entities(self, sort=False, make_deepcopy=False):
+        return self.nes().get(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def indexing_identifiers(self, sort=False, make_deepcopy=False):
+        return self.iis().get(sort=sort, make_deepcopy=make_deepcopy)
+    
+    def get_entity_set(self):
+        return self.nes().to_entity_set()
+    
+    def json(self):
+        d = list()
+        nes_i = 1
+        iis_i = 1
+        for p in self:
+            d.append(p.json(nes_i, iis_i))
+            nes_i += len(p.nes)
+            iis_i += len(p.iis)
+        return d
+    
+    def pretty_json(self):
+        return json.dumps(self.json(), indent=4, sort_keys=True)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="polus.ner.elements.PassageOrderedList.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>self, p)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(self, p):
+    assert isinstance(p, Passage)
+    #
+    # Assert that this passage does not overlap with any other
+    # passage.
+    #
+    for other in self.passages:
+        assert not span_overlaps_span(p.span, other.span)
+    #
+    # Find the position to insert the current passage so all the
+    # passages are ordered by their span offsets.
+    #
+    found = False
+    i = 0
+    for i, other in enumerate(self.passages):
+        if p.start &lt; other.start:
+            found = True
+            break
+    if found:
+        self.passages = self.passages[:i] + [p] + self.passages[i:]
+    else:
+        self.passages += [p]</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList.entities"><code class="name flex">
+<span>def <span class="ident">entities</span></span>(<span>self, sort=False, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def entities(self, sort=False, make_deepcopy=False):
+    return self.nes().get(sort=sort, make_deepcopy=make_deepcopy)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList.get_entity_set"><code class="name flex">
+<span>def <span class="ident">get_entity_set</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_entity_set(self):
+    return self.nes().to_entity_set()</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList.iis"><code class="name flex">
+<span>def <span class="ident">iis</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def iis(self):
+    iis = IndexingIdentifierSet()
+    for p in self.passages:
+        for ii in p.iis:
+            iis.add(ii)
+    return iis</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList.indexing_identifiers"><code class="name flex">
+<span>def <span class="ident">indexing_identifiers</span></span>(<span>self, sort=False, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def indexing_identifiers(self, sort=False, make_deepcopy=False):
+    return self.iis().get(sort=sort, make_deepcopy=make_deepcopy)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList.json"><code class="name flex">
+<span>def <span class="ident">json</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def json(self):
+    d = list()
+    nes_i = 1
+    iis_i = 1
+    for p in self:
+        d.append(p.json(nes_i, iis_i))
+        nes_i += len(p.nes)
+        iis_i += len(p.iis)
+    return d</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList.nes"><code class="name flex">
+<span>def <span class="ident">nes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def nes(self):
+    nes = NormalizedEntitySet()
+    for p in self.passages:
+        for e in p.nes:
+            nes.add(e)
+    return nes</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList.passages_entities"><code class="name flex">
+<span>def <span class="ident">passages_entities</span></span>(<span>self, sort=False, make_deepcopy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def passages_entities(self, sort=False, make_deepcopy=False):
+    passages_entities = list()
+    for passage in self:
+        entities = passage.entities(sort=sort, make_deepcopy=make_deepcopy)
+        passages_entities.append(entities)
+    return passages_entities</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList.passages_spans"><code class="name flex">
+<span>def <span class="ident">passages_spans</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def passages_spans(self):
+    passages_spans = list()
+    for passage in self:
+        passages_spans.append(passage.span)
+    return passages_spans</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList.passages_texts"><code class="name flex">
+<span>def <span class="ident">passages_texts</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def passages_texts(self):
+    passages_texts = list()
+    for passage in self:
+        passages_texts.append(passage.text)
+    return passages_texts</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList.pretty_json"><code class="name flex">
+<span>def <span class="ident">pretty_json</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pretty_json(self):
+    return json.dumps(self.json(), indent=4, sort_keys=True)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList.span"><code class="name flex">
+<span>def <span class="ident">span</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the span containing all the passages.
+The start offset is always zero.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def span(self):
+    r&#34;&#34;&#34;
+    Return the span containing all the passages.
+    The start offset is always zero.
+    &#34;&#34;&#34;
+    start = 0
+    if len(self.passages) == 0:
+        end = 0
+    else:
+        end = self.passages[-1].end
+    return (start, end)</code></pre>
+</details>
+</dd>
+<dt id="polus.ner.elements.PassageOrderedList.text"><code class="name flex">
+<span>def <span class="ident">text</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the whole text containing all the text passages.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def text(self):
+    r&#34;&#34;&#34;
+    Return the whole text containing all the text passages.
+    &#34;&#34;&#34;
+    _, n = self.span()
+    text = [&#39; &#39;] * n
+    
+    for p in self.passages:
+        text[p.start:p.end] = p.text
+    
+    return &#39;&#39;.join(text)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="polus.ner" href="index.html">polus.ner</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="polus.ner.elements.add_offset_to_spans" href="#polus.ner.elements.add_offset_to_spans">add_offset_to_spans</a></code></li>
+<li><code><a title="polus.ner.elements.assert_valid_span" href="#polus.ner.elements.assert_valid_span">assert_valid_span</a></code></li>
+<li><code><a title="polus.ner.elements.get_entities_within_span" href="#polus.ner.elements.get_entities_within_span">get_entities_within_span</a></code></li>
+<li><code><a title="polus.ner.elements.get_non_overlapping_and_overlapping_entities" href="#polus.ner.elements.get_non_overlapping_and_overlapping_entities">get_non_overlapping_and_overlapping_entities</a></code></li>
+<li><code><a title="polus.ner.elements.merge_collections" href="#polus.ner.elements.merge_collections">merge_collections</a></code></li>
+<li><code><a title="polus.ner.elements.sort_identifiers" href="#polus.ner.elements.sort_identifiers">sort_identifiers</a></code></li>
+<li><code><a title="polus.ner.elements.span_contains_span" href="#polus.ner.elements.span_contains_span">span_contains_span</a></code></li>
+<li><code><a title="polus.ner.elements.span_overlaps_span" href="#polus.ner.elements.span_overlaps_span">span_overlaps_span</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="polus.ner.elements.Collection" href="#polus.ner.elements.Collection">Collection</a></code></h4>
+<ul class="two-column">
+<li><code><a title="polus.ner.elements.Collection.add" href="#polus.ner.elements.Collection.add">add</a></code></li>
+<li><code><a title="polus.ner.elements.Collection.add_metadata" href="#polus.ner.elements.Collection.add_metadata">add_metadata</a></code></li>
+<li><code><a title="polus.ner.elements.Collection.clear_entities" href="#polus.ner.elements.Collection.clear_entities">clear_entities</a></code></li>
+<li><code><a title="polus.ner.elements.Collection.get" href="#polus.ner.elements.Collection.get">get</a></code></li>
+<li><code><a title="polus.ner.elements.Collection.ids" href="#polus.ner.elements.Collection.ids">ids</a></code></li>
+<li><code><a title="polus.ner.elements.Collection.json" href="#polus.ner.elements.Collection.json">json</a></code></li>
+<li><code><a title="polus.ner.elements.Collection.pretty_json" href="#polus.ner.elements.Collection.pretty_json">pretty_json</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.ner.elements.Document" href="#polus.ner.elements.Document">Document</a></code></h4>
+<ul class="">
+<li><code><a title="polus.ner.elements.Document.add_passage" href="#polus.ner.elements.Document.add_passage">add_passage</a></code></li>
+<li><code><a title="polus.ner.elements.Document.add_passages" href="#polus.ner.elements.Document.add_passages">add_passages</a></code></li>
+<li><code><a title="polus.ner.elements.Document.clear_entities" href="#polus.ner.elements.Document.clear_entities">clear_entities</a></code></li>
+<li><code><a title="polus.ner.elements.Document.entities" href="#polus.ner.elements.Document.entities">entities</a></code></li>
+<li><code><a title="polus.ner.elements.Document.get_entity_set" href="#polus.ner.elements.Document.get_entity_set">get_entity_set</a></code></li>
+<li><code><a title="polus.ner.elements.Document.iis" href="#polus.ner.elements.Document.iis">iis</a></code></li>
+<li><code><a title="polus.ner.elements.Document.indexing_identifiers" href="#polus.ner.elements.Document.indexing_identifiers">indexing_identifiers</a></code></li>
+<li><code><a title="polus.ner.elements.Document.json" href="#polus.ner.elements.Document.json">json</a></code></li>
+<li><code><a title="polus.ner.elements.Document.nes" href="#polus.ner.elements.Document.nes">nes</a></code></li>
+<li><code><a title="polus.ner.elements.Document.passages_entities" href="#polus.ner.elements.Document.passages_entities">passages_entities</a></code></li>
+<li><code><a title="polus.ner.elements.Document.passages_spans" href="#polus.ner.elements.Document.passages_spans">passages_spans</a></code></li>
+<li><code><a title="polus.ner.elements.Document.passages_texts" href="#polus.ner.elements.Document.passages_texts">passages_texts</a></code></li>
+<li><code><a title="polus.ner.elements.Document.pretty_json" href="#polus.ner.elements.Document.pretty_json">pretty_json</a></code></li>
+<li><code><a title="polus.ner.elements.Document.set_entities" href="#polus.ner.elements.Document.set_entities">set_entities</a></code></li>
+<li><code><a title="polus.ner.elements.Document.set_indexing_identifiers" href="#polus.ner.elements.Document.set_indexing_identifiers">set_indexing_identifiers</a></code></li>
+<li><code><a title="polus.ner.elements.Document.set_mesh_indexing_identifiers" href="#polus.ner.elements.Document.set_mesh_indexing_identifiers">set_mesh_indexing_identifiers</a></code></li>
+<li><code><a title="polus.ner.elements.Document.span" href="#polus.ner.elements.Document.span">span</a></code></li>
+<li><code><a title="polus.ner.elements.Document.text" href="#polus.ner.elements.Document.text">text</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.ner.elements.Entity" href="#polus.ner.elements.Entity">Entity</a></code></h4>
+<ul class="">
+<li><code><a title="polus.ner.elements.Entity.json" href="#polus.ner.elements.Entity.json">json</a></code></li>
+<li><code><a title="polus.ner.elements.Entity.pretty_json" href="#polus.ner.elements.Entity.pretty_json">pretty_json</a></code></li>
+<li><code><a title="polus.ner.elements.Entity.to_normalized_entity" href="#polus.ner.elements.Entity.to_normalized_entity">to_normalized_entity</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.ner.elements.EntitySet" href="#polus.ner.elements.EntitySet">EntitySet</a></code></h4>
+<ul class="">
+<li><code><a title="polus.ner.elements.EntitySet.add" href="#polus.ner.elements.EntitySet.add">add</a></code></li>
+<li><code><a title="polus.ner.elements.EntitySet.difference" href="#polus.ner.elements.EntitySet.difference">difference</a></code></li>
+<li><code><a title="polus.ner.elements.EntitySet.get" href="#polus.ner.elements.EntitySet.get">get</a></code></li>
+<li><code><a title="polus.ner.elements.EntitySet.has" href="#polus.ner.elements.EntitySet.has">has</a></code></li>
+<li><code><a title="polus.ner.elements.EntitySet.intersection" href="#polus.ner.elements.EntitySet.intersection">intersection</a></code></li>
+<li><code><a title="polus.ner.elements.EntitySet.json" href="#polus.ner.elements.EntitySet.json">json</a></code></li>
+<li><code><a title="polus.ner.elements.EntitySet.pretty_json" href="#polus.ner.elements.EntitySet.pretty_json">pretty_json</a></code></li>
+<li><code><a title="polus.ner.elements.EntitySet.to_normalized_entity_set" href="#polus.ner.elements.EntitySet.to_normalized_entity_set">to_normalized_entity_set</a></code></li>
+<li><code><a title="polus.ner.elements.EntitySet.union" href="#polus.ner.elements.EntitySet.union">union</a></code></li>
+<li><code><a title="polus.ner.elements.EntitySet.update" href="#polus.ner.elements.EntitySet.update">update</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.ner.elements.IndexingIdentifier" href="#polus.ner.elements.IndexingIdentifier">IndexingIdentifier</a></code></h4>
+<ul class="">
+<li><code><a title="polus.ner.elements.IndexingIdentifier.json" href="#polus.ner.elements.IndexingIdentifier.json">json</a></code></li>
+<li><code><a title="polus.ner.elements.IndexingIdentifier.pretty_json" href="#polus.ner.elements.IndexingIdentifier.pretty_json">pretty_json</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.ner.elements.IndexingIdentifierSet" href="#polus.ner.elements.IndexingIdentifierSet">IndexingIdentifierSet</a></code></h4>
+<ul class="two-column">
+<li><code><a title="polus.ner.elements.IndexingIdentifierSet.add" href="#polus.ner.elements.IndexingIdentifierSet.add">add</a></code></li>
+<li><code><a title="polus.ner.elements.IndexingIdentifierSet.difference" href="#polus.ner.elements.IndexingIdentifierSet.difference">difference</a></code></li>
+<li><code><a title="polus.ner.elements.IndexingIdentifierSet.get" href="#polus.ner.elements.IndexingIdentifierSet.get">get</a></code></li>
+<li><code><a title="polus.ner.elements.IndexingIdentifierSet.has" href="#polus.ner.elements.IndexingIdentifierSet.has">has</a></code></li>
+<li><code><a title="polus.ner.elements.IndexingIdentifierSet.intersection" href="#polus.ner.elements.IndexingIdentifierSet.intersection">intersection</a></code></li>
+<li><code><a title="polus.ner.elements.IndexingIdentifierSet.json" href="#polus.ner.elements.IndexingIdentifierSet.json">json</a></code></li>
+<li><code><a title="polus.ner.elements.IndexingIdentifierSet.pretty_json" href="#polus.ner.elements.IndexingIdentifierSet.pretty_json">pretty_json</a></code></li>
+<li><code><a title="polus.ner.elements.IndexingIdentifierSet.union" href="#polus.ner.elements.IndexingIdentifierSet.union">union</a></code></li>
+<li><code><a title="polus.ner.elements.IndexingIdentifierSet.update" href="#polus.ner.elements.IndexingIdentifierSet.update">update</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.ner.elements.NormalizedEntity" href="#polus.ner.elements.NormalizedEntity">NormalizedEntity</a></code></h4>
+<ul class="">
+<li><code><a title="polus.ner.elements.NormalizedEntity.json" href="#polus.ner.elements.NormalizedEntity.json">json</a></code></li>
+<li><code><a title="polus.ner.elements.NormalizedEntity.set_identifiers" href="#polus.ner.elements.NormalizedEntity.set_identifiers">set_identifiers</a></code></li>
+<li><code><a title="polus.ner.elements.NormalizedEntity.to_entity" href="#polus.ner.elements.NormalizedEntity.to_entity">to_entity</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.ner.elements.NormalizedEntitySet" href="#polus.ner.elements.NormalizedEntitySet">NormalizedEntitySet</a></code></h4>
+<ul class="two-column">
+<li><code><a title="polus.ner.elements.NormalizedEntitySet.add" href="#polus.ner.elements.NormalizedEntitySet.add">add</a></code></li>
+<li><code><a title="polus.ner.elements.NormalizedEntitySet.difference" href="#polus.ner.elements.NormalizedEntitySet.difference">difference</a></code></li>
+<li><code><a title="polus.ner.elements.NormalizedEntitySet.has" href="#polus.ner.elements.NormalizedEntitySet.has">has</a></code></li>
+<li><code><a title="polus.ner.elements.NormalizedEntitySet.intersection" href="#polus.ner.elements.NormalizedEntitySet.intersection">intersection</a></code></li>
+<li><code><a title="polus.ner.elements.NormalizedEntitySet.to_entity_set" href="#polus.ner.elements.NormalizedEntitySet.to_entity_set">to_entity_set</a></code></li>
+<li><code><a title="polus.ner.elements.NormalizedEntitySet.union" href="#polus.ner.elements.NormalizedEntitySet.union">union</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.ner.elements.Passage" href="#polus.ner.elements.Passage">Passage</a></code></h4>
+<ul class="">
+<li><code><a title="polus.ner.elements.Passage.add_entities" href="#polus.ner.elements.Passage.add_entities">add_entities</a></code></li>
+<li><code><a title="polus.ner.elements.Passage.add_entity" href="#polus.ner.elements.Passage.add_entity">add_entity</a></code></li>
+<li><code><a title="polus.ner.elements.Passage.add_indexing_identifier" href="#polus.ner.elements.Passage.add_indexing_identifier">add_indexing_identifier</a></code></li>
+<li><code><a title="polus.ner.elements.Passage.add_indexing_identifiers" href="#polus.ner.elements.Passage.add_indexing_identifiers">add_indexing_identifiers</a></code></li>
+<li><code><a title="polus.ner.elements.Passage.entities" href="#polus.ner.elements.Passage.entities">entities</a></code></li>
+<li><code><a title="polus.ner.elements.Passage.get_entity_set" href="#polus.ner.elements.Passage.get_entity_set">get_entity_set</a></code></li>
+<li><code><a title="polus.ner.elements.Passage.indexing_identifiers" href="#polus.ner.elements.Passage.indexing_identifiers">indexing_identifiers</a></code></li>
+<li><code><a title="polus.ner.elements.Passage.json" href="#polus.ner.elements.Passage.json">json</a></code></li>
+<li><code><a title="polus.ner.elements.Passage.pretty_json" href="#polus.ner.elements.Passage.pretty_json">pretty_json</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="polus.ner.elements.PassageOrderedList" href="#polus.ner.elements.PassageOrderedList">PassageOrderedList</a></code></h4>
+<ul class="">
+<li><code><a title="polus.ner.elements.PassageOrderedList.add" href="#polus.ner.elements.PassageOrderedList.add">add</a></code></li>
+<li><code><a title="polus.ner.elements.PassageOrderedList.entities" href="#polus.ner.elements.PassageOrderedList.entities">entities</a></code></li>
+<li><code><a title="polus.ner.elements.PassageOrderedList.get_entity_set" href="#polus.ner.elements.PassageOrderedList.get_entity_set">get_entity_set</a></code></li>
+<li><code><a title="polus.ner.elements.PassageOrderedList.iis" href="#polus.ner.elements.PassageOrderedList.iis">iis</a></code></li>
+<li><code><a title="polus.ner.elements.PassageOrderedList.indexing_identifiers" href="#polus.ner.elements.PassageOrderedList.indexing_identifiers">indexing_identifiers</a></code></li>
+<li><code><a title="polus.ner.elements.PassageOrderedList.json" href="#polus.ner.elements.PassageOrderedList.json">json</a></code></li>
+<li><code><a title="polus.ner.elements.PassageOrderedList.nes" href="#polus.ner.elements.PassageOrderedList.nes">nes</a></code></li>
+<li><code><a title="polus.ner.elements.PassageOrderedList.passages_entities" href="#polus.ner.elements.PassageOrderedList.passages_entities">passages_entities</a></code></li>
+<li><code><a title="polus.ner.elements.PassageOrderedList.passages_spans" href="#polus.ner.elements.PassageOrderedList.passages_spans">passages_spans</a></code></li>
+<li><code><a title="polus.ner.elements.PassageOrderedList.passages_texts" href="#polus.ner.elements.PassageOrderedList.passages_texts">passages_texts</a></code></li>
+<li><code><a title="polus.ner.elements.PassageOrderedList.pretty_json" href="#polus.ner.elements.PassageOrderedList.pretty_json">pretty_json</a></code></li>
+<li><code><a title="polus.ner.elements.PassageOrderedList.span" href="#polus.ner.elements.PassageOrderedList.span">span</a></code></li>
+<li><code><a title="polus.ner.elements.PassageOrderedList.text" href="#polus.ner.elements.PassageOrderedList.text">text</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
