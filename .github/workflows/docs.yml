@@ -38,7 +38,7 @@ jobs:
           
       - name: Build docs
         run: |
-          pdoc -o docs polus
+          pdoc --docformat google -o docs polus
           rm docs/index.html
           cp docs/polus.html docs/index.html
 
