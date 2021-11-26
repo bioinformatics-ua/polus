@@ -1,12 +1,12 @@
 from setuptools import find_packages, setup
 from pip.req import parse_requirements
-
+import polus
 install_reqs = parse_requirements("requirements.txt")
 
 setup(
     name='polus',
     packages=find_packages(include=['polus*']),
-    version='0.1.6',
+    version=polus.__version__,
     description='A tensorflow based framework for training deep learning models',
     author='Tiago Almeida and Rui Antunes',
     author_email='tiagomeloalmeida@ua.pt',
