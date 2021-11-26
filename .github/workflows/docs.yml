@@ -40,10 +40,10 @@ jobs:
         run: pdoc -o docs polus
 
       # Runs a set of commands using the runners shell
-      - name: Reorganize the outputed docs
-        run: |
-          mv docs/polus/* docs
-          rmdir docs/polus
+      #- name: Reorganize the outputed docs
+      #  run: |
+      #    mv docs/polus/* docs
+      #    rmdir docs/polus
           
       - name: Deploy on gh-pages
         uses: s0/git-publish-subdir-action@develop
