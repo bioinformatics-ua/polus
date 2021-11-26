@@ -1,10 +1,11 @@
 r'''
 # Welcome to Polus!!!
 
-Polus is a simple functional training framework built on 
-TensorFlow and focused on academic research. As such, we offer
-a simple interface to build and expand the training of new neural
-models.
+Polus is a powerful tensorflow toolkit for creating/training 
+complex deep learning models in a functional way.
+
+This toolkit is currently under development and aims to focus on academic research,
+like biomedical tasks, although it can also also be used in other domains.
 
 # Main packages
 
@@ -17,6 +18,7 @@ retrieval) tasks.
 ## The main API
 
 The main API consists of:
+
 - **training.py**: Training API that contains the most basic training loop
 - **data.py**: DataLoaders API that extends the tf.data.Dataset functionality
  to build more useful data loaders with easy to use caching mechanisms.
