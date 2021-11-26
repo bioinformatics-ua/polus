@@ -23,10 +23,10 @@
 </header>
 <section id="section-intro">
 <h1 id="welcome-to-polus">Welcome to Polus!!!</h1>
-<p>Polus is a simple functional training framework built on
-TensorFlow and focused on academic research. As such, we offer
-a simple interface to build and expand the training of new neural
-models.</p>
+<p>Polus is a powerful tensorflow toolkit for creating/training
+complex deep learning models in a functional way.</p>
+<p>This toolkit is currently under development and aims to focus on academic research,
+like biomedical tasks, although it can also also be used in other domains.</p>
 <h1 id="main-packages">Main packages</h1>
 <p>Polus consists of a main API that resides under the polus package
 and more tasks specific APIs that will reside under the task name.
@@ -34,18 +34,20 @@ For instance, polus.ner and polus.ir are sub-packages that are
 focused on ner (named entity recognition) and ir (information
 retrieval) tasks. </p>
 <h2 id="the-main-api">The main API</h2>
-<p>The main API consists of:
-- <strong>training.py</strong>: Training API that contains the most basic training loop
-- <strong>data.py</strong>: DataLoaders API that extends the tf.data.Dataset functionality
-to build more useful data loaders with easy to use caching mechanisms.
-- <strong>callbacks.py</strong>: Main source of interaction with the main training loop
-- <strong>models.py</strong>: Model API define an extension of the tf.keras.Model by handling
-storing and loading of the entire model architecture.
-- <strong>metrics</strong>: Metrics API describe how metrics should be implemented so that can
-be efficiently used during the training loop.
-- `<strong>core</strong>: The Core API defines some base classes or variables that are used
+<p>The main API consists of:</p>
+<ul>
+<li><strong>training.py</strong>: Training API that contains the most basic training loop</li>
+<li><strong>data.py</strong>: DataLoaders API that extends the tf.data.Dataset functionality
+to build more useful data loaders with easy to use caching mechanisms.</li>
+<li><strong>callbacks.py</strong>: Main source of interaction with the main training loop</li>
+<li><strong>models.py</strong>: Model API define an extension of the tf.keras.Model by handling
+storing and loading of the entire model architecture.</li>
+<li><strong>metrics</strong>: Metrics API describe how metrics should be implemented so that can
+be efficiently used during the training loop.</li>
+<li>`<strong>core</strong>: The Core API defines some base classes or variables that are used
 through the framework. It also exposes some functions to change the internal
-behaviour of the polus framework, e.g., the use of XLA.</p>
+behaviour of the polus framework, e.g., the use of XLA.</li>
+</ul>
 <h2 id="remaining-of-the-polus-package">Remaining of the polus package</h2>
 <p>The remaining of the files not yet mentioned act as code repository and hold
 some utility classes, e.g. <strong>layers.py</strong> contains some ready to use layers that
@@ -65,10 +67,11 @@ enabled by default, which can be easily accessed by the polus.core API.</p>
 <pre><code class="python">r&#39;&#39;&#39;
 # Welcome to Polus!!!
 
-Polus is a simple functional training framework built on 
-TensorFlow and focused on academic research. As such, we offer
-a simple interface to build and expand the training of new neural
-models.
+Polus is a powerful tensorflow toolkit for creating/training 
+complex deep learning models in a functional way.
+
+This toolkit is currently under development and aims to focus on academic research,
+like biomedical tasks, although it can also also be used in other domains.
 
 # Main packages
 
@@ -81,6 +84,7 @@ retrieval) tasks.
 ## The main API
 
 The main API consists of:
+
 - **training.py**: Training API that contains the most basic training loop
 - **data.py**: DataLoaders API that extends the tf.data.Dataset functionality
  to build more useful data loaders with easy to use caching mechanisms.
