@@ -6,7 +6,7 @@ This toolkit is currently under development and aims to focus on biomedical task
 
 ### Documentation
 
-TO DO
+Still in work, but some of it can be already consulted here: https://bioinformatics-ua.github.io/polus/
 
 ### Team
   * Tiago Almeida<sup id="a1">[1](#f1)</sup>
