@@ -36,9 +36,6 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
-                    <a class="module" href="#this">this</a>
-            </li>
-            <li>
                     <a class="function" href="#set_jit_compile">set_jit_compile</a>
             </li>
             <li>
@@ -126,7 +123,6 @@ attribute is through its associated methods:</p>
 
 <span class="sd">&#39;&#39;&#39;</span>
 
-
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -136,8 +132,8 @@ attribute is through its associated methods:</p>
 
 
 <span class="c1"># module-wide variables</span>
-<span class="n">this</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span>
-<span class="n">this</span><span class="o">.</span><span class="n">jit_compile</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">_this</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span>
+<span class="n">_this</span><span class="o">.</span><span class="n">jit_compile</span><span class="o">=</span><span class="kc">True</span>
     
 <span class="k">def</span> <span class="nf">set_jit_compile</span><span class="p">(</span><span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -151,13 +147,13 @@ attribute is through its associated methods:</p>
 <span class="sd">    Returns:</span>
 <span class="sd">      None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">this</span><span class="o">.</span><span class="n">jit_compile</span><span class="o">=</span><span class="n">mode</span>
+    <span class="n">_this</span><span class="o">.</span><span class="n">jit_compile</span><span class="o">=</span><span class="n">mode</span>
 
 <span class="k">def</span> <span class="nf">get_jit_compile</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the value of the *jit_compile* attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">this</span><span class="o">.</span><span class="n">jit_compile</span>
+    <span class="k">return</span> <span class="n">_this</span><span class="o">.</span><span class="n">jit_compile</span>
     
 <span class="k">class</span> <span class="nc">BaseLogger</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logging_level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">log_name</span><span class="o">=</span><span class="s2">&quot;polus.log&quot;</span><span class="p">):</span>
@@ -304,237 +300,6 @@ attribute is through its associated methods:</p>
         </details>
 
             </section>
-                <section id="this">
-                                <div class="attr module"><a class="headerlink" href="#this">#&nbsp;&nbsp</a>
-<span class="name"><a href=""></a></span></div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
-
-<span class="sd"># Polus core </span>
-
-<span class="sd">Here we describe operations that are used through all packages </span>
-<span class="sd">of this toolkit.</span>
-
-<span class="sd">Furthermore, the package core has module-wide variables that </span>
-<span class="sd">govern some internal behaviour of this framework. For instance, </span>
-<span class="sd">polus.core has a jit_compile attribute that controls </span>
-<span class="sd">the utilization of XLA during the code conversion to static </span>
-<span class="sd">computational graphs, the correct way to write or read this </span>
-<span class="sd">attribute is through its associated methods:</span>
-
-<span class="sd">```python</span>
-
-<span class="sd">from polus.core import set_jit_compile, get_jit_compile</span>
-
-<span class="sd">print(get_jit_compile()) # True</span>
-<span class="sd">set_jit_compile(False) #False</span>
-<span class="sd">print(get_jit_compile()) # False</span>
-
-<span class="sd">```</span>
-
-<span class="sd">&#39;&#39;&#39;</span>
-
-
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
-<span class="kn">from</span> <span class="nn">logging.handlers</span> <span class="kn">import</span> <span class="n">TimedRotatingFileHandler</span>
-
-
-
-<span class="c1"># module-wide variables</span>
-<span class="n">this</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span>
-<span class="n">this</span><span class="o">.</span><span class="n">jit_compile</span><span class="o">=</span><span class="kc">True</span>
-    
-<span class="k">def</span> <span class="nf">set_jit_compile</span><span class="p">(</span><span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Changes the *jit_compile* attribute.</span>
-<span class="sd">    </span>
-<span class="sd">    Args:</span>
-<span class="sd">      mode (bool): Boolean variable that defines the utilization of</span>
-<span class="sd">        jit_compiler during build of computation graphs, which enables</span>
-<span class="sd">        XLA compiler.</span>
-<span class="sd">        </span>
-<span class="sd">    Returns:</span>
-<span class="sd">      None</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">this</span><span class="o">.</span><span class="n">jit_compile</span><span class="o">=</span><span class="n">mode</span>
-
-<span class="k">def</span> <span class="nf">get_jit_compile</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Reads the value of the *jit_compile* attribute.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">this</span><span class="o">.</span><span class="n">jit_compile</span>
-    
-<span class="k">class</span> <span class="nc">BaseLogger</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logging_level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">log_name</span><span class="o">=</span><span class="s2">&quot;polus.log&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Base logging class, this sets a console and file log handler to each</span>
-<span class="sd">        instance. Meaning that each call to the logger will write to both </span>
-<span class="sd">        handlers. </span>
-<span class="sd">        </span>
-<span class="sd">        Furthermore, the intended behaviour is to classes to extend this BaseLogger</span>
-<span class="sd">        classe and by doing this, any class can access to the logger property</span>
-<span class="sd">        Note that multiple instances use the same handler</span>
-<span class="sd">        </span>
-<span class="sd">        Main ideas from: https://www.toptal.com/python/in-depth-python-logging</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        
-        <span class="c1"># Note by: Tiago</span>
-        <span class="c1"># This is a bad solution if the framework scales to a lot of</span>
-        <span class="c1"># instance during the training of a object.</span>
-        <span class="c1"># If needed consider to change to a more managle behaviour</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">hasHandlers</span><span class="p">():</span>
-            
-            <span class="n">FORMATTER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> — </span><span class="si">%(name)s</span><span class="s2"> — </span><span class="si">%(levelname)s</span><span class="s2"> — </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">)</span>
-            
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
-
-            <span class="n">console_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
-            <span class="n">console_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">FORMATTER</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">console_handler</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;logs&#39;</span><span class="p">):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;logs&#39;</span><span class="p">)</span>
-
-            <span class="n">file_handler</span> <span class="o">=</span> <span class="n">TimedRotatingFileHandler</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">,</span> <span class="n">log_name</span><span class="p">),</span> <span class="n">when</span><span class="o">=</span><span class="s1">&#39;midnight&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-            <span class="n">file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">FORMATTER</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
-    
-    <span class="k">def</span> <span class="nf">set_logging_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logging_level</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        </span>
-<span class="sd">        Args:</span>
-<span class="sd">          logging_level (int): A valid logging level supperted by the</span>
-<span class="sd">            logging package, see https://docs.python.org/3/library/logging.html#logging-levels</span>
-<span class="sd">            </span>
-<span class="sd">        Returns:</span>
-<span class="sd">          None</span>
-<span class="sd">        </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
-        
-        
-<span class="k">def</span> <span class="nf">find_dtype_and_shapes</span><span class="p">(</span><span class="n">data_generator</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Automatically infer the data type and shapes of the samples from </span>
-<span class="sd">    the *data_generator*. This function is highly used in polus.data.</span>
-<span class="sd">    </span>
-<span class="sd">    Args:</span>
-<span class="sd">      data_generator (python generator): python generator that output</span>
-<span class="sd">        samples in a **dictionary** format.</span>
-<span class="sd">        </span>
-<span class="sd">      k (int): Number of samples that are output from *data_generator*</span>
-<span class="sd">        in order to correctly infer the shape of each dictionary value.</span>
-<span class="sd">        For instance, if a sample contains a dynamic shape, this function</span>
-<span class="sd">        will return None in the place of the dimension that as a dynamic </span>
-<span class="sd">        shape.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># get one sample</span>
-    <span class="k">assert</span> <span class="n">k</span><span class="o">&gt;</span><span class="mi">0</span>
-    <span class="n">generator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data_generator</span><span class="p">)</span>
-    <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">]</span>
-
-    
-            
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
-        
-        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">shapes</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">tf_value</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">key</span><span class="p">])</span>
-            <span class="n">dtypes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tf_value</span><span class="o">.</span><span class="n">dtype</span>
-            <span class="n">shapes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tf_value</span><span class="o">.</span><span class="n">shape</span>
-
-
-        <span class="c1"># infer the shape since it can be None if some dim is not in agreement </span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">==</span> <span class="mi">0</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">tf_value</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">key</span><span class="p">])</span>
-
-                <span class="c1"># they must have the same dimensionality, but can have diff values per dimension</span>
-                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">tf_value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">shapes</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-
-                <span class="c1"># sample with diff value in one of the dimensions</span>
-                <span class="k">if</span> <span class="n">tf_value</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shapes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
-                    <span class="n">new_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">shapes</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shapes</span><span class="p">[</span><span class="n">key</span><span class="p">])):</span>
-                        <span class="k">if</span> <span class="n">shapes</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shapes</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">!=</span><span class="n">tf_value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
-                            <span class="n">new_shape</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="n">shapes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">TensorShape</span><span class="p">(</span><span class="n">new_shape</span><span class="p">)</span>
-
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The find_dtype_and_shapes only supports when the sample came from generator are dict but found </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">dtypes</span><span class="p">,</span> <span class="n">shapes</span>
-
-
-<span class="k">def</span> <span class="nf">execute_if</span><span class="p">(</span><span class="n">condition_var</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A decorated function that restricts the execution of a specific</span>
-<span class="sd">    function based on a condition. This is useful for instance methods</span>
-<span class="sd">    that we only want to be called based on a simple condition.</span>
-<span class="sd">    </span>
-<span class="sd">    Args:</span>
-<span class="sd">      condition_var (boolean): Boolean expression that will be evaluated</span>
-<span class="sd">        when the decorated method is called.</span>
-<span class="sd">      </span>
-<span class="sd">      error_message (str): A printable error message to be displayed when</span>
-<span class="sd">        the condition fails.</span>
-<span class="sd">        </span>
-<span class="sd">      on (boolean): The condition that the *condition_var* is evaluated</span>
-<span class="sd">        against, by default the decorated method executes if *condition_var*</span>
-<span class="sd">        is True.</span>
-<span class="sd">    </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-        <span class="k">def</span> <span class="nf">function_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-
-            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition_var</span><span class="p">)</span> <span class="o">==</span> <span class="n">on</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">error_message</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">function_wrapper</span>
-    
-    <span class="k">return</span> <span class="n">decorator</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><h1 id="polus-core">Polus core</h1>
-
-<p>Here we describe operations that are used through all packages 
-of this toolkit.</p>
-
-<p>Furthermore, the package core has module-wide variables that 
-govern some internal behaviour of this framework. For instance, 
-<a href="">polus.core</a> has a jit_compile attribute that controls 
-the utilization of XLA during the code conversion to static 
-computational graphs, the correct way to write or read this 
-attribute is through its associated methods:</p>
-
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn"><a href="">polus.core</a></span> <span class="kn">import</span> <span class="n">set_jit_compile</span><span class="p">,</span> <span class="n">get_jit_compile</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">get_jit_compile</span><span class="p">())</span> <span class="c1"># True</span>
-<span class="n">set_jit_compile</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span> <span class="c1">#False</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">get_jit_compile</span><span class="p">())</span> <span class="c1"># False</span>
-</code></pre></div>
-</div>
-
-
-                </section>
                 <section id="set_jit_compile">
                             <div class="attr function"><a class="headerlink" href="#set_jit_compile">#&nbsp;&nbsp</a>
 
@@ -557,7 +322,7 @@ attribute is through its associated methods:</p>
 <span class="sd">    Returns:</span>
 <span class="sd">      None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">this</span><span class="o">.</span><span class="n">jit_compile</span><span class="o">=</span><span class="n">mode</span>
+    <span class="n">_this</span><span class="o">.</span><span class="n">jit_compile</span><span class="o">=</span><span class="n">mode</span>
 </pre></div>
 
         </details>
@@ -589,7 +354,7 @@ attribute is through its associated methods:</p>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the value of the *jit_compile* attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">this</span><span class="o">.</span><span class="n">jit_compile</span>
+    <span class="k">return</span> <span class="n">_this</span><span class="o">.</span><span class="n">jit_compile</span>
 </pre></div>
 
         </details>
