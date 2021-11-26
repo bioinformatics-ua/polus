@@ -37,13 +37,16 @@ jobs:
           
           
       - name: Build docs
-        run: pdoc --html --force --output-dir docs polus
+        run: |
+          pdoc -o docs polus
+          rm docs/index.html
+          cp docs/polus.html docs/index.html
 
       # Runs a set of commands using the runners shell
-      - name: Reorganize the outputed docs
-        run: |
-          mv docs/polus/* docs
-          rmdir docs/polus
+      #- name: Reorganize the outputed docs
+      #  run: |
+      #    mv docs/polus/* docs
+      #    rmdir docs/polus
           
       - name: Deploy on gh-pages
         uses: s0/git-publish-subdir-action@develop
