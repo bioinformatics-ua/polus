@@ -7,7 +7,7 @@ import polus
 install_reqs = parse_requirements("requirements.txt", session=False)
 
 # https://stackoverflow.com/questions/62114945/attributeerror-parsedrequirement-object-has-no-attribute-req
-requirements = list(requirements) 
+#requirements = list(requirements) 
 try:
     requirements = [str(ir.req) for ir in install_reqs]
 except:
