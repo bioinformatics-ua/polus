@@ -12,13 +12,13 @@ efficient preprocessing, hence the main classes here are the DataLoaders.
   generators to highly efficient *tf.data.Dataset*. Furthermore, it also supports
   GPU preprocessing which differs from *tf.data.Dataset*, since it only runs on CPU
   
-- `polus.data.CachedDataLoader`: Extension of *polus.DataLoader*, adds the ability to seamlessly
+- `polus.data.CachedDataLoader`: Extension of `polus.DataLoader`, adds the ability to seamlessly
   store the preprocessed samples in the disk, following a chunking mechanism. Besides the 
   organizational advantage, this also enables us to implement a *pre_shuffle* mechanism
-  that occurs at the chunk level, making it a must more efficient process since we can
-  fully shuffle the dataset without the need to have its memory. 
+  that occurs at the chunk level, making it a much more efficient process since we can
+  fully shuffle the dataset without the need to have it in memory. 
 
-- `polus.data.CachedDataLoaderwLookup`: Extension of *polus.CachedDataLoaderwLookup*, adds the 
+- `polus.data.CachedDataLoaderwLookup`: Extension of `polus.data.CachedDataLoader`, adds the 
   functionality to store arbitrary python objects jointly with the stored DataLoader.
   Note for storing python objects we use the *pickle* library.
 

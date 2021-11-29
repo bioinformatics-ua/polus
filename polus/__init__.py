@@ -34,7 +34,7 @@ The main API consists of:
 ## Remaining of the polus package
 
 The remaining of the files not yet mentioned act as code repository and hold
-some utility classes, e.g. **layers.py** contains some ready to use layers that
+some utility classes, e.g. `polus.layers.py` contains some ready to use layers that
 can be imported and used by tf.keras.Model(s).
 
 # Notebooks and examples

@@ -118,9 +118,11 @@ class BaseTrainer(BaseLogger):
             of dictionary of tf.Tensor.
             
         Returns:
-          (multiple tf.Tensor or dicts): inputs that are given to the self.loss
-            function. 
+          (multiple tf.Tensor or dicts): inputs that are **given to the self.loss
+            function**.
         
+        Raises:
+          NotImplementedError: if this method is not implemented
         """
         raise NotImplementedError("foward_with_grads function must be implemented in order to compute a loss value for optimization")
     
@@ -183,12 +185,12 @@ class BaseTrainer(BaseLogger):
               tf_dataset, 
               epochs,
               callbacks=[],
-              custom_data_transform_f=None,
+              train_map_f=None,
               steps = None,
-              learning_rate = None):
+              **kwargs):
         """
         Implements the main training loop, where the model is trained by
-        iterativly executing the *train_step* for every *tf_dataset* sample
+        iteratively executing the *train_step* for every *tf_dataset* sample
         during a specific amount of epoch*.
         
         Args:
@@ -196,17 +198,30 @@ class BaseTrainer(BaseLogger):
             with the tf.data.Dataset class, which is the case for every
             data loader in `polus.data`.
           
-          epochs (int): Number of training epoch that will run during the 
+          epochs (int): Number of training epochs that will run during the 
             training procedure.
             
-          callbacks (list of `polus.callbacks.ICallback): List of callbacks
+          callbacks (list of `polus.callbacks.ICallback`): List of callbacks
             that are triger during the main training loop. Use this to 
             perform operations outside each *train_step* call.
+            
+          train_map_f (func): A optional python function that maps the samples
+            from the *tf_dataset* before the *train_step* execution. This 
+            function should be implemented if we want to explicit change the 
+            data samples that are fed to the *train_step* function.
+            
+          steps (int): Number of iterations need to empty the *tf_dataset*
+            this value is optional since it is only used as user feedback, and 
+            has no influence on the behaviour of the training loop.
         """
         if steps is None:
             N_STEPS = tf.data.experimental.cardinality(tf_dataset).numpy()
         else:
             N_STEPS = steps
+        
+        # make backwards compatability
+        if "custom_data_transform_f" in kwargs:
+            train_map_f = kwargs.pop("custom_data_transform_f")
         
         if not isinstance(callbacks, CallbackCoordinator):
             callbacks = CallbackCoordinator(callbacks,
@@ -222,8 +237,8 @@ class BaseTrainer(BaseLogger):
             for step, data in enumerate(tf_dataset):
                 callbacks.on_train_batch_begin(epoch, step)
                 
-                if custom_data_transform_f is not None:
-                    data = custom_data_transform_f(data)
+                if train_map_f is not None:
+                    data = train_map_f(data)
                 
                 loss = self.train_step(*data)
                 
@@ -269,7 +284,26 @@ class ClassifierTrainer(BaseTrainer):
         super().__init__(*args, **kwargs)
     
     def foward_with_grads(self, x, y):
+        """
+        Override of ´polus.training.BaseTrainer.foward_with_grads´
         
+        Args:
+          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): 
+            Samples, in a TensorFlow format, that are fed to the model.
+            
+          y (object): The true label associated with the model, this
+            normally are represented as integer or float.
+            
+        Returns:
+          y (object): The true label associated with the model, this
+            normally are represented as integer or float.
+            
+          logits (tf.Tensor): prediction of the model over the input
+            data *x*.
+            
+        Note that the return values are dirictly passed to the loss
+        function.
+        """ 
         logits = self.model(x, training=True)
             
         if self.post_process_logits is not None:
