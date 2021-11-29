@@ -205,9 +205,11 @@
 <span class="sd">            of dictionary of tf.Tensor.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">          (multiple tf.Tensor or dicts): inputs that are given to the self.loss</span>
-<span class="sd">            function. </span>
+<span class="sd">          (multiple tf.Tensor or dicts): inputs that are **given to the self.loss</span>
+<span class="sd">            function**.</span>
 <span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">          NotImplementedError: if this method is not implemented</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;foward_with_grads function must be implemented in order to compute a loss value for optimization&quot;</span><span class="p">)</span>
     
@@ -270,12 +272,12 @@
               <span class="n">tf_dataset</span><span class="p">,</span> 
               <span class="n">epochs</span><span class="p">,</span>
               <span class="n">callbacks</span><span class="o">=</span><span class="p">[],</span>
-              <span class="n">custom_data_transform_f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">train_map_f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">steps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-              <span class="n">learning_rate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Implements the main training loop, where the model is trained by</span>
-<span class="sd">        iterativly executing the *train_step* for every *tf_dataset* sample</span>
+<span class="sd">        iteratively executing the *train_step* for every *tf_dataset* sample</span>
 <span class="sd">        during a specific amount of epoch*.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
@@ -283,17 +285,30 @@
 <span class="sd">            with the tf.data.Dataset class, which is the case for every</span>
 <span class="sd">            data loader in `polus.data`.</span>
 <span class="sd">          </span>
-<span class="sd">          epochs (int): Number of training epoch that will run during the </span>
+<span class="sd">          epochs (int): Number of training epochs that will run during the </span>
 <span class="sd">            training procedure.</span>
 <span class="sd">            </span>
-<span class="sd">          callbacks (list of `polus.callbacks.ICallback): List of callbacks</span>
+<span class="sd">          callbacks (list of `polus.callbacks.ICallback`): List of callbacks</span>
 <span class="sd">            that are triger during the main training loop. Use this to </span>
 <span class="sd">            perform operations outside each *train_step* call.</span>
+<span class="sd">            </span>
+<span class="sd">          train_map_f (func): A optional python function that maps the samples</span>
+<span class="sd">            from the *tf_dataset* before the *train_step* execution. This </span>
+<span class="sd">            function should be implemented if we want to explicit change the </span>
+<span class="sd">            data samples that are fed to the *train_step* function.</span>
+<span class="sd">            </span>
+<span class="sd">          steps (int): Number of iterations need to empty the *tf_dataset*</span>
+<span class="sd">            this value is optional since it is only used as user feedback, and </span>
+<span class="sd">            has no influence on the behaviour of the training loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">N_STEPS</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">cardinality</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">N_STEPS</span> <span class="o">=</span> <span class="n">steps</span>
+        
+        <span class="c1"># make backwards compatability</span>
+        <span class="k">if</span> <span class="s2">&quot;custom_data_transform_f&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">train_map_f</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;custom_data_transform_f&quot;</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackCoordinator</span><span class="p">):</span>
             <span class="n">callbacks</span> <span class="o">=</span> <span class="n">CallbackCoordinator</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span>
@@ -309,8 +324,8 @@
             <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">):</span>
                 <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
                 
-                <span class="k">if</span> <span class="n">custom_data_transform_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">custom_data_transform_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 
                 <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
                 
@@ -356,7 +371,26 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">foward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override of ´polus.training.BaseTrainer.foward_with_grads´</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): </span>
+<span class="sd">            Samples, in a TensorFlow format, that are fed to the model.</span>
+<span class="sd">            </span>
+<span class="sd">          y (object): The true label associated with the model, this</span>
+<span class="sd">            normally are represented as integer or float.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">          y (object): The true label associated with the model, this</span>
+<span class="sd">            normally are represented as integer or float.</span>
+<span class="sd">            </span>
+<span class="sd">          logits (tf.Tensor): prediction of the model over the input</span>
+<span class="sd">            data *x*.</span>
+<span class="sd">            </span>
+<span class="sd">        Note that the return values are dirictly passed to the loss</span>
+<span class="sd">        function.</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
         <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -495,9 +529,11 @@
 <span class="sd">            of dictionary of tf.Tensor.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">          (multiple tf.Tensor or dicts): inputs that are given to the self.loss</span>
-<span class="sd">            function. </span>
+<span class="sd">          (multiple tf.Tensor or dicts): inputs that are **given to the self.loss</span>
+<span class="sd">            function**.</span>
 <span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">          NotImplementedError: if this method is not implemented</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;foward_with_grads function must be implemented in order to compute a loss value for optimization&quot;</span><span class="p">)</span>
     
@@ -560,12 +596,12 @@
               <span class="n">tf_dataset</span><span class="p">,</span> 
               <span class="n">epochs</span><span class="p">,</span>
               <span class="n">callbacks</span><span class="o">=</span><span class="p">[],</span>
-              <span class="n">custom_data_transform_f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">train_map_f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">steps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-              <span class="n">learning_rate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Implements the main training loop, where the model is trained by</span>
-<span class="sd">        iterativly executing the *train_step* for every *tf_dataset* sample</span>
+<span class="sd">        iteratively executing the *train_step* for every *tf_dataset* sample</span>
 <span class="sd">        during a specific amount of epoch*.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
@@ -573,17 +609,30 @@
 <span class="sd">            with the tf.data.Dataset class, which is the case for every</span>
 <span class="sd">            data loader in `polus.data`.</span>
 <span class="sd">          </span>
-<span class="sd">          epochs (int): Number of training epoch that will run during the </span>
+<span class="sd">          epochs (int): Number of training epochs that will run during the </span>
 <span class="sd">            training procedure.</span>
 <span class="sd">            </span>
-<span class="sd">          callbacks (list of `polus.callbacks.ICallback): List of callbacks</span>
+<span class="sd">          callbacks (list of `polus.callbacks.ICallback`): List of callbacks</span>
 <span class="sd">            that are triger during the main training loop. Use this to </span>
 <span class="sd">            perform operations outside each *train_step* call.</span>
+<span class="sd">            </span>
+<span class="sd">          train_map_f (func): A optional python function that maps the samples</span>
+<span class="sd">            from the *tf_dataset* before the *train_step* execution. This </span>
+<span class="sd">            function should be implemented if we want to explicit change the </span>
+<span class="sd">            data samples that are fed to the *train_step* function.</span>
+<span class="sd">            </span>
+<span class="sd">          steps (int): Number of iterations need to empty the *tf_dataset*</span>
+<span class="sd">            this value is optional since it is only used as user feedback, and </span>
+<span class="sd">            has no influence on the behaviour of the training loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">N_STEPS</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">cardinality</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">N_STEPS</span> <span class="o">=</span> <span class="n">steps</span>
+        
+        <span class="c1"># make backwards compatability</span>
+        <span class="k">if</span> <span class="s2">&quot;custom_data_transform_f&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">train_map_f</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;custom_data_transform_f&quot;</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackCoordinator</span><span class="p">):</span>
             <span class="n">callbacks</span> <span class="o">=</span> <span class="n">CallbackCoordinator</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span>
@@ -599,8 +648,8 @@
             <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">):</span>
                 <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
                 
-                <span class="k">if</span> <span class="n">custom_data_transform_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">custom_data_transform_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 
                 <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
                 
@@ -820,9 +869,11 @@ of dictionary of tf.Tensor.</li>
 <span class="sd">            of dictionary of tf.Tensor.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">          (multiple tf.Tensor or dicts): inputs that are given to the self.loss</span>
-<span class="sd">            function. </span>
+<span class="sd">          (multiple tf.Tensor or dicts): inputs that are **given to the self.loss</span>
+<span class="sd">            function**.</span>
 <span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">          NotImplementedError: if this method is not implemented</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;foward_with_grads function must be implemented in order to compute a loss value for optimization&quot;</span><span class="p">)</span>
 </pre></div>
@@ -849,9 +900,15 @@ of dictionary of tf.Tensor.</li>
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>(multiple tf.Tensor or dicts): inputs that are given to the self.loss
-    function.</p>
+  <p>(multiple tf.Tensor or dicts): inputs that are <strong>given to the self.loss
+    function</strong>.</p>
 </blockquote>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong>NotImplementedError:</strong>  if this method is not implemented</li>
+</ul>
 </div>
 
 
@@ -977,9 +1034,9 @@ fast.ai</p>
     tf_dataset,
     epochs,
     callbacks=[],
-    custom_data_transform_f=None,
+    train_map_f=None,
     steps=None,
-    learning_rate=None
+    **kwargs
 )</span>:
     </div>
 
@@ -989,12 +1046,12 @@ fast.ai</p>
               <span class="n">tf_dataset</span><span class="p">,</span> 
               <span class="n">epochs</span><span class="p">,</span>
               <span class="n">callbacks</span><span class="o">=</span><span class="p">[],</span>
-              <span class="n">custom_data_transform_f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">train_map_f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">steps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-              <span class="n">learning_rate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Implements the main training loop, where the model is trained by</span>
-<span class="sd">        iterativly executing the *train_step* for every *tf_dataset* sample</span>
+<span class="sd">        iteratively executing the *train_step* for every *tf_dataset* sample</span>
 <span class="sd">        during a specific amount of epoch*.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
@@ -1002,17 +1059,30 @@ fast.ai</p>
 <span class="sd">            with the tf.data.Dataset class, which is the case for every</span>
 <span class="sd">            data loader in `polus.data`.</span>
 <span class="sd">          </span>
-<span class="sd">          epochs (int): Number of training epoch that will run during the </span>
+<span class="sd">          epochs (int): Number of training epochs that will run during the </span>
 <span class="sd">            training procedure.</span>
 <span class="sd">            </span>
-<span class="sd">          callbacks (list of `polus.callbacks.ICallback): List of callbacks</span>
+<span class="sd">          callbacks (list of `polus.callbacks.ICallback`): List of callbacks</span>
 <span class="sd">            that are triger during the main training loop. Use this to </span>
 <span class="sd">            perform operations outside each *train_step* call.</span>
+<span class="sd">            </span>
+<span class="sd">          train_map_f (func): A optional python function that maps the samples</span>
+<span class="sd">            from the *tf_dataset* before the *train_step* execution. This </span>
+<span class="sd">            function should be implemented if we want to explicit change the </span>
+<span class="sd">            data samples that are fed to the *train_step* function.</span>
+<span class="sd">            </span>
+<span class="sd">          steps (int): Number of iterations need to empty the *tf_dataset*</span>
+<span class="sd">            this value is optional since it is only used as user feedback, and </span>
+<span class="sd">            has no influence on the behaviour of the training loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">N_STEPS</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">cardinality</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">N_STEPS</span> <span class="o">=</span> <span class="n">steps</span>
+        
+        <span class="c1"># make backwards compatability</span>
+        <span class="k">if</span> <span class="s2">&quot;custom_data_transform_f&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">train_map_f</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;custom_data_transform_f&quot;</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackCoordinator</span><span class="p">):</span>
             <span class="n">callbacks</span> <span class="o">=</span> <span class="n">CallbackCoordinator</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span>
@@ -1028,8 +1098,8 @@ fast.ai</p>
             <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">):</span>
                 <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
                 
-                <span class="k">if</span> <span class="n">custom_data_transform_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">custom_data_transform_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 
                 <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
                 
@@ -1046,7 +1116,7 @@ fast.ai</p>
         </details>
 
             <div class="docstring"><p>Implements the main training loop, where the model is trained by
-iterativly executing the <em>train_step</em> for every <em>tf_dataset</em> sample
+iteratively executing the <em>train_step</em> for every <em>tf_dataset</em> sample
 during a specific amount of epoch*.</p>
 
 <h6 id="args">Args</h6>
@@ -1055,11 +1125,18 @@ during a specific amount of epoch*.</p>
 <li><strong>tf_dataset (tf.data.Dataset):</strong>  Training dataset that is compatible 
 with the tf.data.Dataset class, which is the case for every
 data loader in <code><a href="data.html">polus.data</a></code>.</li>
-<li><strong>epochs (int):</strong>  Number of training epoch that will run during the 
+<li><strong>epochs (int):</strong>  Number of training epochs that will run during the 
 training procedure.</li>
-<li><strong>callbacks (list of `<a href="callbacks.html#ICallback">polus.callbacks.ICallback</a>):</strong>  List of callbacks
+<li><strong>callbacks (list of <code><a href="callbacks.html#ICallback">polus.callbacks.ICallback</a></code>):</strong>  List of callbacks
 that are triger during the main training loop. Use this to 
 perform operations outside each <em>train_step</em> call.</li>
+<li><strong>train_map_f (func):</strong>  A optional python function that maps the samples
+from the <em>tf_dataset</em> before the <em>train_step</em> execution. This 
+function should be implemented if we want to explicit change the 
+data samples that are fed to the <em>train_step</em> function.</li>
+<li><strong>steps (int):</strong>  Number of iterations need to empty the <em>tf_dataset</em>
+this value is optional since it is only used as user feedback, and 
+has no influence on the behaviour of the training loop.</li>
 </ul>
 </div>
 
@@ -1118,7 +1195,26 @@ perform operations outside each <em>train_step</em> call.</li>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">foward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override of ´polus.training.BaseTrainer.foward_with_grads´</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): </span>
+<span class="sd">            Samples, in a TensorFlow format, that are fed to the model.</span>
+<span class="sd">            </span>
+<span class="sd">          y (object): The true label associated with the model, this</span>
+<span class="sd">            normally are represented as integer or float.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">          y (object): The true label associated with the model, this</span>
+<span class="sd">            normally are represented as integer or float.</span>
+<span class="sd">            </span>
+<span class="sd">          logits (tf.Tensor): prediction of the model over the input</span>
+<span class="sd">            data *x*.</span>
+<span class="sd">            </span>
+<span class="sd">        Note that the return values are dirictly passed to the loss</span>
+<span class="sd">        function.</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
         <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1200,7 +1296,26 @@ base class.</li>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">foward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override of ´polus.training.BaseTrainer.foward_with_grads´</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): </span>
+<span class="sd">            Samples, in a TensorFlow format, that are fed to the model.</span>
+<span class="sd">            </span>
+<span class="sd">          y (object): The true label associated with the model, this</span>
+<span class="sd">            normally are represented as integer or float.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">          y (object): The true label associated with the model, this</span>
+<span class="sd">            normally are represented as integer or float.</span>
+<span class="sd">            </span>
+<span class="sd">          logits (tf.Tensor): prediction of the model over the input</span>
+<span class="sd">            data *x*.</span>
+<span class="sd">            </span>
+<span class="sd">        Note that the return values are dirictly passed to the loss</span>
+<span class="sd">        function.</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
         <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1212,29 +1327,28 @@ base class.</li>
 
         </details>
 
-            <div class="docstring"><p>Describes the computations required to produce the final loss 
-value from a predifined model or models.</p>
-
-<p>Note, that foward_with_grads may use self.post_process_logits</p>
-
-<p>This method can be further decorated with tf.function with 
-input_signature so that it can be called from lr_finder 
-and train_step without rebuilding the computation graph</p>
+            <div class="docstring"><p>Override of ´<a href="#BaseTrainer.foward_with_grads">polus.training.BaseTrainer.foward_with_grads</a>´</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>inputs (multiple tf.Tensor or dicts):</strong>  These are the model inputs
-normally these would be a list of tf.Tensors or a list
-of dictionary of tf.Tensor.</li>
+<li><strong>x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)):</strong>   Samples, in a TensorFlow format, that are fed to the model.</li>
+<li><strong>y (object):</strong>  The true label associated with the model, this
+normally are represented as integer or float.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>(multiple tf.Tensor or dicts): inputs that are given to the self.loss
-    function.</p>
+  <p>y (object): The true label associated with the model, this
+    normally are represented as integer or float.</p>
+  
+  <p>logits (tf.Tensor): prediction of the model over the input
+    data <em>x</em>.</p>
 </blockquote>
+
+<p>Note that the return values are dirictly passed to the loss
+function.</p>
 </div>
 
 
