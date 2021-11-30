@@ -261,7 +261,6 @@ class ClassifierTrainer(BaseTrainer):
     """
     def __init__(self, 
                  *args,
-                 trainable_weights = None,
                  **kwargs):
         """
         Args:
@@ -276,11 +275,6 @@ class ClassifierTrainer(BaseTrainer):
           kwargs: keyword arguments that are passed into the
             base class.
         """
-        if trainable_weights is None:
-            self.trainable_weights = model.trainable_weights
-        else:
-            self.trainable_weights = trainable_weights
-        
         super().__init__(*args, **kwargs)
     
     def foward_with_grads(self, x, y):
