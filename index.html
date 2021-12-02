@@ -58,6 +58,13 @@
                             <li><a href="polus/utils.html">polus.utils</a></li>
                     </ul>
 
+                    <h2>API Documentation</h2>
+                        <ul class="memberlist">
+            <li>
+                    <a class="module" href="#polus">polus</a>
+            </li>
+    </ul>
+
 
 
                     <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
@@ -181,11 +188,160 @@ enabled by default, which can be easily accessed by the <a href="polus/core.html
 <span class="sd">&#39;&#39;&#39;</span>
 
 <span class="n">__version__</span><span class="o">=</span><span class="s2">&quot;0.1.6&quot;</span>
+
+<span class="c1"># add main lib sub packages</span>
+<span class="kn">import</span> <span class="nn">polus.callbacks</span>
+<span class="kn">import</span> <span class="nn">polus.core</span>
+<span class="kn">import</span> <span class="nn">polus.data</span>
+<span class="kn">import</span> <span class="nn">polus.layers</span>
+<span class="kn">import</span> <span class="nn">polus.losses</span>
+<span class="kn">import</span> <span class="nn">polus.metrics</span>
+<span class="kn">import</span> <span class="nn">polus.models</span>
+<span class="kn">import</span> <span class="nn">polus.schedulers</span>
+<span class="kn">import</span> <span class="nn">polus.training</span>
+<span class="kn">import</span> <span class="nn">polus.utils</span>
+<span class="kn">import</span> <span class="nn">polus.ir</span>
+<span class="kn">import</span> <span class="nn">polus.ner</span>
+<span class="kn">import</span> <span class="nn">polus.experimental</span>
 </pre></div>
 
         </details>
 
             </section>
+                <section id="polus">
+                                <div class="attr module"><a class="headerlink" href="#polus">#&nbsp;&nbsp</a>
+<span class="name"><a href=""></a></span></div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd"># Welcome to Polus!!!</span>
+
+<span class="sd">Polus is a powerful tensorflow toolkit for creating/training </span>
+<span class="sd">complex deep learning models in a functional way.</span>
+
+<span class="sd">This toolkit is currently under development and aims to focus on academic research,</span>
+<span class="sd">like biomedical tasks, although it can also also be used in other domains.</span>
+
+<span class="sd"># Main packages</span>
+
+<span class="sd">Polus consists of a main API that resides under the polus package</span>
+<span class="sd">and more tasks specific APIs that will reside under the task name.</span>
+<span class="sd">For instance, polus.ner and polus.ir are sub-packages that are</span>
+<span class="sd">focused on ner (named entity recognition) and ir (information </span>
+<span class="sd">retrieval) tasks. </span>
+
+<span class="sd">## The main API</span>
+
+<span class="sd">The main API consists of:</span>
+
+<span class="sd">- `polus.training.py`: Training API that contains the most basic training loop</span>
+<span class="sd">- `polus.data.py`: DataLoaders API that extends the tf.data.Dataset functionality</span>
+<span class="sd"> to build more useful data loaders with easy to use caching mechanisms.</span>
+<span class="sd">- `polus.callbacks.py`: Main source of interaction with the main training loop</span>
+<span class="sd">- `polus.models.py`: Model API define an extension of the tf.keras.Model by handling</span>
+<span class="sd"> storing and loading of the entire model architecture.</span>
+<span class="sd">- `polus.metrics`: Metrics API describe how metrics should be implemented so that can</span>
+<span class="sd"> be efficiently used during the training loop.</span>
+<span class="sd">- `polus.core`: The Core API defines some base classes or variables that are used</span>
+<span class="sd"> through the framework. It also exposes some functions to change the internal</span>
+<span class="sd"> behaviour of the polus framework, e.g., the use of XLA.</span>
+<span class="sd"> </span>
+<span class="sd">## Remaining of the polus package</span>
+
+<span class="sd">The remaining of the files not yet mentioned act as code repository and hold</span>
+<span class="sd">some utility classes, e.g. `polus.layers.py` contains some ready to use layers that</span>
+<span class="sd">can be imported and used by tf.keras.Model(s).</span>
+
+<span class="sd"># Notebooks and examples</span>
+
+<span class="sd">At the time of writing, there are no notebooks available... work in progress</span>
+
+<span class="sd"># TensorFlow focused</span>
+
+<span class="sd">Since this framework was designed from scratch with TensorFlow 2.3+ in mind</span>
+<span class="sd">we leveraged the most recent features to make sure that the code runs</span>
+<span class="sd">smoothly and fast as possible. For instance, internally we utilize static</span>
+<span class="sd">computational graphs during the training procedure, and XLA is </span>
+<span class="sd">enabled by default, which can be easily accessed by the polus.core API.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">__version__</span><span class="o">=</span><span class="s2">&quot;0.1.6&quot;</span>
+
+<span class="c1"># add main lib sub packages</span>
+<span class="kn">import</span> <span class="nn">polus.callbacks</span>
+<span class="kn">import</span> <span class="nn">polus.core</span>
+<span class="kn">import</span> <span class="nn">polus.data</span>
+<span class="kn">import</span> <span class="nn">polus.layers</span>
+<span class="kn">import</span> <span class="nn">polus.losses</span>
+<span class="kn">import</span> <span class="nn">polus.metrics</span>
+<span class="kn">import</span> <span class="nn">polus.models</span>
+<span class="kn">import</span> <span class="nn">polus.schedulers</span>
+<span class="kn">import</span> <span class="nn">polus.training</span>
+<span class="kn">import</span> <span class="nn">polus.utils</span>
+<span class="kn">import</span> <span class="nn">polus.ir</span>
+<span class="kn">import</span> <span class="nn">polus.ner</span>
+<span class="kn">import</span> <span class="nn">polus.experimental</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><h1 id="welcome-to-polus">Welcome to Polus!!!</h1>
+
+<p>Polus is a powerful tensorflow toolkit for creating/training 
+complex deep learning models in a functional way.</p>
+
+<p>This toolkit is currently under development and aims to focus on academic research,
+like biomedical tasks, although it can also also be used in other domains.</p>
+
+<h1 id="main-packages">Main packages</h1>
+
+<p>Polus consists of a main API that resides under the polus package
+and more tasks specific APIs that will reside under the task name.
+For instance, <a href="polus/ner.html">polus.ner</a> and <a href="polus/ir.html">polus.ir</a> are sub-packages that are
+focused on ner (named entity recognition) and ir (information 
+retrieval) tasks. </p>
+
+<h2 id="the-main-api">The main API</h2>
+
+<p>The main API consists of:</p>
+
+<ul>
+<li><code><a href="polus/training.html#py">polus.training.py</a></code>: Training API that contains the most basic training loop</li>
+<li><code><a href="polus/data.html#py">polus.data.py</a></code>: DataLoaders API that extends the tf.data.Dataset functionality
+to build more useful data loaders with easy to use caching mechanisms.</li>
+<li><code><a href="polus/callbacks.html#py">polus.callbacks.py</a></code>: Main source of interaction with the main training loop</li>
+<li><code><a href="polus/models.html#py">polus.models.py</a></code>: Model API define an extension of the tf.keras.Model by handling
+storing and loading of the entire model architecture.</li>
+<li><code><a href="polus/metrics.html">polus.metrics</a></code>: Metrics API describe how metrics should be implemented so that can
+be efficiently used during the training loop.</li>
+<li><code><a href="polus/core.html">polus.core</a></code>: The Core API defines some base classes or variables that are used
+through the framework. It also exposes some functions to change the internal
+behaviour of the polus framework, e.g., the use of XLA.</li>
+</ul>
+
+<h2 id="remaining-of-the-polus-package">Remaining of the polus package</h2>
+
+<p>The remaining of the files not yet mentioned act as code repository and hold
+some utility classes, e.g. <code><a href="polus/layers.html#py">polus.layers.py</a></code> contains some ready to use layers that
+can be imported and used by tf.keras.Model(s).</p>
+
+<h1 id="notebooks-and-examples">Notebooks and examples</h1>
+
+<p>At the time of writing, there are no notebooks available... work in progress</p>
+
+<h1 id="tensorflow-focused">TensorFlow focused</h1>
+
+<p>Since this framework was designed from scratch with TensorFlow 2.3+ in mind
+we leveraged the most recent features to make sure that the code runs
+smoothly and fast as possible. For instance, internally we utilize static
+computational graphs during the training procedure, and XLA is 
+enabled by default, which can be easily accessed by the <a href="polus/core.html">polus.core</a> API.</p>
+</div>
+
+
+                </section>
     </main>
 <script>
     function escapeHTML(html) {
