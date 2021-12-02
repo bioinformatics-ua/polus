@@ -52,3 +52,18 @@ enabled by default, which can be easily accessed by the polus.core API.
 '''
 
 __version__="0.1.6"
+
+# add main lib sub packages
+import callbacks
+import core
+import data
+import layers
+import losses
+import metrics
+import models
+import schedulers
+import training
+import utils
+import ir
+import ner
+import experimental
