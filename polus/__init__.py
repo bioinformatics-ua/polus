@@ -54,16 +54,16 @@ enabled by default, which can be easily accessed by the polus.core API.
 __version__="0.1.6"
 
 # add main lib sub packages
-import callbacks
-import core
-import data
-import layers
-import losses
-import metrics
-import models
-import schedulers
-import training
-import utils
-import ir
-import ner
-import experimental
+import polus.callbacks
+import polus.core
+import polus.data
+import polus.layers
+import polus.losses
+import polus.metrics
+import polus.models
+import polus.schedulers
+import polus.training
+import polus.utils
+import polus.ir
+import polus.ner
+import polus.experimental

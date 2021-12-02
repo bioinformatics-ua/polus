@@ -1,2 +1,2 @@
 # add main lib sub packages
-import training
+import polus.ir.training
