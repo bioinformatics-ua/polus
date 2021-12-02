@@ -600,9 +600,9 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-                 <span class="n">lookup_data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">cache_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># this variable is used to init a CacheDataLoader with an already cached index usefull in merge</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="n">lookup_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cache_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># this variable is used to init a CacheDataLoader with an already cached index usefull in merge</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="p">):</span>
         
@@ -1569,9 +1569,9 @@ to the user.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-                 <span class="n">lookup_data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">cache_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># this variable is used to init a CacheDataLoader with an already cached index usefull in merge</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="n">lookup_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cache_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># this variable is used to init a CacheDataLoader with an already cached index usefull in merge</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="p">):</span>
         
@@ -1657,15 +1657,15 @@ to the user.</p>
                                         <div class="attr function"><a class="headerlink" href="#CachedDataLoaderwLookup.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">CachedDataLoaderwLookup</span><span class="signature">(lookup_data=None, cache_index=None, *args, **kwargs)</span>
+            <span class="name">CachedDataLoaderwLookup</span><span class="signature">(*args, lookup_data=None, cache_index=None, **kwargs)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-                 <span class="n">lookup_data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">cache_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># this variable is used to init a CacheDataLoader with an already cached index usefull in merge</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="n">lookup_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cache_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># this variable is used to init a CacheDataLoader with an already cached index usefull in merge</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="p">):</span>
         
