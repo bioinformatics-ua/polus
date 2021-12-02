@@ -441,9 +441,9 @@ class CachedDataLoaderwLookup(CachedDataLoader):
     """
     
     def __init__(self, 
-                 lookup_data = None,
-                 cache_index=None,  # this variable is used to init a CacheDataLoader with an already cached index usefull in merge
                  *args,
+                 lookup_data=None,
+                 cache_index=None,  # this variable is used to init a CacheDataLoader with an already cached index usefull in merge
                  **kwargs,
                 ):
         
