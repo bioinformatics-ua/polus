@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from polus.core import BaseLogger, get_jit_compile, LazyTFfunction
+from polus.core import BaseLogger, get_jit_compile
 from polus.callbacks import CallbackCoordinator
 
 class BaseTrainer(BaseLogger):
@@ -126,7 +126,7 @@ class BaseTrainer(BaseLogger):
         """
         raise NotImplementedError("foward_with_grads function must be implemented in order to compute a loss value for optimization")
     
-    @LazyTFfunction#()
+    @tf.function#()
     def train_step(self, *inputs):
         """
         Describes a static computation tensorflow graph that

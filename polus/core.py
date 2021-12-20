@@ -31,11 +31,6 @@ import tensorflow as tf
 from logging.handlers import TimedRotatingFileHandler
 
 
-
-# module-wide variables
-_this = sys.modules[__name__]
-_this.jit_compile=True
-    
 def set_jit_compile(mode: bool):
     """
     Changes the *jit_compile* attribute.
@@ -48,13 +43,18 @@ def set_jit_compile(mode: bool):
     Returns:
       None
     """
-    _this.jit_compile=mode
+    os.environ["POLUS_JIT"]=str(mode)
 
 def get_jit_compile():
     """
     Reads the value of the *jit_compile* attribute.
     """
-    return _this.jit_compile
+    
+    if os.environ.get("POLUS_JIT") is None:
+        set_jit_compile(True) # default mode
+    
+    return os.environ.get("POLUS_JIT")=="True"
+
 
 class BaseLogger:
     def __init__(self, logging_level=logging.DEBUG, log_name="polus.log"):
@@ -109,42 +109,6 @@ class BaseLogger:
         
         """
         self.logger.setLevel(logging_level)
-
-        
-class LazyTFfunction(BaseLogger):
-    """
-    Experimental decorator to create tf.functions in a lazy way, i.e.
-    they are only created when called. By default the tf (python)
-    decorator runs instantly
-    
-    Inspired by: https://stackoverflow.com/questions/306130/python-decorator-makes-function-forget-that-it-belongs-to-a-class#306277
-    """
-    def __init__(self, func=None, **kwargs):
-        super().__init__()
-        self.func = func
-        self.tf_kwargs = kwargs
-        self.tf_func = None
-
-    def __call__(self, *args, **kwargs):
-        
-        if self.func is None:
-            
-            # this must be true, if not is an error
-            assert(self.tf_kwargs) 
-            
-            self.func = args[0]
-            return self
-        
-        # build the tf function in a lazy fashion
-        if self.tf_func is None:
-            
-            # automaticly handles the jit_compile
-            if "jit_compile" not in self.tf_kwargs:
-                self.tf_kwargs["jit_compile"] = get_jit_compile()
-            
-            self.tf_func = tf.function(self.func.__get__(self), **self.tf_kwargs)
-
-        return self.tf_func(*args, **kwargs)
         
 def find_dtype_and_shapes(data_generator, k=10):
     """
