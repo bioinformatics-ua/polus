@@ -53,7 +53,8 @@ class DataLoader(BaseLogger):
                  source_generator,
                  accelerated_map_f = None,
                  accelerated_map_batch = 128,
-                 show_progress = False):
+                 show_progress = False,
+                 magic_k=10):
         """
         
         Args:
@@ -72,6 +73,9 @@ class DataLoader(BaseLogger):
             recalling that when running on GPU it is more efficient to perform batch-wise operations.
             
           show_progress (boolean): If true prints the current batch that was fed to accelerated_map_f.
+          
+          magic_k (int): Integer number that defines how many samples would be executed in order to infer
+            the shape and type of the data.
         
         Returns:
           None
@@ -85,7 +89,7 @@ class DataLoader(BaseLogger):
         
         self.sample_generator = self._build_sample_generator(source_generator)
 
-        dytpes, shapes = find_dtype_and_shapes(self.sample_generator())
+        dytpes, shapes = find_dtype_and_shapes(self.sample_generator(), k=magic_k)
         
         self.tf_dataset = tf.data.Dataset.from_generator(self.sample_generator, 
                                                          output_types= dytpes,
