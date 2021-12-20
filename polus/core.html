@@ -54,15 +54,6 @@
 
             </li>
             <li>
-                    <a class="class" href="#LazyTFfunction">LazyTFfunction</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#LazyTFfunction.__init__">LazyTFfunction</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
                     <a class="function" href="#find_dtype_and_shapes">find_dtype_and_shapes</a>
             </li>
             <li>
@@ -139,11 +130,6 @@ attribute is through its associated methods:</p>
 <span class="kn">from</span> <span class="nn">logging.handlers</span> <span class="kn">import</span> <span class="n">TimedRotatingFileHandler</span>
 
 
-
-<span class="c1"># module-wide variables</span>
-<span class="n">_this</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span>
-<span class="n">_this</span><span class="o">.</span><span class="n">jit_compile</span><span class="o">=</span><span class="kc">True</span>
-    
 <span class="k">def</span> <span class="nf">set_jit_compile</span><span class="p">(</span><span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Changes the *jit_compile* attribute.</span>
@@ -156,13 +142,18 @@ attribute is through its associated methods:</p>
 <span class="sd">    Returns:</span>
 <span class="sd">      None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_this</span><span class="o">.</span><span class="n">jit_compile</span><span class="o">=</span><span class="n">mode</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">]</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">get_jit_compile</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the value of the *jit_compile* attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_this</span><span class="o">.</span><span class="n">jit_compile</span>
+    
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">set_jit_compile</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># default mode</span>
+    
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">)</span><span class="o">==</span><span class="s2">&quot;True&quot;</span>
+
 
 <span class="k">class</span> <span class="nc">BaseLogger</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logging_level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">log_name</span><span class="o">=</span><span class="s2">&quot;polus.log&quot;</span><span class="p">):</span>
@@ -217,42 +208,6 @@ attribute is through its associated methods:</p>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
-
-        
-<span class="k">class</span> <span class="nc">LazyTFfunction</span><span class="p">(</span><span class="n">BaseLogger</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Experimental decorator to create tf.functions in a lazy way, i.e.</span>
-<span class="sd">    they are only created when called. By default the tf (python)</span>
-<span class="sd">    decorator runs instantly</span>
-<span class="sd">    </span>
-<span class="sd">    Inspired by: https://stackoverflow.com/questions/306130/python-decorator-makes-function-forget-that-it-belongs-to-a-class#306277</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            
-            <span class="c1"># this must be true, if not is an error</span>
-            <span class="k">assert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">)</span> 
-            
-            <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">return</span> <span class="bp">self</span>
-        
-        <span class="c1"># build the tf function in a lazy fashion</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            
-            <span class="c1"># automaticly handles the jit_compile</span>
-            <span class="k">if</span> <span class="s2">&quot;jit_compile&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">[</span><span class="s2">&quot;jit_compile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_jit_compile</span><span class="p">()</span>
-            
-            <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         
 <span class="k">def</span> <span class="nf">find_dtype_and_shapes</span><span class="p">(</span><span class="n">data_generator</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -366,7 +321,7 @@ attribute is through its associated methods:</p>
 <span class="sd">    Returns:</span>
 <span class="sd">      None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_this</span><span class="o">.</span><span class="n">jit_compile</span><span class="o">=</span><span class="n">mode</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">]</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -404,7 +359,11 @@ XLA compiler.</li>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the value of the *jit_compile* attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_this</span><span class="o">.</span><span class="n">jit_compile</span>
+    
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">set_jit_compile</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># default mode</span>
+    
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">)</span><span class="o">==</span><span class="s2">&quot;True&quot;</span>
 </pre></div>
 
         </details>
@@ -590,104 +549,6 @@ logging package, see https://docs.python.org/3/library/logging.html#logging-leve
 </div>
 
 
-                            </div>
-                </section>
-                <section id="LazyTFfunction">
-                                <div class="attr class">
-        <a class="headerlink" href="#LazyTFfunction">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">LazyTFfunction</span><wbr>(<span class="base"><a href="#BaseLogger">BaseLogger</a></span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">LazyTFfunction</span><span class="p">(</span><span class="n">BaseLogger</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Experimental decorator to create tf.functions in a lazy way, i.e.</span>
-<span class="sd">    they are only created when called. By default the tf (python)</span>
-<span class="sd">    decorator runs instantly</span>
-<span class="sd">    </span>
-<span class="sd">    Inspired by: https://stackoverflow.com/questions/306130/python-decorator-makes-function-forget-that-it-belongs-to-a-class#306277</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            
-            <span class="c1"># this must be true, if not is an error</span>
-            <span class="k">assert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">)</span> 
-            
-            <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">return</span> <span class="bp">self</span>
-        
-        <span class="c1"># build the tf function in a lazy fashion</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            
-            <span class="c1"># automaticly handles the jit_compile</span>
-            <span class="k">if</span> <span class="s2">&quot;jit_compile&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">[</span><span class="s2">&quot;jit_compile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_jit_compile</span><span class="p">()</span>
-            
-            <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Experimental decorator to create tf.functions in a lazy way, i.e.
-they are only created when called. By default the tf (python)
-decorator runs instantly</p>
-
-<p>Inspired by: https://stackoverflow.com/questions/306130/python-decorator-makes-function-forget-that-it-belongs-to-a-class#306277</p>
-</div>
-
-
-                            <div id="LazyTFfunction.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#LazyTFfunction.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">LazyTFfunction</span><span class="signature">(func=None, **kwargs)</span>
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Base logging class, this sets a console and file log handler to each
-instance. Meaning that each call to the logger will write to both 
-handlers. </p>
-
-<p>Furthermore, the intended behaviour is to classes to extend this BaseLogger
-classe and by doing this, any class can access to the logger property
-Note that multiple instances use the same handler</p>
-
-<p>Main ideas from: https://www.toptal.com/python/in-depth-python-logging</p>
-</div>
-
-
-                            </div>
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt><a href="#BaseLogger">BaseLogger</a></dt>
-                                <dd id="LazyTFfunction.set_logging_level" class="function"><a href="#BaseLogger.set_logging_level">set_logging_level</a></dd>
-
-            </div>
-                                </dl>
                             </div>
                 </section>
                 <section id="find_dtype_and_shapes">
