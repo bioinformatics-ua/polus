@@ -1,5 +1,5 @@
 from polus.core import get_jit_compile, set_jit_compile, LazyTFfunction
-
+import tensorflow as tf
 
 def test_jit_compile_flag():
     
