@@ -43,7 +43,7 @@
                                 <a class="function" href="#BaseTrainer.foward_with_grads">foward_with_grads</a>
                         </li>
                         <li>
-                                <a class="function" href="#BaseTrainer.train_step">train_step</a>
+                                <a class="variable" href="#BaseTrainer.train_step">train_step</a>
                         </li>
                         <li>
                                 <a class="function" href="#BaseTrainer.lr_finder">lr_finder</a>
@@ -87,7 +87,7 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 
-<span class="kn">from</span> <span class="nn">polus.core</span> <span class="kn">import</span> <span class="n">BaseLogger</span><span class="p">,</span> <span class="n">get_jit_compile</span>
+<span class="kn">from</span> <span class="nn">polus.core</span> <span class="kn">import</span> <span class="n">BaseLogger</span><span class="p">,</span> <span class="n">get_jit_compile</span><span class="p">,</span> <span class="n">LazyTFfunction</span>
 <span class="kn">from</span> <span class="nn">polus.callbacks</span> <span class="kn">import</span> <span class="n">CallbackCoordinator</span>
 
 <span class="k">class</span> <span class="nc">BaseTrainer</span><span class="p">(</span><span class="n">BaseLogger</span><span class="p">):</span>
@@ -213,7 +213,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;foward_with_grads function must be implemented in order to compute a loss value for optimization&quot;</span><span class="p">)</span>
     
-    <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">jit_compile</span><span class="o">=</span><span class="n">get_jit_compile</span><span class="p">())</span><span class="c1">#()</span>
+    <span class="nd">@LazyTFfunction</span><span class="c1">#()</span>
     <span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Describes a static computation tensorflow graph that</span>
@@ -531,7 +531,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;foward_with_grads function must be implemented in order to compute a loss value for optimization&quot;</span><span class="p">)</span>
     
-    <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">jit_compile</span><span class="o">=</span><span class="n">get_jit_compile</span><span class="p">())</span><span class="c1">#()</span>
+    <span class="nd">@LazyTFfunction</span><span class="c1">#()</span>
     <span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Describes a static computation tensorflow graph that</span>
@@ -908,83 +908,12 @@ of dictionary of tf.Tensor.</li>
 
                             </div>
                             <div id="BaseTrainer.train_step" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BaseTrainer.train_step">#&nbsp;&nbsp</a>
+                                            <div class="attr variable"><a class="headerlink" href="#BaseTrainer.train_step">#&nbsp;&nbsp</a>
 
-                <div class="decorator">@tf.function(jit_compile=get_jit_compile())</div>
-
-            <span class="def">def</span>
-            <span class="name">train_step</span><span class="signature">(self, *inputs)</span>:
+        <span class="name">train_step</span><span class="default_value"> = &lt;<a href="core.html#LazyTFfunction">polus.core.LazyTFfunction</a> object&gt;</span>
     </div>
 
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">jit_compile</span><span class="o">=</span><span class="n">get_jit_compile</span><span class="p">())</span><span class="c1">#()</span>
-    <span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Describes a static computation tensorflow graph that</span>
-<span class="sd">        implements a generic training step, which encapsulates</span>
-<span class="sd">        the forward and backpropagation computations, along side</span>
-<span class="sd">        with the gradient estimation and respective optimization.</span>
-<span class="sd">        </span>
-<span class="sd">        Note: that internally this method also increments the </span>
-<span class="sd">        self.step_counter tf.Variable, which can then be used by</span>
-<span class="sd">        the forward_* methods for implementing more complex logic</span>
-<span class="sd">        </span>
-<span class="sd">        Args:</span>
-<span class="sd">          inputs (multiple tf.Tensor or dicts): list of tensors or list of dict </span>
-<span class="sd">          with tensors, this corresponds to the data that is</span>
-<span class="sd">          outputed by the tf.Dataset.</span>
-<span class="sd">          </span>
-<span class="sd">        Returns (float): scalar error value that corresponds to</span>
-<span class="sd">          the value outputed by the self.loss function</span>
-<span class="sd">        </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;train_step was traced (May appear twice, more than that means that the training step is receving inputs with different shapes or dtypes)&quot;</span><span class="p">)</span>
-        
-        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>           
-
-            <span class="k">with</span> <span class="n">tape</span><span class="o">.</span><span class="n">stop_recording</span><span class="p">():</span>
-                <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">foward_without_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
-            
-            <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">foward_with_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
-            
-            <span class="n">loss_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
-        
-        <span class="c1"># using auto-diff to get the gradients</span>
-        <span class="n">grads</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_grads</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Post process of the gradients was added to the training loop&quot;</span><span class="p">)</span>
-            <span class="n">grads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_grads</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span>
-            
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">))</span>
-        
-        <span class="k">return</span> <span class="n">loss_value</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Describes a static computation tensorflow graph that
-implements a generic training step, which encapsulates
-the forward and backpropagation computations, along side
-with the gradient estimation and respective optimization.</p>
-
-<p>Note: that internally this method also increments the 
-self.step_counter tf.Variable, which can then be used by
-the forward_* methods for implementing more complex logic</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>inputs (multiple tf.Tensor or dicts):</strong>  list of tensors or list of dict </li>
-<li>with tensors, this corresponds to the data that is</li>
-<li>outputed by the tf.Dataset.</li>
-</ul>
-
-<p>Returns (float): scalar error value that corresponds to
-  the value outputed by the self.loss function</p>
-</div>
-
+    
 
                             </div>
                             <div id="BaseTrainer.lr_finder" class="classattr">
@@ -1340,7 +1269,7 @@ function.</p>
                                 <dl>
                                     <div><dt><a href="#BaseTrainer">BaseTrainer</a></dt>
                                 <dd id="ClassifierTrainer.foward_without_grads" class="function"><a href="#BaseTrainer.foward_without_grads">foward_without_grads</a></dd>
-                <dd id="ClassifierTrainer.train_step" class="function"><a href="#BaseTrainer.train_step">train_step</a></dd>
+                <dd id="ClassifierTrainer.train_step" class="variable"><a href="#BaseTrainer.train_step">train_step</a></dd>
                 <dd id="ClassifierTrainer.lr_finder" class="function"><a href="#BaseTrainer.lr_finder">lr_finder</a></dd>
                 <dd id="ClassifierTrainer.train" class="function"><a href="#BaseTrainer.train">train</a></dd>
 
