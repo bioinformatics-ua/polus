@@ -63,7 +63,7 @@ class BaseTrainer(BaseLogger):
         self.early_stop = False
         
         # an internal variable that holds the number of runned steps
-        self.step_counter = tf.Variable(0)
+        self.step_counter = 0
     
         # choosing the training weights
         if not hasattr(self, "trainable_weights"):
@@ -147,7 +147,7 @@ class BaseTrainer(BaseLogger):
           the value outputed by the self.loss function
         
         """
-        self.logger.debug("train_step was traced (May appear twice, more than that means that that training step is receving inputs with different shapes or dtypes)")
+        self.logger.debug("train_step was traced (May appear twice, more than that means that the training step is receving inputs with different shapes or dtypes)")
         
         with tf.GradientTape() as tape:           
 
@@ -166,9 +166,6 @@ class BaseTrainer(BaseLogger):
             grads = self.post_process_grads(grads)
             
         self.optimizer.apply_gradients(zip(grads, self.trainable_weights))
-        
-        ## internally increments the step counter
-        self.step_counter.assign_add(1)
         
         return loss_value
     
@@ -241,6 +238,9 @@ class BaseTrainer(BaseLogger):
                     data = train_map_f(data)
                 
                 loss = self.train_step(*data)
+                
+                ## internally increments the step counter
+                self.step_counter += 1
                 
                 callbacks.on_train_batch_end(epoch, step, loss)
 
