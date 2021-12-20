@@ -21,7 +21,7 @@ def test_LazyTFfunction_in_class():
     obj = A()
     
     result = obj.compute(x)
-    assert result == (x + 1)
+    assert all(result == (x + 1))
     
 def test_LazyTFfunction_in_class_inputSig():
     
@@ -35,7 +35,7 @@ def test_LazyTFfunction_in_class_inputSig():
     obj = A()
     
     result = obj.compute(x)
-    assert result == (x + 1)
+    assert all(result == (x + 1))
     
 
 def test_LazyTFfunction_in_class_jit():
@@ -50,7 +50,7 @@ def test_LazyTFfunction_in_class_jit():
     obj = A()
     
     result = obj.compute(x)
-    assert result == (x + 1)
+    assert all(result == (x + 1))
     assert obj.compute.tf_func._jit_compile == True
     
 def test_LazyTFfunction_in_class_lib_jit():
@@ -67,7 +67,7 @@ def test_LazyTFfunction_in_class_lib_jit():
     obj = A()
     
     result = obj.compute(x)
-    assert result == (x + 2)
+    assert all(result == (x + 2))
     assert obj.compute.tf_func._jit_compile == lib_jit
 
 
@@ -85,5 +85,5 @@ def test_LazyTFfunction_in_class_lib_jit_False():
     obj = A()
     
     result = obj.compute(x)
-    assert result == (x + 2)
+    assert all(result == (x + 2))
     assert obj.compute.tf_func._jit_compile == lib_jit

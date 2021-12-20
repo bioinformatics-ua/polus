@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from polus.core import BaseLogger, get_jit_compile
+from polus.core import BaseLogger, get_jit_compile, LazyTFfunction
 
 
 class IMetric(BaseLogger):
@@ -53,7 +53,7 @@ class IConfusionMatrixTF(IMetric):
         #
         self.confusion_matrix += self._build_confusion_matrix(*samples)
         
-    @tf.function(input_signature=[tf.TensorSpec(shape=(None, ), dtype=tf.int32), tf.TensorSpec(shape=(None, ), dtype=tf.int32)], jit_compile=get_jit_compile())
+    @LazyTFfunction(input_signature=[tf.TensorSpec(shape=(None, ), dtype=tf.int32), tf.TensorSpec(shape=(None, ), dtype=tf.int32)])
     def _build_confusion_matrix(self, y_true, y_pred):
         self.logger.debug("_build_confusion_matrix function was traced")
         #print(y_true)
@@ -74,7 +74,7 @@ class MacroF1Score(IConfusionMatrixTF):
     def _evaluate(self):
         return self._tfevaluate(self.confusion_matrix)
     
-    @tf.function(input_signature=[tf.TensorSpec(shape=(None, None), dtype=tf.int32)], jit_compile=get_jit_compile())
+    @LazyTFfunction(input_signature=[tf.TensorSpec(shape=(None, None), dtype=tf.int32)])
     def _tfevaluate(self, matrix):
         self.logger.debug("MacroF1Score function was traced")
         

@@ -139,8 +139,8 @@ class LazyTFfunction(BaseLogger):
         if self.tf_func is None:
             
             # automaticly handles the jit_compile
-            if "jit_compile" not in self.kwargs:
-                self.kwargs["jit_compile"] = get_jit_compile()
+            if "jit_compile" not in self.tf_kwargs:
+                self.tf_kwargs["jit_compile"] = get_jit_compile()
             
             self.tf_func = tf.function(self.func.__get__(self), **self.tf_kwargs)
 
