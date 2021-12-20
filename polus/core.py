@@ -55,7 +55,7 @@ def get_jit_compile():
     Reads the value of the *jit_compile* attribute.
     """
     return _this.jit_compile
-    
+
 class BaseLogger:
     def __init__(self, logging_level=logging.DEBUG, log_name="polus.log"):
         """
@@ -109,9 +109,44 @@ class BaseLogger:
         
         """
         self.logger.setLevel(logging_level)
+
         
+class LazyTFfunction(BaseLogger):
+    """
+    Experimental decorator to create tf.functions in a lazy way, i.e.
+    they are only created when called. By default the tf (python)
+    decorator runs instantly
+    
+    Inspired by: https://stackoverflow.com/questions/306130/python-decorator-makes-function-forget-that-it-belongs-to-a-class#306277
+    """
+    def __init__(self, func=None, **kwargs):
+        super().__init__()
+        self.func = func
+        self.tf_kwargs = kwargs
+        self.tf_func = None
+
+    def __call__(self, *args, **kwargs):
         
-def find_dtype_and_shapes(data_generator, k=5):
+        if self.func is None:
+            
+            # this must be true, if not is an error
+            assert(self.tf_kwargs) 
+            
+            self.func = args[0]
+            return self
+        
+        # build the tf function in a lazy fashion
+        if self.tf_func is None:
+            
+            # automaticly handles the jit_compile
+            if "jit_compile" not in self.kwargs:
+                self.kwargs["jit_compile"] = get_jit_compile()
+            
+            self.tf_func = tf.function(self.func.__get__(self), **self.tf_kwargs)
+
+        return self.tf_func(*args, **kwargs)
+        
+def find_dtype_and_shapes(data_generator, k=10):
     """
     Automatically infer the data type and shapes of the samples from 
     the *data_generator*. This function is highly used in polus.data.
