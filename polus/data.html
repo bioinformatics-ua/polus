@@ -212,7 +212,8 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
                  <span class="n">source_generator</span><span class="p">,</span>
                  <span class="n">accelerated_map_f</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">accelerated_map_batch</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
-                 <span class="n">show_progress</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+                 <span class="n">show_progress</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">magic_k</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
@@ -231,6 +232,9 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
 <span class="sd">            recalling that when running on GPU it is more efficient to perform batch-wise operations.</span>
 <span class="sd">            </span>
 <span class="sd">          show_progress (boolean): If true prints the current batch that was fed to accelerated_map_f.</span>
+<span class="sd">          </span>
+<span class="sd">          magic_k (int): Integer number that defines how many samples would be executed in order to infer</span>
+<span class="sd">            the shape and type of the data.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
 <span class="sd">          None</span>
@@ -244,7 +248,7 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_sample_generator</span><span class="p">(</span><span class="n">source_generator</span><span class="p">)</span>
 
-        <span class="n">dytpes</span><span class="p">,</span> <span class="n">shapes</span> <span class="o">=</span> <span class="n">find_dtype_and_shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span><span class="p">())</span>
+        <span class="n">dytpes</span><span class="p">,</span> <span class="n">shapes</span> <span class="o">=</span> <span class="n">find_dtype_and_shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span><span class="p">(),</span> <span class="n">k</span><span class="o">=</span><span class="n">magic_k</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_generator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span><span class="p">,</span> 
                                                          <span class="n">output_types</span><span class="o">=</span> <span class="n">dytpes</span><span class="p">,</span>
@@ -757,7 +761,8 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
                  <span class="n">source_generator</span><span class="p">,</span>
                  <span class="n">accelerated_map_f</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">accelerated_map_batch</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
-                 <span class="n">show_progress</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+                 <span class="n">show_progress</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">magic_k</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
@@ -776,6 +781,9 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
 <span class="sd">            recalling that when running on GPU it is more efficient to perform batch-wise operations.</span>
 <span class="sd">            </span>
 <span class="sd">          show_progress (boolean): If true prints the current batch that was fed to accelerated_map_f.</span>
+<span class="sd">          </span>
+<span class="sd">          magic_k (int): Integer number that defines how many samples would be executed in order to infer</span>
+<span class="sd">            the shape and type of the data.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
 <span class="sd">          None</span>
@@ -789,7 +797,7 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_sample_generator</span><span class="p">(</span><span class="n">source_generator</span><span class="p">)</span>
 
-        <span class="n">dytpes</span><span class="p">,</span> <span class="n">shapes</span> <span class="o">=</span> <span class="n">find_dtype_and_shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span><span class="p">())</span>
+        <span class="n">dytpes</span><span class="p">,</span> <span class="n">shapes</span> <span class="o">=</span> <span class="n">find_dtype_and_shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span><span class="p">(),</span> <span class="n">k</span><span class="o">=</span><span class="n">magic_k</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_generator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span><span class="p">,</span> 
                                                          <span class="n">output_types</span><span class="o">=</span> <span class="n">dytpes</span><span class="p">,</span>
@@ -889,7 +897,8 @@ is currently supported.</p>
     source_generator,
     accelerated_map_f=None,
     accelerated_map_batch=128,
-    show_progress=False
+    show_progress=False,
+    magic_k=10
 )</span>
     </div>
 
@@ -899,7 +908,8 @@ is currently supported.</p>
                  <span class="n">source_generator</span><span class="p">,</span>
                  <span class="n">accelerated_map_f</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">accelerated_map_batch</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
-                 <span class="n">show_progress</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+                 <span class="n">show_progress</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">magic_k</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
@@ -918,6 +928,9 @@ is currently supported.</p>
 <span class="sd">            recalling that when running on GPU it is more efficient to perform batch-wise operations.</span>
 <span class="sd">            </span>
 <span class="sd">          show_progress (boolean): If true prints the current batch that was fed to accelerated_map_f.</span>
+<span class="sd">          </span>
+<span class="sd">          magic_k (int): Integer number that defines how many samples would be executed in order to infer</span>
+<span class="sd">            the shape and type of the data.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
 <span class="sd">          None</span>
@@ -931,7 +944,7 @@ is currently supported.</p>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_sample_generator</span><span class="p">(</span><span class="n">source_generator</span><span class="p">)</span>
 
-        <span class="n">dytpes</span><span class="p">,</span> <span class="n">shapes</span> <span class="o">=</span> <span class="n">find_dtype_and_shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span><span class="p">())</span>
+        <span class="n">dytpes</span><span class="p">,</span> <span class="n">shapes</span> <span class="o">=</span> <span class="n">find_dtype_and_shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span><span class="p">(),</span> <span class="n">k</span><span class="o">=</span><span class="n">magic_k</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_generator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span><span class="p">,</span> 
                                                          <span class="n">output_types</span><span class="o">=</span> <span class="n">dytpes</span><span class="p">,</span>
@@ -959,6 +972,8 @@ contextualized embeddings from BERT.</li>
 <li><strong>accelerated_map_batch (int):</strong>  The size of the batch that is fed to the <em>accelerated_map_f</em>
 recalling that when running on GPU it is more efficient to perform batch-wise operations.</li>
 <li><strong>show_progress (boolean):</strong>  If true prints the current batch that was fed to accelerated_map_f.</li>
+<li><strong>magic_k (int):</strong>  Integer number that defines how many samples would be executed in order to infer
+the shape and type of the data.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
