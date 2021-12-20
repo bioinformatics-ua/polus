@@ -150,7 +150,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span> <span class="o">=</span> <span class="kc">False</span>
         
         <span class="c1"># an internal variable that holds the number of runned steps</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">=</span> <span class="mi">0</span>
     
         <span class="c1"># choosing the training weights</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;trainable_weights&quot;</span><span class="p">):</span>
@@ -234,7 +234,7 @@
 <span class="sd">          the value outputed by the self.loss function</span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;train_step was traced (May appear twice, more than that means that that training step is receving inputs with different shapes or dtypes)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;train_step was traced (May appear twice, more than that means that the training step is receving inputs with different shapes or dtypes)&quot;</span><span class="p">)</span>
         
         <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>           
 
@@ -253,9 +253,6 @@
             <span class="n">grads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_grads</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span>
             
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">))</span>
-        
-        <span class="c1">## internally increments the step counter</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span><span class="o">.</span><span class="n">assign_add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="n">loss_value</span>
     
@@ -328,6 +325,9 @@
                     <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 
                 <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+                
+                <span class="c1">## internally increments the step counter</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
                 
                 <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
 
@@ -468,7 +468,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span> <span class="o">=</span> <span class="kc">False</span>
         
         <span class="c1"># an internal variable that holds the number of runned steps</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">=</span> <span class="mi">0</span>
     
         <span class="c1"># choosing the training weights</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;trainable_weights&quot;</span><span class="p">):</span>
@@ -552,7 +552,7 @@
 <span class="sd">          the value outputed by the self.loss function</span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;train_step was traced (May appear twice, more than that means that that training step is receving inputs with different shapes or dtypes)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;train_step was traced (May appear twice, more than that means that the training step is receving inputs with different shapes or dtypes)&quot;</span><span class="p">)</span>
         
         <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>           
 
@@ -571,9 +571,6 @@
             <span class="n">grads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_grads</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span>
             
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">))</span>
-        
-        <span class="c1">## internally increments the step counter</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span><span class="o">.</span><span class="n">assign_add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="n">loss_value</span>
     
@@ -646,6 +643,9 @@
                     <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 
                 <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+                
+                <span class="c1">## internally increments the step counter</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
                 
                 <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
 
@@ -734,7 +734,7 @@ logic needed to train models under simple classification problems.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span> <span class="o">=</span> <span class="kc">False</span>
         
         <span class="c1"># an internal variable that holds the number of runned steps</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">=</span> <span class="mi">0</span>
     
         <span class="c1"># choosing the training weights</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;trainable_weights&quot;</span><span class="p">):</span>
@@ -939,7 +939,7 @@ of dictionary of tf.Tensor.</li>
 <span class="sd">          the value outputed by the self.loss function</span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;train_step was traced (May appear twice, more than that means that that training step is receving inputs with different shapes or dtypes)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;train_step was traced (May appear twice, more than that means that the training step is receving inputs with different shapes or dtypes)&quot;</span><span class="p">)</span>
         
         <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>           
 
@@ -958,9 +958,6 @@ of dictionary of tf.Tensor.</li>
             <span class="n">grads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_grads</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span>
             
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">))</span>
-        
-        <span class="c1">## internally increments the step counter</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span><span class="o">.</span><span class="n">assign_add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="n">loss_value</span>
 </pre></div>
@@ -1096,6 +1093,9 @@ fast.ai</p>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 
                 <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+                
+                <span class="c1">## internally increments the step counter</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
                 
                 <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
 
