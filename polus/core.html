@@ -247,8 +247,8 @@ attribute is through its associated methods:</p>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             
             <span class="c1"># automaticly handles the jit_compile</span>
-            <span class="k">if</span> <span class="s2">&quot;jit_compile&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;jit_compile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_jit_compile</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;jit_compile&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">[</span><span class="s2">&quot;jit_compile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_jit_compile</span><span class="p">()</span>
             
             <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">)</span>
 
@@ -631,8 +631,8 @@ logging package, see https://docs.python.org/3/library/logging.html#logging-leve
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             
             <span class="c1"># automaticly handles the jit_compile</span>
-            <span class="k">if</span> <span class="s2">&quot;jit_compile&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;jit_compile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_jit_compile</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;jit_compile&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">[</span><span class="s2">&quot;jit_compile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_jit_compile</span><span class="p">()</span>
             
             <span class="bp">self</span><span class="o">.</span><span class="n">tf_func</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">tf_kwargs</span><span class="p">)</span>
 
