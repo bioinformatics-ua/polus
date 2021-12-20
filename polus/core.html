@@ -222,12 +222,16 @@ attribute is through its associated methods:</p>
 <span class="sd">        in order to correctly infer the shape of each dictionary value.</span>
 <span class="sd">        For instance, if a sample contains a dynamic shape, this function</span>
 <span class="sd">        will return None in the place of the dimension that as a dynamic </span>
-<span class="sd">        shape.</span>
+<span class="sd">        shape. If set to -1 it will read the entire generator</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># get one sample</span>
-    <span class="k">assert</span> <span class="n">k</span><span class="o">&gt;</span><span class="mi">0</span>
-    <span class="n">generator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data_generator</span><span class="p">)</span>
-    <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">]</span>
+    
+    
+    
+    <span class="k">if</span> <span class="n">k</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span> <span class="n">sample</span> <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">data_generator</span> <span class="p">]</span>
+    <span class="k">elif</span> <span class="n">k</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">generator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data_generator</span><span class="p">)</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">]</span>
 
     
             
@@ -574,12 +578,16 @@ logging package, see https://docs.python.org/3/library/logging.html#logging-leve
 <span class="sd">        in order to correctly infer the shape of each dictionary value.</span>
 <span class="sd">        For instance, if a sample contains a dynamic shape, this function</span>
 <span class="sd">        will return None in the place of the dimension that as a dynamic </span>
-<span class="sd">        shape.</span>
+<span class="sd">        shape. If set to -1 it will read the entire generator</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># get one sample</span>
-    <span class="k">assert</span> <span class="n">k</span><span class="o">&gt;</span><span class="mi">0</span>
-    <span class="n">generator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data_generator</span><span class="p">)</span>
-    <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">]</span>
+    
+    
+    
+    <span class="k">if</span> <span class="n">k</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span> <span class="n">sample</span> <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">data_generator</span> <span class="p">]</span>
+    <span class="k">elif</span> <span class="n">k</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">generator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data_generator</span><span class="p">)</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">]</span>
 
     
             
@@ -631,7 +639,7 @@ samples in a <strong>dictionary</strong> format.</li>
 in order to correctly infer the shape of each dictionary value.
 For instance, if a sample contains a dynamic shape, this function
 will return None in the place of the dimension that as a dynamic 
-shape.</li>
+shape. If set to -1 it will read the entire generator</li>
 </ul>
 </div>
 
