@@ -123,12 +123,16 @@ def find_dtype_and_shapes(data_generator, k=10):
         in order to correctly infer the shape of each dictionary value.
         For instance, if a sample contains a dynamic shape, this function
         will return None in the place of the dimension that as a dynamic 
-        shape.
+        shape. If set to -1 it will read the entire generator
     """
-    # get one sample
-    assert k>0
-    generator = iter(data_generator)
-    samples = [ next(generator) for i in range(k) ]
+    
+    
+    
+    if k==-1:
+        samples = [ sample for sample in data_generator ]
+    elif k>0:
+        generator = iter(data_generator)
+        samples = [ next(generator) for i in range(k) ]
 
     
             
