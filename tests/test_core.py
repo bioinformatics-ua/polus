@@ -7,5 +7,5 @@ def test_jit_compile_flag():
     set_jit_compile(False)
     assert get_jit_compile() == False
     set_jit_compile(True)
-    assert get_jit_compile() == True 
+    assert get_jit_compile() == True
     

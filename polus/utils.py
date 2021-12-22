@@ -18,11 +18,17 @@ def merge_dicts(*list_of_dicts):
     return temp
 
 def flatten_dict(d):
+    """
+    Helper function to flat a dictionary of nested dictionary.
+    If a key is duplicated the firsts occurence will be overrided.
+    
+    Adapted from https://stackoverflow.com/questions/4527942/comparing-two-dictionaries-and-checking-how-many-key-value-pairs-are-equal
+    """
     items = []
     for k, v in d.items():
         new_key = k#parent_key + sep + k if parent_key else k
         if isinstance(v, dict):
-            items.extend(flatten(v).items())
+            items.extend(flatten_dict(v).items())
         else:
             items.append((new_key, v))
     return dict(items)
