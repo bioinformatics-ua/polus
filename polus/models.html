@@ -93,7 +93,7 @@
 
 <span class="kn">from</span> <span class="nn">polus.core</span> <span class="kn">import</span> <span class="n">BaseLogger</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
-<span class="kn">from</span> <span class="nn">polus.utils</span> <span class="kn">import</span> <span class="n">merge_dicts</span>
+<span class="kn">from</span> <span class="nn">polus.utils</span> <span class="kn">import</span> <span class="n">merge_dicts</span><span class="p">,</span> <span class="n">flatten_dict</span>
 
 <span class="c1">#import for refering to this file, used in the load_model method</span>
 <span class="kn">import</span> <span class="nn">polus.models</span>
@@ -140,7 +140,7 @@
             <span class="n">_activation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">][</span><span class="s2">&quot;activation&quot;</span><span class="p">]</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">][</span><span class="s2">&quot;activation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolve_activation</span><span class="p">(</span><span class="n">_activation</span><span class="p">)</span>
         
-        <span class="n">model</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">])</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">**</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">kwargs</span><span class="p">))</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;func_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
         
         <span class="c1"># restore the original activation reference for saving</span>
@@ -274,7 +274,7 @@
             <span class="n">_activation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">][</span><span class="s2">&quot;activation&quot;</span><span class="p">]</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">][</span><span class="s2">&quot;activation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolve_activation</span><span class="p">(</span><span class="n">_activation</span><span class="p">)</span>
         
-        <span class="n">model</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">])</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">**</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">kwargs</span><span class="p">))</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;func_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
         
         <span class="c1"># restore the original activation reference for saving</span>
