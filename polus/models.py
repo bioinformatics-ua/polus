@@ -9,7 +9,7 @@ import types
 
 from polus.core import BaseLogger
 from functools import wraps
-from polus.utils import merge_dicts
+from polus.utils import merge_dicts, flatten_dict
 
 #import for refering to this file, used in the load_model method
 import polus.models
@@ -56,7 +56,7 @@ def from_config(func):
             _activation = kwargs["model"]["activation"]
             kwargs["model"]["activation"] = resolve_activation(_activation)
         
-        model = func(**kwargs["model"])
+        model = func(**flatten_dict(kwargs))
         kwargs['func_name'] = func.__name__
         
         # restore the original activation reference for saving

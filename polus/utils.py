@@ -17,6 +17,16 @@ def merge_dicts(*list_of_dicts):
         
     return temp
 
+def flatten_dict(d):
+    items = []
+    for k, v in d.items():
+        new_key = k#parent_key + sep + k if parent_key else k
+        if isinstance(v, dict):
+            items.extend(flatten(v).items())
+        else:
+            items.append((new_key, v))
+    return dict(items)
+
 def unique(iterable, key=lambda x:x):
     "Find unique items in a iterable"
     return list({ key(x):x for x in iterable }.values())
