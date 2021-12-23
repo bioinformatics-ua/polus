@@ -49,6 +49,9 @@
                                 <a class="function" href="#SavableModel.save">save</a>
                         </li>
                         <li>
+                                <a class="function" href="#SavableModel.init_from_data">init_from_data</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#SavableModel.set_name">set_name</a>
                         </li>
                 </ul>
@@ -179,6 +182,10 @@
             <span class="n">weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">weight</span><span class="p">)):</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="n">weight</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    
+    <span class="k">def</span> <span class="nf">init_from_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1">## init from training data</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
@@ -329,6 +336,10 @@
             <span class="n">weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">weight</span><span class="p">)):</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="n">weight</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    
+    <span class="k">def</span> <span class="nf">init_from_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1">## init from training data</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
@@ -535,6 +546,26 @@ implement a <code><a href="#SavableModel.get_config">get_config()</a></code> met
 </code></pre></div>
 </div>
 
+
+                            </div>
+                            <div id="SavableModel.init_from_data" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#SavableModel.init_from_data">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">init_from_data</span><span class="signature">(self, *args, **kwargs)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">init_from_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1">## init from training data</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
 
                             </div>
                             <div id="SavableModel.set_name" class="classattr">
@@ -780,6 +811,7 @@ the same inference method from the SavableModel class</p>
             </div>
             <div><dt><a href="#SavableModel">SavableModel</a></dt>
                                 <dd id="SequentialSavableModel.save" class="function"><a href="#SavableModel.save">save</a></dd>
+                <dd id="SequentialSavableModel.init_from_data" class="function"><a href="#SavableModel.init_from_data">init_from_data</a></dd>
                 <dd id="SequentialSavableModel.set_name" class="function"><a href="#SavableModel.set_name">set_name</a></dd>
 
             </div>
