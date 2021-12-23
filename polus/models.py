@@ -96,6 +96,10 @@ class SavableModel(tf.keras.Model, BaseLogger):
             for i in range(len(weight)):
                 f.create_dataset('weight'+str(i), data=weight[i])
     
+    def init_from_data(self, *args, **kwargs):
+        ## init from training data
+        return self(*args, **kwargs)
+    
     def set_name(self, name):
         self._name = name
         
