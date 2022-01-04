@@ -4,7 +4,7 @@ import tensorflow_addons as tfa
 import os
 import json
 import h5py
-
+import pickle
 import types
 
 from polus.core import BaseLogger
@@ -17,9 +17,11 @@ import polus.models
 
 from transformers import TFBertModel
 
-def load_model(file_name, change_config={}, external_module=None):
+def load_model(file_name_w_ext, change_config={}, external_module=None):
     
-    with open(file_name,"r") as f:
+    file_name = os.path.splitext(file_name_w_ext)[0]
+    
+    with open(file_name_w_ext,"r") as f:
         cfg = json.load(f)
     
     cfg["model"] = merge_dicts(cfg["model"], change_config)
@@ -28,9 +30,16 @@ def load_model(file_name, change_config={}, external_module=None):
         model = getattr(external_module, cfg['func_name'])(**cfg)
     else:
         model = getattr(polus.models, cfg['func_name'])(**cfg)
-        
+    
+    # correctly init the model from samples if given
+    if os.path.exists(file_name+".init"):
+        with open(file_name+".init", "rb") as f:
+            args, kwargs = pickle.load(f)
+        self.logger.info("Init the loaded model")
+        model.init_from_data(*args, **kwargs)
+    
     # load weights
-    with h5py.File(file_name.split(".")[0]+".h5", 'r') as f:
+    with h5py.File(file_name+".h5", 'r') as f:
         weight = []
         for i in range(len(f.keys())):
             weight.append(f['weight'+str(i)][:])
@@ -89,7 +98,11 @@ class SavableModel(tf.keras.Model, BaseLogger):
         cfg = self.savable_config
         with open(path+".cfg","w") as f:
             json.dump(self.savable_config , f)
-
+        
+        if hasattr(self, "_init"):
+            with open(path+".init","wb") as f:
+                pickle.dump(self._init, f)
+        
         #save model weights
         with h5py.File(path+".h5", 'w') as f:
             weight = self.get_weights()
@@ -97,7 +110,16 @@ class SavableModel(tf.keras.Model, BaseLogger):
                 f.create_dataset('weight'+str(i), data=weight[i])
     
     def init_from_data(self, *args, **kwargs):
+        """
+        The model was not yet built and therefore, it needs to
+        receive some correct samples in order to lazy init all
+        of the layers
+        """
+        
         ## init from training data
+        
+        # store the samples that are given to the model
+        self._init = (args, kwargs)
         return self(*args, **kwargs)
     
     def set_name(self, name):
