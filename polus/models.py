@@ -35,7 +35,7 @@ def load_model(file_name_w_ext, change_config={}, external_module=None):
     if os.path.exists(file_name+".init"):
         with open(file_name+".init", "rb") as f:
             args, kwargs = pickle.load(f)
-        self.logger.info("Init the loaded model")
+        print("Init the loaded model")
         model.init_from_data(*args, **kwargs)
     
     # load weights
