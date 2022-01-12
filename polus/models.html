@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 8.1.0" />
+    <meta name="generator" content="pdoc 8.2.0" />
     <title>polus.models API documentation</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2264%22%20height%3D%2264%22%20viewBox%3D%2244.5%202.5%2015%2015%22%3E%3Cpath%20d%3D%22M49.351%2021.041c-.233-.721-.546-2.408-.772-4.076-.042-.09-.067-.187-.046-.288-.166-1.347-.277-2.625-.241-3.351-1.378-1.008-2.271-2.586-2.271-4.362%200-.976.272-1.935.788-2.774.057-.094.122-.18.184-.268-.033-.167-.052-.339-.052-.516%200-1.477%201.202-2.679%202.679-2.679.791%200%201.496.352%201.987.9a6.3%206.3%200%200%201%201.001.029c.492-.564%201.207-.929%202.012-.929%201.477%200%202.679%201.202%202.679%202.679a2.65%202.65%200%200%201-.269%201.148c.383.747.595%201.572.595%202.41%200%202.311-1.507%204.29-3.635%205.107.037.699.147%202.27.423%203.294l.137.461c.156%202.136-4.612%205.166-5.199%203.215zm.127-4.919a4.78%204.78%200%200%200%20.775-.584c-.172-.115-.505-.254-.88-.378zm.331%202.302l.828-.502c-.202-.143-.576-.328-.984-.49zm.45%202.157l.701-.403c-.214-.115-.536-.249-.891-.376l.19.779zM49.13%204.141c0%20.152.123.276.276.276s.275-.124.275-.276-.123-.276-.276-.276-.275.124-.275.276zm.735-.389a1.15%201.15%200%200%201%20.314.783%201.16%201.16%200%200%201-1.162%201.162c-.457%200-.842-.27-1.032-.653-.026.117-.042.238-.042.362a1.68%201.68%200%200%200%201.679%201.679%201.68%201.68%200%200%200%201.679-1.679c0-.843-.626-1.535-1.436-1.654zm3.076%201.654a1.68%201.68%200%200%200%201.679%201.679%201.68%201.68%200%200%200%201.679-1.679c0-.037-.009-.072-.011-.109-.21.3-.541.508-.935.508a1.16%201.16%200%200%201-1.162-1.162%201.14%201.14%200%200%201%20.474-.912c-.015%200-.03-.005-.045-.005-.926.001-1.679.754-1.679%201.68zm1.861-1.265c0%20.152.123.276.276.276s.275-.124.275-.276-.123-.276-.276-.276-.275.124-.275.276zm1.823%204.823c0-.52-.103-1.035-.288-1.52-.466.394-1.06.64-1.717.64-1.144%200-2.116-.725-2.499-1.738-.383%201.012-1.355%201.738-2.499%201.738-.867%200-1.631-.421-2.121-1.062-.307.605-.478%201.267-.478%201.942%200%202.486%202.153%204.51%204.801%204.51s4.801-2.023%204.801-4.51zm-3.032%209.156l-.146-.492c-.276-1.02-.395-2.457-.444-3.268a6.11%206.11%200%200%201-1.18.115%206.01%206.01%200%200%201-2.536-.562l.006.175c.802.215%201.848.612%202.021%201.25.079.295-.021.601-.274.837l-.598.501c.667.304%201.243.698%201.311%201.179.02.144.022.507-.393.787l-.564.365c1.285.521%201.361.96%201.381%201.126.018.142.011.496-.427.746l-.854.489c.064-1.19%201.985-2.585%202.697-3.248zM49.34%209.925c0-.667%201-.667%201%200%200%20.653.818%201.205%201.787%201.205s1.787-.552%201.787-1.205c0-.667%201-.667%201%200%200%201.216-1.25%202.205-2.787%202.205s-2.787-.989-2.787-2.205zm-.887-7.633c-.093.077-.205.114-.317.114a.5.5%200%200%201-.318-.886L49.183.397a.5.5%200%200%201%20.703.068.5.5%200%200%201-.069.703zm7.661-.065c-.086%200-.173-.022-.253-.068l-1.523-.893c-.575-.337-.069-1.2.506-.863l1.523.892a.5.5%200%200%201%20.179.685c-.094.158-.261.247-.432.247z%22%20fill%3D%22%233bb300%22/%3E%3C/svg%3E"/>
 
@@ -40,6 +40,21 @@
                     <a class="function" href="#from_config">from_config</a>
             </li>
             <li>
+                    <a class="class" href="#PolusModel">PolusModel</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#PolusModel.__init__">PolusModel</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#PolusModel.init_from_data">init_from_data</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#PolusModel.set_name">set_name</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#SavableModel">SavableModel</a>
                             <ul class="memberlist">
                         <li>
@@ -47,12 +62,6 @@
                         </li>
                         <li>
                                 <a class="function" href="#SavableModel.save">save</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#SavableModel.init_from_data">init_from_data</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#SavableModel.set_name">set_name</a>
                         </li>
                 </ul>
 
@@ -65,6 +74,21 @@
                         </li>
                 </ul>
 
+            </li>
+            <li>
+                    <a class="class" href="#TFBertSplited">TFBertSplited</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#TFBertSplited.__init__">TFBertSplited</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#TFBertSplited.call">call</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="function" href="#split_bert_model">split_bert_model</a>
             </li>
     </ul>
 
@@ -167,13 +191,36 @@
     <span class="k">return</span> <span class="n">function_wrapper</span>
 
 
-<span class="k">class</span> <span class="nc">SavableModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseLogger</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">PolusModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseLogger</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         
         <span class="c1"># This class also extends BaseLogger, but Keras last subclass do not call super </span>
         <span class="c1"># so it must be manually called</span>
         <span class="n">BaseLogger</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">init_from_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The model was not yet built and therefore, it needs to</span>
+<span class="sd">        receive some correct samples in order to lazy init all</span>
+<span class="sd">        of the layers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1">## init from training data</span>
+        
+        <span class="c1"># store the samples that are given to the model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        
+        
+<span class="k">class</span> <span class="nc">SavableModel</span><span class="p">(</span><span class="n">PolusModel</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;.polus_cache&quot;</span><span class="p">,</span><span class="s2">&quot;saved_models&quot;</span><span class="p">),</span> <span class="n">extension</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
         
@@ -196,21 +243,7 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">weight</span><span class="p">)):</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="n">weight</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
     
-    <span class="k">def</span> <span class="nf">init_from_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The model was not yet built and therefore, it needs to</span>
-<span class="sd">        receive some correct samples in order to lazy init all</span>
-<span class="sd">        of the layers</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        
-        <span class="c1">## init from training data</span>
-        
-        <span class="c1"># store the samples that are given to the model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         
 <span class="k">class</span> <span class="nc">SequentialSavableModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">,</span> <span class="n">SavableModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -219,6 +252,92 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        
+<span class="kn">from</span> <span class="nn">transformers.modeling_tf_outputs</span> <span class="kn">import</span> <span class="n">TFBaseModelOutputWithPooling</span>
+<span class="kn">from</span> <span class="nn">transformers.file_utils</span> <span class="kn">import</span> <span class="n">DUMMY_INPUTS</span><span class="p">,</span> <span class="n">DUMMY_MASK</span>
+
+
+<span class="k">class</span> <span class="nc">TFBertSplited</span><span class="p">(</span><span class="n">PolusModel</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                 <span class="n">bert_layers</span><span class="p">,</span> 
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="n">run_in_training_mode</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">bert_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_in_training_mode</span> <span class="o">=</span> <span class="n">run_in_training_mode</span>
+    
+    <span class="k">def</span> <span class="nf">_efficient_attention_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># This codes mimics the transformer BERT implementation: https://huggingface.co/transformers/_modules/transformers/modeling_tf_bert.html</span>
+        
+        <span class="n">extended_attention_mask</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span> <span class="n">tf</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+
+        <span class="c1"># Since attention_mask is 1.0 for positions we want to attend and 0.0 for</span>
+        <span class="c1"># masked positions, this operation will create a tensor which is 0.0 for</span>
+        <span class="c1"># positions we want to attend and -10000.0 for masked positions.</span>
+        <span class="c1"># Since we are adding it to the raw scores before the softmax, this is</span>
+        <span class="c1"># effectively the same as removing these entirely.</span>
+        <span class="n">extended_attention_mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">extended_attention_mask</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">extended_attention_mask</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">extended_attention_mask</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mf">10000.0</span>
+        
+        <span class="k">return</span> <span class="n">extended_attention_mask</span>
+    
+    <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">input_signature</span><span class="o">=</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">TensorSpec</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+                                  <span class="n">tf</span><span class="o">.</span><span class="n">TensorSpec</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+                                  <span class="n">tf</span><span class="o">.</span><span class="n">TensorSpec</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">bool</span><span class="p">)])</span>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_states</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        
+        <span class="n">attention_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_efficient_attention_mask</span><span class="p">(</span><span class="n">attention_mask</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">layer_module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">:</span>
+            <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">layer_module</span><span class="p">(</span><span class="n">hidden_states</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span> 
+                                         <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">,</span>
+                                         <span class="n">head_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                         <span class="n">output_attentions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                         <span class="n">encoder_hidden_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                                         <span class="n">encoder_attention_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                                         <span class="n">past_key_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                         <span class="n">training</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_in_training_mode</span> <span class="o">&amp;</span> <span class="n">training</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">TFBaseModelOutputWithPooling</span><span class="p">(</span><span class="n">last_hidden_state</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span>
+                                            <span class="n">pooler_output</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,:])</span>
+    
+<span class="k">def</span> <span class="nf">split_bert_model</span><span class="p">(</span><span class="n">bert_model</span><span class="p">,</span> <span class="n">index_layer</span><span class="p">,</span> <span class="n">init_model</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Utility function that splits a bert model in a pre established index, given by *index_layer*,</span>
+<span class="sd">    which results into two models. The *pre_model* that corresponds to the *bert_model* but without</span>
+<span class="sd">    a some layers that were cut off and a *post_model* that corresponds to a *PolusModel*, which runs</span>
+<span class="sd">    the remain bert layers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">assert</span>  <span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="o">&gt;</span> <span class="n">index_layer</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="ow">and</span> <span class="n">index_layer</span><span class="o">!=</span><span class="mi">0</span>
+    <span class="n">encoder_layers</span> <span class="o">=</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="n">index_layer</span><span class="p">:]</span>
+    <span class="k">del</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="n">index_layer</span><span class="p">:]</span>
+    
+    <span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
+    
+    <span class="c1"># create a new keras model that uses the layers previous removed bert layers</span>
+    <span class="n">post_model</span> <span class="o">=</span> <span class="n">TFBertSplited</span><span class="p">(</span><span class="n">encoder_layers</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">init_model</span><span class="p">:</span>
+        <span class="c1"># run a dummy example to build post_model and check for errors</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="s2">&quot;hello, this is a sample that i want to tokenize&quot;</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode_plus</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span>
+                                           <span class="n">padding</span> <span class="o">=</span> <span class="s2">&quot;max_length&quot;</span><span class="p">,</span>
+                                           <span class="n">truncation</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                           <span class="n">max_length</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+                                           <span class="n">return_attention_mask</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                           <span class="n">return_token_type_ids</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                           <span class="n">return_tensors</span> <span class="o">=</span> <span class="s2">&quot;tf&quot;</span><span class="p">,</span>
+                                          <span class="p">)</span>
+
+        <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">bert_model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)[</span><span class="s2">&quot;last_hidden_state&quot;</span><span class="p">]</span>
+        <span class="n">post_model</span><span class="p">(</span><span class="n">hidden_states</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">bert_model</span><span class="p">,</span> <span class="n">post_model</span>
 </pre></div>
 
         </details>
@@ -332,24 +451,343 @@
     
 
                 </section>
+                <section id="PolusModel">
+                                <div class="attr class">
+        <a class="headerlink" href="#PolusModel">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">PolusModel</span><wbr>(<span class="base">keras.engine.training.Model</span>, <span class="base"><a href="core.html#BaseLogger">polus.core.BaseLogger</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">PolusModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseLogger</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="c1"># This class also extends BaseLogger, but Keras last subclass do not call super </span>
+        <span class="c1"># so it must be manually called</span>
+        <span class="n">BaseLogger</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">init_from_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The model was not yet built and therefore, it needs to</span>
+<span class="sd">        receive some correct samples in order to lazy init all</span>
+<span class="sd">        of the layers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1">## init from training data</span>
+        
+        <span class="c1"># store the samples that are given to the model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p><code>Model</code> groups layers into an object with training and inference features.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>inputs:</strong>  The input(s) of the model: a <code>keras.Input</code> object or list of
+<code>keras.Input</code> objects.</li>
+<li><strong>outputs:</strong>  The output(s) of the model. See Functional API example below.</li>
+<li><strong>name:</strong>  String, the name of the model.</li>
+</ul>
+
+<p>There are two ways to instantiate a <code>Model</code>:</p>
+
+<p>1 - With the "Functional API", where you start from <code>Input</code>,
+you chain layer calls to specify the model's forward pass,
+and finally you create your model from inputs and outputs:</p>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,))</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Note: Only dicts, lists, and tuples of input tensors are supported. Nested
+inputs are not supported (e.g. lists of list or dicts of dict).</p>
+
+<p>A new Functional API model can also be created by using the
+intermediate tensors. This enables you to quickly extract sub-components
+of the model.</p>
+
+<p>Example:</p>
+
+<div class="codehilite"><pre><span></span><code><span class="n">inputs</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">processed</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">32</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="n">conv</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">)(</span><span class="n">processed</span><span class="p">)</span>
+<span class="n">pooling</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">GlobalAveragePooling2D</span><span class="p">()(</span><span class="n">conv</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">)(</span><span class="n">pooling</span><span class="p">)</span>
+
+<span class="n">full_model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+<span class="n">backbone</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">processed</span><span class="p">,</span> <span class="n">conv</span><span class="p">)</span>
+<span class="n">activations</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Note that the <code>backbone</code> and <code>activations</code> models are not
+created with <code>keras.Input</code> objects, but with the tensors that are originated
+from <code>keras.Inputs</code> objects. Under the hood, the layers and weights will
+be shared across these models, so that user can train the <code>full_model</code>, and
+use <code>backbone</code> or <code>activations</code> to do feature extraction.
+The inputs and outputs of the model can be nested structures of tensors as
+well, and the created models are standard Functional API models that support
+all the existing APIs.</p>
+
+<p>2 - By subclassing the <code>Model</code> class: in that case, you should define your
+layers in <code><a href="#PolusModel.__init__">__init__()</a></code> and you should implement the model's forward pass
+in <code><a href="#PolusModel.call">call()</a></code>.</p>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dense1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dense2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense1</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
+</code></pre></div>
+
+<p>If you subclass <code>Model</code>, you can optionally have
+a <code>training</code> argument (boolean) in <code><a href="#PolusModel.call">call()</a></code>, which you can use to specify
+a different behavior in training and inference:</p>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dense1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dense2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense1</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">training</span><span class="p">:</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Once the model is created, you can config the model with losses and metrics
+with <code>model.compile()</code>, train the model with <code>model.fit()</code>, or use the model
+to do prediction with <code>model.predict()</code>.</p>
+</div>
+
+
+                            <div id="PolusModel.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#PolusModel.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">PolusModel</span><span class="signature">(*args, **kwargs)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="c1"># This class also extends BaseLogger, but Keras last subclass do not call super </span>
+        <span class="c1"># so it must be manually called</span>
+        <span class="n">BaseLogger</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="PolusModel.init_from_data" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#PolusModel.init_from_data">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">init_from_data</span><span class="signature">(self, *args, **kwargs)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">init_from_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The model was not yet built and therefore, it needs to</span>
+<span class="sd">        receive some correct samples in order to lazy init all</span>
+<span class="sd">        of the layers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1">## init from training data</span>
+        
+        <span class="c1"># store the samples that are given to the model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>The model was not yet built and therefore, it needs to
+receive some correct samples in order to lazy init all
+of the layers</p>
+</div>
+
+
+                            </div>
+                            <div id="PolusModel.set_name" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#PolusModel.set_name">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">set_name</span><span class="signature">(self, name)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>keras.engine.training.Model</dt>
+                                <dd id="PolusModel.build" class="function">build</dd>
+                <dd id="PolusModel.call" class="function">call</dd>
+                <dd id="PolusModel.compile" class="function">compile</dd>
+                <dd id="PolusModel.metrics" class="variable">metrics</dd>
+                <dd id="PolusModel.metrics_names" class="variable">metrics_names</dd>
+                <dd id="PolusModel.distribute_strategy" class="variable">distribute_strategy</dd>
+                <dd id="PolusModel.run_eagerly" class="variable">run_eagerly</dd>
+                <dd id="PolusModel.train_step" class="function">train_step</dd>
+                <dd id="PolusModel.make_train_function" class="function">make_train_function</dd>
+                <dd id="PolusModel.fit" class="function">fit</dd>
+                <dd id="PolusModel.test_step" class="function">test_step</dd>
+                <dd id="PolusModel.make_test_function" class="function">make_test_function</dd>
+                <dd id="PolusModel.evaluate" class="function">evaluate</dd>
+                <dd id="PolusModel.predict_step" class="function">predict_step</dd>
+                <dd id="PolusModel.make_predict_function" class="function">make_predict_function</dd>
+                <dd id="PolusModel.predict" class="function">predict</dd>
+                <dd id="PolusModel.reset_metrics" class="function">reset_metrics</dd>
+                <dd id="PolusModel.train_on_batch" class="function">train_on_batch</dd>
+                <dd id="PolusModel.test_on_batch" class="function">test_on_batch</dd>
+                <dd id="PolusModel.predict_on_batch" class="function">predict_on_batch</dd>
+                <dd id="PolusModel.fit_generator" class="function">fit_generator</dd>
+                <dd id="PolusModel.evaluate_generator" class="function">evaluate_generator</dd>
+                <dd id="PolusModel.predict_generator" class="function">predict_generator</dd>
+                <dd id="PolusModel.trainable_weights" class="variable">trainable_weights</dd>
+                <dd id="PolusModel.non_trainable_weights" class="variable">non_trainable_weights</dd>
+                <dd id="PolusModel.get_weights" class="function">get_weights</dd>
+                <dd id="PolusModel.save" class="function">save</dd>
+                <dd id="PolusModel.save_weights" class="function">save_weights</dd>
+                <dd id="PolusModel.load_weights" class="function">load_weights</dd>
+                <dd id="PolusModel.get_config" class="function">get_config</dd>
+                <dd id="PolusModel.from_config" class="function">from_config</dd>
+                <dd id="PolusModel.to_json" class="function">to_json</dd>
+                <dd id="PolusModel.to_yaml" class="function">to_yaml</dd>
+                <dd id="PolusModel.reset_states" class="function">reset_states</dd>
+                <dd id="PolusModel.state_updates" class="variable">state_updates</dd>
+                <dd id="PolusModel.weights" class="variable">weights</dd>
+                <dd id="PolusModel.summary" class="function">summary</dd>
+                <dd id="PolusModel.layers" class="variable">layers</dd>
+                <dd id="PolusModel.get_layer" class="function">get_layer</dd>
+                <dd id="PolusModel.save_spec" class="function">save_spec</dd>
+
+            </div>
+            <div><dt>keras.engine.base_layer.Layer</dt>
+                                <dd id="PolusModel.add_weight" class="function">add_weight</dd>
+                <dd id="PolusModel.compute_output_shape" class="function">compute_output_shape</dd>
+                <dd id="PolusModel.compute_output_signature" class="function">compute_output_signature</dd>
+                <dd id="PolusModel.compute_mask" class="function">compute_mask</dd>
+                <dd id="PolusModel.dtype" class="variable">dtype</dd>
+                <dd id="PolusModel.name" class="variable">name</dd>
+                <dd id="PolusModel.supports_masking" class="variable">supports_masking</dd>
+                <dd id="PolusModel.dynamic" class="variable">dynamic</dd>
+                <dd id="PolusModel.stateful" class="variable">stateful</dd>
+                <dd id="PolusModel.trainable" class="variable">trainable</dd>
+                <dd id="PolusModel.activity_regularizer" class="variable">activity_regularizer</dd>
+                <dd id="PolusModel.input_spec" class="variable">input_spec</dd>
+                <dd id="PolusModel.updates" class="variable">updates</dd>
+                <dd id="PolusModel.losses" class="variable">losses</dd>
+                <dd id="PolusModel.add_loss" class="function">add_loss</dd>
+                <dd id="PolusModel.add_metric" class="function">add_metric</dd>
+                <dd id="PolusModel.add_update" class="function">add_update</dd>
+                <dd id="PolusModel.set_weights" class="function">set_weights</dd>
+                <dd id="PolusModel.finalize_state" class="function">finalize_state</dd>
+                <dd id="PolusModel.get_updates_for" class="function">get_updates_for</dd>
+                <dd id="PolusModel.get_losses_for" class="function">get_losses_for</dd>
+                <dd id="PolusModel.get_input_mask_at" class="function">get_input_mask_at</dd>
+                <dd id="PolusModel.get_output_mask_at" class="function">get_output_mask_at</dd>
+                <dd id="PolusModel.input_mask" class="variable">input_mask</dd>
+                <dd id="PolusModel.output_mask" class="variable">output_mask</dd>
+                <dd id="PolusModel.get_input_shape_at" class="function">get_input_shape_at</dd>
+                <dd id="PolusModel.get_output_shape_at" class="function">get_output_shape_at</dd>
+                <dd id="PolusModel.get_input_at" class="function">get_input_at</dd>
+                <dd id="PolusModel.get_output_at" class="function">get_output_at</dd>
+                <dd id="PolusModel.input" class="variable">input</dd>
+                <dd id="PolusModel.output" class="variable">output</dd>
+                <dd id="PolusModel.input_shape" class="variable">input_shape</dd>
+                <dd id="PolusModel.count_params" class="function">count_params</dd>
+                <dd id="PolusModel.output_shape" class="variable">output_shape</dd>
+                <dd id="PolusModel.inbound_nodes" class="variable">inbound_nodes</dd>
+                <dd id="PolusModel.outbound_nodes" class="variable">outbound_nodes</dd>
+                <dd id="PolusModel.apply" class="function">apply</dd>
+                <dd id="PolusModel.add_variable" class="function">add_variable</dd>
+                <dd id="PolusModel.variables" class="variable">variables</dd>
+                <dd id="PolusModel.trainable_variables" class="variable">trainable_variables</dd>
+                <dd id="PolusModel.non_trainable_variables" class="variable">non_trainable_variables</dd>
+                <dd id="PolusModel.dtype_policy" class="variable">dtype_policy</dd>
+                <dd id="PolusModel.compute_dtype" class="variable">compute_dtype</dd>
+                <dd id="PolusModel.variable_dtype" class="variable">variable_dtype</dd>
+
+            </div>
+            <div><dt>tensorflow.python.module.module.Module</dt>
+                                <dd id="PolusModel.name_scope" class="variable">name_scope</dd>
+                <dd id="PolusModel.submodules" class="variable">submodules</dd>
+                <dd id="PolusModel.with_name_scope" class="function">with_name_scope</dd>
+
+            </div>
+            <div><dt><a href="core.html#BaseLogger">polus.core.BaseLogger</a></dt>
+                                <dd id="PolusModel.set_logging_level" class="function"><a href="core.html#BaseLogger.set_logging_level">set_logging_level</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
                 <section id="SavableModel">
                                 <div class="attr class">
         <a class="headerlink" href="#SavableModel">#&nbsp;&nbsp</a>
 
         
         <span class="def">class</span>
-        <span class="name">SavableModel</span><wbr>(<span class="base">keras.engine.training.Model</span>, <span class="base"><a href="core.html#BaseLogger">polus.core.BaseLogger</a></span>):
+        <span class="name">SavableModel</span><wbr>(<span class="base"><a href="#PolusModel">PolusModel</a></span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">SavableModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseLogger</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        
-        <span class="c1"># This class also extends BaseLogger, but Keras last subclass do not call super </span>
-        <span class="c1"># so it must be manually called</span>
-        <span class="n">BaseLogger</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">SavableModel</span><span class="p">(</span><span class="n">PolusModel</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;.polus_cache&quot;</span><span class="p">,</span><span class="s2">&quot;saved_models&quot;</span><span class="p">),</span> <span class="n">extension</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
         
@@ -371,22 +809,6 @@
             <span class="n">weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">weight</span><span class="p">)):</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="n">weight</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-    
-    <span class="k">def</span> <span class="nf">init_from_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The model was not yet built and therefore, it needs to</span>
-<span class="sd">        receive some correct samples in order to lazy init all</span>
-<span class="sd">        of the layers</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        
-        <span class="c1">## init from training data</span>
-        
-        <span class="c1"># store the samples that are given to the model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
 </pre></div>
 
         </details>
@@ -498,17 +920,13 @@ to do prediction with <code>model.predict()</code>.</p>
                                         <div class="attr function"><a class="headerlink" href="#SavableModel.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">SavableModel</span><span class="signature">(**kwargs)</span>
+            <span class="name">SavableModel</span><span class="signature">(*args, **kwargs)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        
-        <span class="c1"># This class also extends BaseLogger, but Keras last subclass do not call super </span>
-        <span class="c1"># so it must be manually called</span>
-        <span class="n">BaseLogger</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -596,62 +1014,15 @@ implement a <code><a href="#SavableModel.get_config">get_config()</a></code> met
 
 
                             </div>
-                            <div id="SavableModel.init_from_data" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#SavableModel.init_from_data">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">init_from_data</span><span class="signature">(self, *args, **kwargs)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">init_from_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The model was not yet built and therefore, it needs to</span>
-<span class="sd">        receive some correct samples in order to lazy init all</span>
-<span class="sd">        of the layers</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        
-        <span class="c1">## init from training data</span>
-        
-        <span class="c1"># store the samples that are given to the model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>The model was not yet built and therefore, it needs to
-receive some correct samples in order to lazy init all
-of the layers</p>
-</div>
-
-
-                            </div>
-                            <div id="SavableModel.set_name" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#SavableModel.set_name">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">set_name</span><span class="signature">(self, name)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>keras.engine.training.Model</dt>
+                                    <div><dt><a href="#PolusModel">PolusModel</a></dt>
+                                <dd id="SavableModel.init_from_data" class="function"><a href="#PolusModel.init_from_data">init_from_data</a></dd>
+                <dd id="SavableModel.set_name" class="function"><a href="#PolusModel.set_name">set_name</a></dd>
+
+            </div>
+            <div><dt>keras.engine.training.Model</dt>
                                 <dd id="SavableModel.build" class="function">build</dd>
                 <dd id="SavableModel.call" class="function">call</dd>
                 <dd id="SavableModel.compile" class="function">compile</dd>
@@ -872,8 +1243,11 @@ the same inference method from the SavableModel class</p>
             </div>
             <div><dt><a href="#SavableModel">SavableModel</a></dt>
                                 <dd id="SequentialSavableModel.save" class="function"><a href="#SavableModel.save">save</a></dd>
-                <dd id="SequentialSavableModel.init_from_data" class="function"><a href="#SavableModel.init_from_data">init_from_data</a></dd>
-                <dd id="SequentialSavableModel.set_name" class="function"><a href="#SavableModel.set_name">set_name</a></dd>
+
+            </div>
+            <div><dt><a href="#PolusModel">PolusModel</a></dt>
+                                <dd id="SequentialSavableModel.init_from_data" class="function"><a href="#PolusModel.init_from_data">init_from_data</a></dd>
+                <dd id="SequentialSavableModel.set_name" class="function"><a href="#PolusModel.set_name">set_name</a></dd>
 
             </div>
             <div><dt>keras.engine.training.Model</dt>
@@ -925,6 +1299,396 @@ the same inference method from the SavableModel class</p>
             </div>
                                 </dl>
                             </div>
+                </section>
+                <section id="TFBertSplited">
+                                <div class="attr class">
+        <a class="headerlink" href="#TFBertSplited">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">TFBertSplited</span><wbr>(<span class="base"><a href="#PolusModel">PolusModel</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">TFBertSplited</span><span class="p">(</span><span class="n">PolusModel</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                 <span class="n">bert_layers</span><span class="p">,</span> 
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="n">run_in_training_mode</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">bert_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_in_training_mode</span> <span class="o">=</span> <span class="n">run_in_training_mode</span>
+    
+    <span class="k">def</span> <span class="nf">_efficient_attention_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># This codes mimics the transformer BERT implementation: https://huggingface.co/transformers/_modules/transformers/modeling_tf_bert.html</span>
+        
+        <span class="n">extended_attention_mask</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span> <span class="n">tf</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+
+        <span class="c1"># Since attention_mask is 1.0 for positions we want to attend and 0.0 for</span>
+        <span class="c1"># masked positions, this operation will create a tensor which is 0.0 for</span>
+        <span class="c1"># positions we want to attend and -10000.0 for masked positions.</span>
+        <span class="c1"># Since we are adding it to the raw scores before the softmax, this is</span>
+        <span class="c1"># effectively the same as removing these entirely.</span>
+        <span class="n">extended_attention_mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">extended_attention_mask</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">extended_attention_mask</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">extended_attention_mask</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mf">10000.0</span>
+        
+        <span class="k">return</span> <span class="n">extended_attention_mask</span>
+    
+    <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">input_signature</span><span class="o">=</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">TensorSpec</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+                                  <span class="n">tf</span><span class="o">.</span><span class="n">TensorSpec</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+                                  <span class="n">tf</span><span class="o">.</span><span class="n">TensorSpec</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">bool</span><span class="p">)])</span>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_states</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        
+        <span class="n">attention_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_efficient_attention_mask</span><span class="p">(</span><span class="n">attention_mask</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">layer_module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">:</span>
+            <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">layer_module</span><span class="p">(</span><span class="n">hidden_states</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span> 
+                                         <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">,</span>
+                                         <span class="n">head_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                         <span class="n">output_attentions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                         <span class="n">encoder_hidden_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                                         <span class="n">encoder_attention_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                                         <span class="n">past_key_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                         <span class="n">training</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_in_training_mode</span> <span class="o">&amp;</span> <span class="n">training</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">TFBaseModelOutputWithPooling</span><span class="p">(</span><span class="n">last_hidden_state</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span>
+                                            <span class="n">pooler_output</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,:])</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p><code>Model</code> groups layers into an object with training and inference features.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>inputs:</strong>  The input(s) of the model: a <code>keras.Input</code> object or list of
+<code>keras.Input</code> objects.</li>
+<li><strong>outputs:</strong>  The output(s) of the model. See Functional API example below.</li>
+<li><strong>name:</strong>  String, the name of the model.</li>
+</ul>
+
+<p>There are two ways to instantiate a <code>Model</code>:</p>
+
+<p>1 - With the "Functional API", where you start from <code>Input</code>,
+you chain layer calls to specify the model's forward pass,
+and finally you create your model from inputs and outputs:</p>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,))</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Note: Only dicts, lists, and tuples of input tensors are supported. Nested
+inputs are not supported (e.g. lists of list or dicts of dict).</p>
+
+<p>A new Functional API model can also be created by using the
+intermediate tensors. This enables you to quickly extract sub-components
+of the model.</p>
+
+<p>Example:</p>
+
+<div class="codehilite"><pre><span></span><code><span class="n">inputs</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">processed</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">32</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="n">conv</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">)(</span><span class="n">processed</span><span class="p">)</span>
+<span class="n">pooling</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">GlobalAveragePooling2D</span><span class="p">()(</span><span class="n">conv</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">)(</span><span class="n">pooling</span><span class="p">)</span>
+
+<span class="n">full_model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+<span class="n">backbone</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">processed</span><span class="p">,</span> <span class="n">conv</span><span class="p">)</span>
+<span class="n">activations</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Note that the <code>backbone</code> and <code>activations</code> models are not
+created with <code>keras.Input</code> objects, but with the tensors that are originated
+from <code>keras.Inputs</code> objects. Under the hood, the layers and weights will
+be shared across these models, so that user can train the <code>full_model</code>, and
+use <code>backbone</code> or <code>activations</code> to do feature extraction.
+The inputs and outputs of the model can be nested structures of tensors as
+well, and the created models are standard Functional API models that support
+all the existing APIs.</p>
+
+<p>2 - By subclassing the <code>Model</code> class: in that case, you should define your
+layers in <code><a href="#TFBertSplited.__init__">__init__()</a></code> and you should implement the model's forward pass
+in <code><a href="#TFBertSplited.call">call()</a></code>.</p>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dense1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dense2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense1</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
+</code></pre></div>
+
+<p>If you subclass <code>Model</code>, you can optionally have
+a <code>training</code> argument (boolean) in <code><a href="#TFBertSplited.call">call()</a></code>, which you can use to specify
+a different behavior in training and inference:</p>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dense1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dense2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense1</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">training</span><span class="p">:</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Once the model is created, you can config the model with losses and metrics
+with <code>model.compile()</code>, train the model with <code>model.fit()</code>, or use the model
+to do prediction with <code>model.predict()</code>.</p>
+</div>
+
+
+                            <div id="TFBertSplited.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#TFBertSplited.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">TFBertSplited</span><span class="signature">(bert_layers, *args, run_in_training_mode=True, **kwargs)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                 <span class="n">bert_layers</span><span class="p">,</span> 
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="n">run_in_training_mode</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">bert_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_in_training_mode</span> <span class="o">=</span> <span class="n">run_in_training_mode</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="TFBertSplited.call" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#TFBertSplited.call">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@tf.function(input_signature=[tf.TensorSpec([None, None, None], dtype=tf.float32), tf.TensorSpec([None, None], dtype=tf.int32), tf.TensorSpec([], dtype=tf.bool)])</div>
+
+            <span class="def">def</span>
+            <span class="name">call</span><span class="signature">(self, hidden_states, attention_mask, training=False)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">input_signature</span><span class="o">=</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">TensorSpec</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+                                  <span class="n">tf</span><span class="o">.</span><span class="n">TensorSpec</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+                                  <span class="n">tf</span><span class="o">.</span><span class="n">TensorSpec</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">bool</span><span class="p">)])</span>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_states</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        
+        <span class="n">attention_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_efficient_attention_mask</span><span class="p">(</span><span class="n">attention_mask</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">layer_module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">:</span>
+            <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">layer_module</span><span class="p">(</span><span class="n">hidden_states</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span> 
+                                         <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">,</span>
+                                         <span class="n">head_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                         <span class="n">output_attentions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                         <span class="n">encoder_hidden_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                                         <span class="n">encoder_attention_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                                         <span class="n">past_key_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                         <span class="n">training</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_in_training_mode</span> <span class="o">&amp;</span> <span class="n">training</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">TFBaseModelOutputWithPooling</span><span class="p">(</span><span class="n">last_hidden_state</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span>
+                                            <span class="n">pooler_output</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,:])</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#PolusModel">PolusModel</a></dt>
+                                <dd id="TFBertSplited.init_from_data" class="function"><a href="#PolusModel.init_from_data">init_from_data</a></dd>
+                <dd id="TFBertSplited.set_name" class="function"><a href="#PolusModel.set_name">set_name</a></dd>
+
+            </div>
+            <div><dt>keras.engine.training.Model</dt>
+                                <dd id="TFBertSplited.build" class="function">build</dd>
+                <dd id="TFBertSplited.compile" class="function">compile</dd>
+                <dd id="TFBertSplited.metrics" class="variable">metrics</dd>
+                <dd id="TFBertSplited.metrics_names" class="variable">metrics_names</dd>
+                <dd id="TFBertSplited.distribute_strategy" class="variable">distribute_strategy</dd>
+                <dd id="TFBertSplited.run_eagerly" class="variable">run_eagerly</dd>
+                <dd id="TFBertSplited.train_step" class="function">train_step</dd>
+                <dd id="TFBertSplited.make_train_function" class="function">make_train_function</dd>
+                <dd id="TFBertSplited.fit" class="function">fit</dd>
+                <dd id="TFBertSplited.test_step" class="function">test_step</dd>
+                <dd id="TFBertSplited.make_test_function" class="function">make_test_function</dd>
+                <dd id="TFBertSplited.evaluate" class="function">evaluate</dd>
+                <dd id="TFBertSplited.predict_step" class="function">predict_step</dd>
+                <dd id="TFBertSplited.make_predict_function" class="function">make_predict_function</dd>
+                <dd id="TFBertSplited.predict" class="function">predict</dd>
+                <dd id="TFBertSplited.reset_metrics" class="function">reset_metrics</dd>
+                <dd id="TFBertSplited.train_on_batch" class="function">train_on_batch</dd>
+                <dd id="TFBertSplited.test_on_batch" class="function">test_on_batch</dd>
+                <dd id="TFBertSplited.predict_on_batch" class="function">predict_on_batch</dd>
+                <dd id="TFBertSplited.fit_generator" class="function">fit_generator</dd>
+                <dd id="TFBertSplited.evaluate_generator" class="function">evaluate_generator</dd>
+                <dd id="TFBertSplited.predict_generator" class="function">predict_generator</dd>
+                <dd id="TFBertSplited.trainable_weights" class="variable">trainable_weights</dd>
+                <dd id="TFBertSplited.non_trainable_weights" class="variable">non_trainable_weights</dd>
+                <dd id="TFBertSplited.get_weights" class="function">get_weights</dd>
+                <dd id="TFBertSplited.save" class="function">save</dd>
+                <dd id="TFBertSplited.save_weights" class="function">save_weights</dd>
+                <dd id="TFBertSplited.load_weights" class="function">load_weights</dd>
+                <dd id="TFBertSplited.get_config" class="function">get_config</dd>
+                <dd id="TFBertSplited.from_config" class="function">from_config</dd>
+                <dd id="TFBertSplited.to_json" class="function">to_json</dd>
+                <dd id="TFBertSplited.to_yaml" class="function">to_yaml</dd>
+                <dd id="TFBertSplited.reset_states" class="function">reset_states</dd>
+                <dd id="TFBertSplited.state_updates" class="variable">state_updates</dd>
+                <dd id="TFBertSplited.weights" class="variable">weights</dd>
+                <dd id="TFBertSplited.summary" class="function">summary</dd>
+                <dd id="TFBertSplited.layers" class="variable">layers</dd>
+                <dd id="TFBertSplited.get_layer" class="function">get_layer</dd>
+                <dd id="TFBertSplited.save_spec" class="function">save_spec</dd>
+
+            </div>
+            <div><dt>keras.engine.base_layer.Layer</dt>
+                                <dd id="TFBertSplited.add_weight" class="function">add_weight</dd>
+                <dd id="TFBertSplited.compute_output_shape" class="function">compute_output_shape</dd>
+                <dd id="TFBertSplited.compute_output_signature" class="function">compute_output_signature</dd>
+                <dd id="TFBertSplited.compute_mask" class="function">compute_mask</dd>
+                <dd id="TFBertSplited.dtype" class="variable">dtype</dd>
+                <dd id="TFBertSplited.name" class="variable">name</dd>
+                <dd id="TFBertSplited.supports_masking" class="variable">supports_masking</dd>
+                <dd id="TFBertSplited.dynamic" class="variable">dynamic</dd>
+                <dd id="TFBertSplited.stateful" class="variable">stateful</dd>
+                <dd id="TFBertSplited.trainable" class="variable">trainable</dd>
+                <dd id="TFBertSplited.activity_regularizer" class="variable">activity_regularizer</dd>
+                <dd id="TFBertSplited.input_spec" class="variable">input_spec</dd>
+                <dd id="TFBertSplited.updates" class="variable">updates</dd>
+                <dd id="TFBertSplited.losses" class="variable">losses</dd>
+                <dd id="TFBertSplited.add_loss" class="function">add_loss</dd>
+                <dd id="TFBertSplited.add_metric" class="function">add_metric</dd>
+                <dd id="TFBertSplited.add_update" class="function">add_update</dd>
+                <dd id="TFBertSplited.set_weights" class="function">set_weights</dd>
+                <dd id="TFBertSplited.finalize_state" class="function">finalize_state</dd>
+                <dd id="TFBertSplited.get_updates_for" class="function">get_updates_for</dd>
+                <dd id="TFBertSplited.get_losses_for" class="function">get_losses_for</dd>
+                <dd id="TFBertSplited.get_input_mask_at" class="function">get_input_mask_at</dd>
+                <dd id="TFBertSplited.get_output_mask_at" class="function">get_output_mask_at</dd>
+                <dd id="TFBertSplited.input_mask" class="variable">input_mask</dd>
+                <dd id="TFBertSplited.output_mask" class="variable">output_mask</dd>
+                <dd id="TFBertSplited.get_input_shape_at" class="function">get_input_shape_at</dd>
+                <dd id="TFBertSplited.get_output_shape_at" class="function">get_output_shape_at</dd>
+                <dd id="TFBertSplited.get_input_at" class="function">get_input_at</dd>
+                <dd id="TFBertSplited.get_output_at" class="function">get_output_at</dd>
+                <dd id="TFBertSplited.input" class="variable">input</dd>
+                <dd id="TFBertSplited.output" class="variable">output</dd>
+                <dd id="TFBertSplited.input_shape" class="variable">input_shape</dd>
+                <dd id="TFBertSplited.count_params" class="function">count_params</dd>
+                <dd id="TFBertSplited.output_shape" class="variable">output_shape</dd>
+                <dd id="TFBertSplited.inbound_nodes" class="variable">inbound_nodes</dd>
+                <dd id="TFBertSplited.outbound_nodes" class="variable">outbound_nodes</dd>
+                <dd id="TFBertSplited.apply" class="function">apply</dd>
+                <dd id="TFBertSplited.add_variable" class="function">add_variable</dd>
+                <dd id="TFBertSplited.variables" class="variable">variables</dd>
+                <dd id="TFBertSplited.trainable_variables" class="variable">trainable_variables</dd>
+                <dd id="TFBertSplited.non_trainable_variables" class="variable">non_trainable_variables</dd>
+                <dd id="TFBertSplited.dtype_policy" class="variable">dtype_policy</dd>
+                <dd id="TFBertSplited.compute_dtype" class="variable">compute_dtype</dd>
+                <dd id="TFBertSplited.variable_dtype" class="variable">variable_dtype</dd>
+
+            </div>
+            <div><dt>tensorflow.python.module.module.Module</dt>
+                                <dd id="TFBertSplited.name_scope" class="variable">name_scope</dd>
+                <dd id="TFBertSplited.submodules" class="variable">submodules</dd>
+                <dd id="TFBertSplited.with_name_scope" class="function">with_name_scope</dd>
+
+            </div>
+            <div><dt><a href="core.html#BaseLogger">polus.core.BaseLogger</a></dt>
+                                <dd id="TFBertSplited.set_logging_level" class="function"><a href="core.html#BaseLogger.set_logging_level">set_logging_level</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="split_bert_model">
+                            <div class="attr function"><a class="headerlink" href="#split_bert_model">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">split_bert_model</span><span class="signature">(bert_model, index_layer, init_model=True)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">split_bert_model</span><span class="p">(</span><span class="n">bert_model</span><span class="p">,</span> <span class="n">index_layer</span><span class="p">,</span> <span class="n">init_model</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Utility function that splits a bert model in a pre established index, given by *index_layer*,</span>
+<span class="sd">    which results into two models. The *pre_model* that corresponds to the *bert_model* but without</span>
+<span class="sd">    a some layers that were cut off and a *post_model* that corresponds to a *PolusModel*, which runs</span>
+<span class="sd">    the remain bert layers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">assert</span>  <span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="o">&gt;</span> <span class="n">index_layer</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="ow">and</span> <span class="n">index_layer</span><span class="o">!=</span><span class="mi">0</span>
+    <span class="n">encoder_layers</span> <span class="o">=</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="n">index_layer</span><span class="p">:]</span>
+    <span class="k">del</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="n">index_layer</span><span class="p">:]</span>
+    
+    <span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
+    
+    <span class="c1"># create a new keras model that uses the layers previous removed bert layers</span>
+    <span class="n">post_model</span> <span class="o">=</span> <span class="n">TFBertSplited</span><span class="p">(</span><span class="n">encoder_layers</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">init_model</span><span class="p">:</span>
+        <span class="c1"># run a dummy example to build post_model and check for errors</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="s2">&quot;hello, this is a sample that i want to tokenize&quot;</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode_plus</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span>
+                                           <span class="n">padding</span> <span class="o">=</span> <span class="s2">&quot;max_length&quot;</span><span class="p">,</span>
+                                           <span class="n">truncation</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                           <span class="n">max_length</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+                                           <span class="n">return_attention_mask</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                           <span class="n">return_token_type_ids</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                           <span class="n">return_tensors</span> <span class="o">=</span> <span class="s2">&quot;tf&quot;</span><span class="p">,</span>
+                                          <span class="p">)</span>
+
+        <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">bert_model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)[</span><span class="s2">&quot;last_hidden_state&quot;</span><span class="p">]</span>
+        <span class="n">post_model</span><span class="p">(</span><span class="n">hidden_states</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">bert_model</span><span class="p">,</span> <span class="n">post_model</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Utility function that splits a bert model in a pre established index, given by <em>index_layer</em>,
+which results into two models. The <em>pre_model</em> that corresponds to the <em>bert_model</em> but without
+a some layers that were cut off and a <em>post_model</em> that corresponds to a <em>PolusModel</em>, which runs
+the remain bert layers.</p>
+</div>
+
+
                 </section>
     </main>
 <script>
