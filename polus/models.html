@@ -304,7 +304,11 @@
         <span class="k">return</span> <span class="n">TFBaseModelOutputWithPooling</span><span class="p">(</span><span class="n">last_hidden_state</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span>
                                             <span class="n">pooler_output</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,:])</span>
     
-<span class="k">def</span> <span class="nf">split_bert_model</span><span class="p">(</span><span class="n">bert_model</span><span class="p">,</span> <span class="n">index_layer</span><span class="p">,</span> <span class="n">init_model</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">split_bert_model</span><span class="p">(</span><span class="n">bert_model</span><span class="p">,</span> 
+                     <span class="n">index_layer</span><span class="p">,</span> 
+                     <span class="n">init_models</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                     <span class="n">return_pre_bert_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">return_post_bert_model</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility function that splits a bert model in a pre established index, given by *index_layer*,</span>
 <span class="sd">    which results into two models. The *pre_model* that corresponds to the *bert_model* but without</span>
@@ -312,16 +316,24 @@
 <span class="sd">    the remain bert layers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">assert</span>  <span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="o">&gt;</span> <span class="n">index_layer</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="ow">and</span> <span class="n">index_layer</span><span class="o">!=</span><span class="mi">0</span>
-    <span class="n">encoder_layers</span> <span class="o">=</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="n">index_layer</span><span class="p">:]</span>
-    <span class="k">del</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="n">index_layer</span><span class="p">:]</span>
+    <span class="k">assert</span> <span class="n">return_pre_bert_model</span> <span class="ow">or</span> <span class="n">return_post_bert_model</span> <span class="c1"># at least one must be true</span>
     
-    <span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
+    <span class="k">assert</span>  <span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="o">&gt;</span> <span class="n">index_layer</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="ow">and</span> <span class="n">index_layer</span><span class="o">!=</span><span class="mi">0</span>
     
     <span class="c1"># create a new keras model that uses the layers previous removed bert layers</span>
-    <span class="n">post_model</span> <span class="o">=</span> <span class="n">TFBertSplited</span><span class="p">(</span><span class="n">encoder_layers</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">return_post_bert_model</span><span class="p">:</span>
+        <span class="n">encoder_layers</span> <span class="o">=</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="n">index_layer</span><span class="p">:]</span>
+        <span class="n">post_model</span> <span class="o">=</span> <span class="n">TFBertSplited</span><span class="p">(</span><span class="n">encoder_layers</span><span class="p">)</span>
     
-    <span class="k">if</span> <span class="n">init_model</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">return_pre_bert_model</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="n">index_layer</span><span class="p">:]</span>
+        <span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">bert_model</span>
+    
+    
+    
+    <span class="k">if</span> <span class="n">init_models</span> <span class="ow">and</span> <span class="n">return_pre_bert_model</span><span class="p">:</span>
         <span class="c1"># run a dummy example to build post_model and check for errors</span>
         <span class="n">sample</span> <span class="o">=</span> <span class="s2">&quot;hello, this is a sample that i want to tokenize&quot;</span>
         
@@ -335,11 +347,17 @@
                                            <span class="n">return_token_type_ids</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                                            <span class="n">return_tensors</span> <span class="o">=</span> <span class="s2">&quot;tf&quot;</span><span class="p">,</span>
                                           <span class="p">)</span>
-
         <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">bert_model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)[</span><span class="s2">&quot;last_hidden_state&quot;</span><span class="p">]</span>
-        <span class="n">post_model</span><span class="p">(</span><span class="n">hidden_states</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">])</span>
+            
+        <span class="k">if</span> <span class="n">return_post_bert_model</span><span class="p">:</span>
+            <span class="n">post_model</span><span class="p">(</span><span class="n">hidden_states</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">])</span>
     
-    <span class="k">return</span> <span class="n">bert_model</span><span class="p">,</span> <span class="n">post_model</span>
+    <span class="k">if</span> <span class="n">return_pre_bert_model</span> <span class="ow">and</span> <span class="n">return_post_bert_model</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">bert_model</span><span class="p">,</span> <span class="n">post_model</span>
+    <span class="k">if</span> <span class="n">return_pre_bert_model</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">bert_model</span>
+    <span class="k">if</span> <span class="n">return_post_bert_model</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">post_model</span>
 </pre></div>
 
         </details>
@@ -1641,12 +1659,22 @@ to do prediction with <code>model.predict()</code>.</p>
 
         
             <span class="def">def</span>
-            <span class="name">split_bert_model</span><span class="signature">(bert_model, index_layer, init_model=True)</span>:
+            <span class="name">split_bert_model</span><span class="signature">(
+    bert_model,
+    index_layer,
+    init_models=False,
+    return_pre_bert_model=True,
+    return_post_bert_model=True
+)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">split_bert_model</span><span class="p">(</span><span class="n">bert_model</span><span class="p">,</span> <span class="n">index_layer</span><span class="p">,</span> <span class="n">init_model</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">split_bert_model</span><span class="p">(</span><span class="n">bert_model</span><span class="p">,</span> 
+                     <span class="n">index_layer</span><span class="p">,</span> 
+                     <span class="n">init_models</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                     <span class="n">return_pre_bert_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">return_post_bert_model</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility function that splits a bert model in a pre established index, given by *index_layer*,</span>
 <span class="sd">    which results into two models. The *pre_model* that corresponds to the *bert_model* but without</span>
@@ -1654,16 +1682,24 @@ to do prediction with <code>model.predict()</code>.</p>
 <span class="sd">    the remain bert layers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">assert</span>  <span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="o">&gt;</span> <span class="n">index_layer</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="ow">and</span> <span class="n">index_layer</span><span class="o">!=</span><span class="mi">0</span>
-    <span class="n">encoder_layers</span> <span class="o">=</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="n">index_layer</span><span class="p">:]</span>
-    <span class="k">del</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="n">index_layer</span><span class="p">:]</span>
+    <span class="k">assert</span> <span class="n">return_pre_bert_model</span> <span class="ow">or</span> <span class="n">return_post_bert_model</span> <span class="c1"># at least one must be true</span>
     
-    <span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
+    <span class="k">assert</span>  <span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="o">&gt;</span> <span class="n">index_layer</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="ow">and</span> <span class="n">index_layer</span><span class="o">!=</span><span class="mi">0</span>
     
     <span class="c1"># create a new keras model that uses the layers previous removed bert layers</span>
-    <span class="n">post_model</span> <span class="o">=</span> <span class="n">TFBertSplited</span><span class="p">(</span><span class="n">encoder_layers</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">return_post_bert_model</span><span class="p">:</span>
+        <span class="n">encoder_layers</span> <span class="o">=</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="n">index_layer</span><span class="p">:]</span>
+        <span class="n">post_model</span> <span class="o">=</span> <span class="n">TFBertSplited</span><span class="p">(</span><span class="n">encoder_layers</span><span class="p">)</span>
     
-    <span class="k">if</span> <span class="n">init_model</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">return_pre_bert_model</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="n">index_layer</span><span class="p">:]</span>
+        <span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bert_model</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">bert_model</span>
+    
+    
+    
+    <span class="k">if</span> <span class="n">init_models</span> <span class="ow">and</span> <span class="n">return_pre_bert_model</span><span class="p">:</span>
         <span class="c1"># run a dummy example to build post_model and check for errors</span>
         <span class="n">sample</span> <span class="o">=</span> <span class="s2">&quot;hello, this is a sample that i want to tokenize&quot;</span>
         
@@ -1677,11 +1713,17 @@ to do prediction with <code>model.predict()</code>.</p>
                                            <span class="n">return_token_type_ids</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                                            <span class="n">return_tensors</span> <span class="o">=</span> <span class="s2">&quot;tf&quot;</span><span class="p">,</span>
                                           <span class="p">)</span>
-
         <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">bert_model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)[</span><span class="s2">&quot;last_hidden_state&quot;</span><span class="p">]</span>
-        <span class="n">post_model</span><span class="p">(</span><span class="n">hidden_states</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">])</span>
+            
+        <span class="k">if</span> <span class="n">return_post_bert_model</span><span class="p">:</span>
+            <span class="n">post_model</span><span class="p">(</span><span class="n">hidden_states</span><span class="o">=</span><span class="n">hidden_states</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">])</span>
     
-    <span class="k">return</span> <span class="n">bert_model</span><span class="p">,</span> <span class="n">post_model</span>
+    <span class="k">if</span> <span class="n">return_pre_bert_model</span> <span class="ow">and</span> <span class="n">return_post_bert_model</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">bert_model</span><span class="p">,</span> <span class="n">post_model</span>
+    <span class="k">if</span> <span class="n">return_pre_bert_model</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">bert_model</span>
+    <span class="k">if</span> <span class="n">return_post_bert_model</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">post_model</span>
 </pre></div>
 
         </details>

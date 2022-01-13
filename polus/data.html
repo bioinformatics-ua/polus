@@ -190,6 +190,7 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">from</span> <span class="nn">polus.core</span> <span class="kn">import</span> <span class="n">BaseLogger</span><span class="p">,</span> <span class="n">find_dtype_and_shapes</span>
+<span class="kn">from</span> <span class="nn">polus.models</span> <span class="kn">import</span> <span class="n">split_bert_model</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 <span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">TFAutoModel</span>
 <span class="kn">from</span> <span class="nn">transformers.modeling_tf_outputs</span> <span class="kn">import</span> <span class="n">TFBaseModelOutputWithPooling</span>
@@ -709,28 +710,27 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
     <span class="k">return</span> <span class="n">function_wrapper</span>
     
 <span class="nd">@access_embeddings</span>
-<span class="k">def</span> <span class="nf">build_bert_embeddings</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">,</span> <span class="n">bert_layer_index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    
-    <span class="k">assert</span> <span class="n">bert_layer_index</span> <span class="o">&lt;</span> <span class="mi">0</span>
+<span class="k">def</span> <span class="nf">build_bert_embeddings</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">,</span> <span class="n">bert_layer_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     
     <span class="n">bert_model</span> <span class="o">=</span> <span class="n">TFAutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">,</span>
                                              <span class="n">output_attentions</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                                             <span class="n">output_hidden_states</span> <span class="o">=</span> <span class="n">bert_layer_index</span><span class="o">!=-</span><span class="mi">1</span><span class="p">,</span>
+                                             <span class="n">output_hidden_states</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                                              <span class="n">return_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                              <span class="n">from_pt</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     
-    <span class="k">if</span> <span class="n">bert_layer_index</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span>
+    
+    
+    <span class="k">if</span> <span class="n">bert_layer_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pre_bert_model</span> <span class="o">=</span> <span class="n">split_bert_model</span><span class="p">(</span><span class="n">bert_model</span><span class="p">,</span> <span class="n">bert_layer_index</span><span class="p">,</span> <span class="n">return_post_bert_model</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
+        <span class="k">def</span> <span class="nf">embeddings</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">pre_bert_model</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        
+    <span class="k">else</span><span class="p">:</span>
         <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
         <span class="k">def</span> <span class="nf">embeddings</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">bert_model</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># use hidden_states</span>
-        <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
-        <span class="k">def</span> <span class="nf">embeddings</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">bert_model</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">TFBaseModelOutputWithPooling</span><span class="p">(</span><span class="n">last_hidden_state</span><span class="o">=</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;hidden_states&quot;</span><span class="p">][</span><span class="n">bert_layer_index</span><span class="p">],</span>
-                                                <span class="n">pooler_output</span><span class="o">=</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;hidden_states&quot;</span><span class="p">][</span><span class="n">bert_layer_index</span><span class="p">][:,</span><span class="mi">0</span><span class="p">,:])</span>
-    
+        
     <span class="k">return</span> <span class="n">embeddings</span>
 </pre></div>
 
