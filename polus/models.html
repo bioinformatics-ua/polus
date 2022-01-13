@@ -324,7 +324,9 @@
     <span class="k">if</span> <span class="n">init_model</span><span class="p">:</span>
         <span class="c1"># run a dummy example to build post_model and check for errors</span>
         <span class="n">sample</span> <span class="o">=</span> <span class="s2">&quot;hello, this is a sample that i want to tokenize&quot;</span>
-
+        
+        <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">_name_or_path</span><span class="p">)</span>
+        
         <span class="n">inputs</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode_plus</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span>
                                            <span class="n">padding</span> <span class="o">=</span> <span class="s2">&quot;max_length&quot;</span><span class="p">,</span>
                                            <span class="n">truncation</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1664,7 +1666,9 @@ to do prediction with <code>model.predict()</code>.</p>
     <span class="k">if</span> <span class="n">init_model</span><span class="p">:</span>
         <span class="c1"># run a dummy example to build post_model and check for errors</span>
         <span class="n">sample</span> <span class="o">=</span> <span class="s2">&quot;hello, this is a sample that i want to tokenize&quot;</span>
-
+        
+        <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">bert_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">_name_or_path</span><span class="p">)</span>
+        
         <span class="n">inputs</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode_plus</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span>
                                            <span class="n">padding</span> <span class="o">=</span> <span class="s2">&quot;max_length&quot;</span><span class="p">,</span>
                                            <span class="n">truncation</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
