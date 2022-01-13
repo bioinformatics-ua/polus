@@ -1,6 +1,7 @@
 from polus.models import split_bert_model
 from transformers import TFBertModel, AutoTokenizer
 import tensorflow as tf
+from tests.utils import vector_equals
 
 def test_validate_output_of_split_bert():
     
@@ -25,13 +26,13 @@ def test_validate_output_of_split_bert():
 
     control = bert_model(**inputs)["hidden_states"]
     
-    pre_model, post_model = split_bert_model(bert_model, -2, init_model=False)
+    pre_model, post_model = split_bert_model(bert_model, -2, init_models=False)
     
     hidden_states = pre_model(**inputs)["last_hidden_state"]
     out = post_model(hidden_states=hidden_states, attention_mask=inputs["attention_mask"])["last_hidden_state"]
     
-    assert tf.reduce_all(hidden_states - control[-3] < 0.001)
-    assert tf.reduce_all(out - control[-1]  < 0.001) 
+    assert vector_equals(hidden_states, control[-3])
+    assert vector_equals(out, control[-1]) 
     
     
 

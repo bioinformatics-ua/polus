@@ -1,3 +1,10 @@
+Version 0.1.7:
+    Adding split_bert_model that splits a TFBertModel into two keras models based on the given TFBertLayer index
+    Adding tests for some data and models functions
+    Adding PolusModel abstraction that implements the init_from_data function
+    
+    Refactor and bug fixes
+
 Version 0.1.6:
     Introduction of a information retrieval package with trainers focused in dense retrieval
     

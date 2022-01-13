@@ -4,8 +4,10 @@ import glob
 import os
 import shutil
 
-from transformers import BertTokenizerFast
+from transformers import BertTokenizerFast, TFBertModel
 import tensorflow as tf
+
+from tests.utils import vector_equals
 
 BERT_CHECKPOINT = 'microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract'
 BASE_PATH_CACHE = ".polus_test_cache"
@@ -348,10 +350,12 @@ def test_get_bert_embedding_parameters_cfg():
     get_bert_embeddings = build_bert_embeddings(**cfg)
     
     tf.keras.backend.clear_session()
+
+
     
 def test_get_bert_embedding_last_layer():
 
-    get_bert_embeddings = build_bert_embeddings(BERT_CHECKPOINT)
+    get_bert_embeddings = build_bert_embeddings(BERT_CHECKPOINT, bert_layer_index=-1)
     
     dummy_data = ["Panda is regarded as Chinese national treasure", 
                   "In 2015, the Nobel Committee for Physiology or Medicine, in its only award for treatments of infectious diseases since six decades prior",
@@ -365,10 +369,16 @@ def test_get_bert_embedding_last_layer():
                                           return_token_type_ids = True,
                                           return_attention_mask = True,
                                           return_tensors = "tf")
+    
+    bert_model = TFBertModel.from_pretrained(BERT_CHECKPOINT,
+                                                 output_attentions = False,
+                                                 output_hidden_states = True,
+                                                 return_dict=True,
+                                                 from_pt=True)
+    
+    control = bert_model(**encoding)["hidden_states"]
 
-    embeddings = get_bert_embeddings(input_ids=encoding["input_ids"], 
-                                     token_type_ids=encoding["token_type_ids"],
-                                     attention_mask=encoding["attention_mask"])
+    embeddings = get_bert_embeddings(**encoding)
     
     
     assert hasattr(embeddings, "last_hidden_state")
@@ -377,6 +387,8 @@ def test_get_bert_embedding_last_layer():
     
     assert embeddings["pooler_output"].shape == (3, 768)
     assert embeddings["last_hidden_state"].shape == (3, 64, 768)
+    
+    assert vector_equals(embeddings["last_hidden_state"], control[-2])
     
     tf.keras.backend.clear_session()
     
@@ -399,9 +411,15 @@ def test_get_bert_embedding_second_to_last_layer():
                                           return_attention_mask = True,
                                           return_tensors = "tf")
 
-    embeddings = get_bert_embeddings(input_ids=encoding["input_ids"], 
-                                     token_type_ids=encoding["token_type_ids"],
-                                     attention_mask=encoding["attention_mask"])
+    bert_model = TFBertModel.from_pretrained(BERT_CHECKPOINT,
+                                                 output_attentions = False,
+                                                 output_hidden_states = True,
+                                                 return_dict=True,
+                                                 from_pt=True)
+    
+    control = bert_model(**encoding)["hidden_states"]
+
+    embeddings = get_bert_embeddings(**encoding)
     
     
     assert hasattr(embeddings, "last_hidden_state")
@@ -410,6 +428,8 @@ def test_get_bert_embedding_second_to_last_layer():
     
     assert embeddings["pooler_output"].shape == (3, 768)
     assert embeddings["last_hidden_state"].shape == (3, 64, 768)
+    
+    assert vector_equals(embeddings["last_hidden_state"] , control[-3])
     
     tf.keras.backend.clear_session()
     

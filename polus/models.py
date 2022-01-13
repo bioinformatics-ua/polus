@@ -193,7 +193,11 @@ class TFBertSplited(PolusModel):
         return TFBaseModelOutputWithPooling(last_hidden_state=hidden_states,
                                             pooler_output=hidden_states[:,0,:])
     
-def split_bert_model(bert_model, index_layer, init_model=True):
+def split_bert_model(bert_model, 
+                     index_layer, 
+                     init_models=False,
+                     return_pre_bert_model=True,
+                     return_post_bert_model=True):
     """
     Utility function that splits a bert model in a pre established index, given by *index_layer*,
     which results into two models. The *pre_model* that corresponds to the *bert_model* but without
@@ -201,16 +205,24 @@ def split_bert_model(bert_model, index_layer, init_model=True):
     the remain bert layers.
     """
     
-    assert  bert_model.config.num_hidden_layers > index_layer > -bert_model.config.num_hidden_layers and index_layer!=0
-    encoder_layers = bert_model.layers[0].encoder.layer[index_layer:]
-    del bert_model.layers[0].encoder.layer[index_layer:]
+    assert return_pre_bert_model or return_post_bert_model # at least one must be true
     
-    bert_model.config.num_hidden_layers = len(bert_model.layers[0].encoder.layer)
+    assert  bert_model.config.num_hidden_layers > index_layer > -bert_model.config.num_hidden_layers and index_layer!=0
     
     # create a new keras model that uses the layers previous removed bert layers
-    post_model = TFBertSplited(encoder_layers)
+    if return_post_bert_model:
+        encoder_layers = bert_model.layers[0].encoder.layer[index_layer:]
+        post_model = TFBertSplited(encoder_layers)
     
-    if init_model:
+    if return_pre_bert_model:
+        del bert_model.layers[0].encoder.layer[index_layer:]
+        bert_model.config.num_hidden_layers = len(bert_model.layers[0].encoder.layer)
+    else:
+        del bert_model
+    
+    
+    
+    if init_models and return_pre_bert_model:
         # run a dummy example to build post_model and check for errors
         sample = "hello, this is a sample that i want to tokenize"
         
@@ -224,8 +236,14 @@ def split_bert_model(bert_model, index_layer, init_model=True):
                                            return_token_type_ids = True,
                                            return_tensors = "tf",
                                           )
-
         hidden_states = bert_model(**inputs)["last_hidden_state"]
-        post_model(hidden_states=hidden_states, attention_mask=inputs["attention_mask"])
+            
+        if return_post_bert_model:
+            post_model(hidden_states=hidden_states, attention_mask=inputs["attention_mask"])
     
-    return bert_model, post_model
+    if return_pre_bert_model and return_post_bert_model:
+        return bert_model, post_model
+    if return_pre_bert_model:
+        return bert_model
+    if return_post_bert_model:
+        return post_model

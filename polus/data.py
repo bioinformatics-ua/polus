@@ -31,6 +31,7 @@ import random
 import json
 import inspect
 from polus.core import BaseLogger, find_dtype_and_shapes
+from polus.models import split_bert_model
 import tensorflow as tf
 from transformers import TFAutoModel
 from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
@@ -550,26 +551,25 @@ def access_embeddings(func):
     return function_wrapper
     
 @access_embeddings
-def build_bert_embeddings(checkpoint, bert_layer_index=-1, **kwargs):
-    
-    assert bert_layer_index < 0
+def build_bert_embeddings(checkpoint, bert_layer_index=None, **kwargs):
     
     bert_model = TFAutoModel.from_pretrained(checkpoint,
                                              output_attentions = False,
-                                             output_hidden_states = bert_layer_index!=-1,
+                                             output_hidden_states = False,
                                              return_dict=True,
                                              from_pt=True)
     
-    if bert_layer_index==-1:
+    
+    
+    if bert_layer_index is not None:
+        pre_bert_model = split_bert_model(bert_model, bert_layer_index, return_post_bert_model=False)
+        @tf.function
+        def embeddings(**kwargs):
+            return pre_bert_model(kwargs)
+        
+    else:
         @tf.function
         def embeddings(**kwargs):
             return bert_model(kwargs)
-    else:
-        # use hidden_states
-        @tf.function
-        def embeddings(**kwargs):
-            out = bert_model(kwargs)
-            return TFBaseModelOutputWithPooling(last_hidden_state=out["hidden_states"][bert_layer_index],
-                                                pooler_output=out["hidden_states"][bert_layer_index][:,0,:])
-    
+        
     return embeddings
