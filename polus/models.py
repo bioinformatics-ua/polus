@@ -213,7 +213,9 @@ def split_bert_model(bert_model, index_layer, init_model=True):
     if init_model:
         # run a dummy example to build post_model and check for errors
         sample = "hello, this is a sample that i want to tokenize"
-
+        
+        tokenizer = AutoTokenizer.from_pretrained(bert_model.config._name_or_path)
+        
         inputs = tokenizer.encode_plus(sample,
                                            padding = "max_length",
                                            truncation = True,
