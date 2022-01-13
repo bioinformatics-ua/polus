@@ -15,7 +15,7 @@ from polus.utils import merge_dicts, flatten_dict
 import polus.models
 
 
-from transformers import TFBertModel
+from transformers import TFBertModel, AutoTokenizer
 
 def load_model(file_name_w_ext, change_config={}, external_module=None):
     
