@@ -192,6 +192,30 @@ class TFBertSplited(PolusModel):
 
         return TFBaseModelOutputWithPooling(last_hidden_state=hidden_states,
                                             pooler_output=hidden_states[:,0,:])
+
+    
+def split_bert_model_from_checkpoint(bert_model_checkpoint, 
+                                     index_layer, 
+                                     init_models=False,
+                                     return_pre_bert_model=True,
+                                     return_post_bert_model=True):
+    
+    bert_model = TFBertModel.from_pretrained(bert_model_checkpoint,
+                                             output_attentions = False,
+                                             output_hidden_states = False,
+                                             return_dict=True,
+                                             from_pt=True)
+    
+    output = split_bert_model(bert_model, 
+                              index_layer, 
+                              init_models=init_models,
+                              return_pre_bert_model=return_pre_bert_model,
+                              return_post_bert_model=return_post_bert_model)
+    
+    if not return_pre_bert_model:
+        del bert_model
+    
+    return output
     
 def split_bert_model(bert_model, 
                      index_layer, 
