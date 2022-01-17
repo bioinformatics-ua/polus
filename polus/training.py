@@ -126,7 +126,7 @@ class BaseTrainer(BaseLogger):
         """
         raise NotImplementedError("foward_with_grads function must be implemented in order to compute a loss value for optimization")
     
-    @tf.function(jit_compile=get_jit_compile())#()
+    @tf.function#()
     def train_step(self, *inputs):
         """
         Describes a static computation tensorflow graph that
