@@ -7,14 +7,14 @@ import h5py
 import pickle
 import types
 
-from polus.core import BaseLogger
+from polus.core import BaseLogger,get_jit_compile
 from functools import wraps
-from polus.utils import merge_dicts, flatten_dict
+from polus.utils import merge_dicts, flatten_dict, complex_json_serializer, complex_json_deserializer
 
 #import for refering to this file, used in the load_model method
 import polus.models
 
-
+from transformers.modeling_tf_utils import shape_list
 from transformers import TFBertModel, AutoTokenizer
 
 def load_model(file_name_w_ext, change_config={}, external_module=None):
@@ -22,7 +22,7 @@ def load_model(file_name_w_ext, change_config={}, external_module=None):
     file_name = os.path.splitext(file_name_w_ext)[0]
     
     with open(file_name_w_ext,"r") as f:
-        cfg = json.load(f)
+        cfg = complex_json_deserializer(json.load(f))
     
     cfg["model"] = merge_dicts(cfg["model"], change_config)
     
@@ -105,22 +105,25 @@ class PolusModel(tf.keras.Model, BaseLogger):
     def set_name(self, name):
         self._name = name
         
-        
 class SavableModel(PolusModel):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
     
-    def save(self, base_path = os.path.join(".polus_cache","saved_models"), extension=""):
+    def save(self, 
+             base_path = os.path.join(".polus_cache","saved_models"), 
+             extension=""):
         
         if not os.path.exists(base_path):
             os.makedirs(base_path)
         
         path = os.path.join(base_path, self.name+extension)
-
-        cfg = self.savable_config
+        
+        
+        
         with open(path+".cfg","w") as f:
-            json.dump(self.savable_config , f)
+            json_str = complex_json_serializer(self.savable_config)
+            json.dump(json_str , f)
         
         if hasattr(self, "_init"):
             with open(path+".init","wb") as f:
@@ -159,23 +162,31 @@ class TFBertSplited(PolusModel):
         self.run_in_training_mode = run_in_training_mode
     
     def _efficient_attention_mask(self, x):
-        # This codes mimics the transformer BERT implementation: https://huggingface.co/transformers/_modules/transformers/modeling_tf_bert.html
+        # This codes mimics the transformer BERT implementation: https://github.com/huggingface/transformers/blob/master/src/transformers/models/bert/modeling_tf_bert.py#L1057
         
-        extended_attention_mask = x[:, tf.newaxis, tf.newaxis, :]
+        attention_mask_shape = shape_list(x)
+
+        
+        extended_attention_mask = tf.reshape(
+                x, (attention_mask_shape[0], 1, 1, attention_mask_shape[1])
+            )
 
         # Since attention_mask is 1.0 for positions we want to attend and 0.0 for
         # masked positions, this operation will create a tensor which is 0.0 for
         # positions we want to attend and -10000.0 for masked positions.
         # Since we are adding it to the raw scores before the softmax, this is
         # effectively the same as removing these entirely.
-        extended_attention_mask = tf.cast(extended_attention_mask, tf.float32)
-        extended_attention_mask = (1.0 - extended_attention_mask) * -10000.0
+        extended_attention_mask = tf.cast(extended_attention_mask, dtype=tf.float32)
+        one_cst = tf.constant(1.0, dtype=tf.float32)
+        ten_thousand_cst = tf.constant(-10000.0, dtype=tf.float32)
+        extended_attention_mask = tf.multiply(tf.subtract(one_cst, extended_attention_mask), ten_thousand_cst)
         
         return extended_attention_mask
     
     @tf.function(input_signature=[tf.TensorSpec([None, None, None], dtype=tf.float32),
                                   tf.TensorSpec([None, None], dtype=tf.int32),
-                                  tf.TensorSpec([], dtype=tf.bool)])
+                                  tf.TensorSpec([], dtype=tf.bool)],
+                jit_compile=get_jit_compile())
     def call(self, hidden_states, attention_mask, training=False):
         
         attention_mask = self._efficient_attention_mask(attention_mask)
