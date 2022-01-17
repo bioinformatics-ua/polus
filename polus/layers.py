@@ -15,6 +15,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
     def __init__(self,
                  output_dim,
                  sparse_target=True,
+                 mask_impossible_transitions=None,
                  **kwargs):
         """    
         Args:
@@ -31,6 +32,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
         self.input_spec = tf.keras.layers.InputSpec(min_ndim=3)
         self.sequence_lengths = None
         self.transitions = None
+        self.mask_impossible_transitions = mask_impossible_transitions
         
         self.flatten_layer = tf.keras.layers.Flatten()
 
@@ -52,7 +54,14 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
                                            trainable=True)
         
         super().build(input_shape)
-
+    
+    def get_transitions(self):
+        
+        if self.mask_impossible_transitions is not None:
+            return self.transitions * self.mask_impossible_transitions
+        
+        return self.transitions
+    
     def call(self, inputs, sequence_lengths=None, training=None, **kwargs):
         sequences = tf.convert_to_tensor(inputs, dtype=self.dtype)
         if sequence_lengths is not None:
@@ -67,7 +76,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
             )
 
         viterbi_sequence, _ = crf_decode(sequences,
-                                         self.transitions,
+                                         self.get_transitions(),
                                          self.sequence_lengths)
         
         output = tf.one_hot(viterbi_sequence, self.output_dim )
@@ -83,7 +92,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
                 y_pred,
                 tf.argmax(y_true, axis=-1, output_type=tf.dtypes.int32),
                 self.sequence_lengths,
-                transition_params=self.transitions,
+                transition_params=self.get_transitions(),
             )
             
             return tf.reduce_mean(-log_likelihood)
@@ -101,7 +110,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
                 y_pred,
                 tf.argmax(y_true, axis=-1, output_type=tf.dtypes.int32),
                 self.sequence_lengths,
-                transition_params=self.transitions,
+                transition_params=self.get_transitions(),
             )
             
             positive_samples = y_true * mask_positive_classes

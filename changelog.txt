@@ -1,7 +1,12 @@
-Version 0.1.7:
+Version 0.1.8: (master)
+    Adding a mask input to the CRF layer for masking impossible transitions (binary potentials)
+    Adding complex json serializer and deserializer
     Adding split_bert_model that splits a TFBertModel into two keras models based on the given TFBertLayer index
-    Adding tests for some data and models functions
     Adding PolusModel abstraction that implements the init_from_data function
+    
+Version 0.1.7:
+    Adding tests for some data and models functions
+    A lot of minor changes not individually discriminated
     
     Refactor and bug fixes
 
