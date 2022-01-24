@@ -14,9 +14,6 @@ from polus.utils import merge_dicts, flatten_dict, complex_json_serializer, comp
 #import for refering to this file, used in the load_model method
 import polus.models
 
-from transformers.modeling_tf_utils import shape_list
-from transformers import TFBertModel, AutoTokenizer
-
 def load_model(file_name_w_ext, change_config={}, external_module=None):
     
     file_name = os.path.splitext(file_name_w_ext)[0]
@@ -134,8 +131,6 @@ class SavableModel(PolusModel):
             weight = self.get_weights()
             for i in range(len(weight)):
                 f.create_dataset('weight'+str(i), data=weight[i])
-    
-    
         
 class SequentialSavableModel(tf.keras.Sequential, SavableModel):
     """
@@ -145,6 +140,9 @@ class SequentialSavableModel(tf.keras.Sequential, SavableModel):
     def __init__(self, layers, **kwargs):
         super().__init__(layers, **kwargs)
 
+
+from transformers.modeling_tf_utils import shape_list
+from transformers import TFBertModel, AutoTokenizer
         
 from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 from transformers.file_utils import DUMMY_INPUTS, DUMMY_MASK

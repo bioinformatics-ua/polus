@@ -58,7 +58,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
     def get_transitions(self):
         
         if self.mask_impossible_transitions is not None:
-            return self.transitions * self.mask_impossible_transitions
+            return self.transitions * self.mask_impossible_transitions + tf.cast((tf.cast(1-self.mask_impossible_transitions, tf.int32)*-10000), tf.float32)
         
         return self.transitions
     

@@ -215,6 +215,12 @@ class CachedDataLoader(DataLoader):
         self.__tf_sample_map_f = tf_sample_map_f
         self.__py_sample_map_f = py_sample_map_f
         self.cache_index = cache_index
+        if cache_index is not None and "cache_index_path" in cache_index:
+            self.cache_index_path = cache_index["cache_index_path"]
+        else:
+            # this dataset probably do not have a cache_index_path, this can happen if the DataLoader was created
+            # from merge of multiple DataLoader
+            self.cache_index_path = None
         
         # the parent DataLoader will call _build_sample_generator that contains the logic to build the dataloader
         try:
@@ -229,7 +235,7 @@ class CachedDataLoader(DataLoader):
     def from_cached_index(cls, index_path):
         
         index_info = cls.read_index(index_path)
-        
+        index_info["cache_index_path"] = index_path
         return cls(cache_index=index_info)
         
     

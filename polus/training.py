@@ -298,7 +298,11 @@ class ClassifierTrainer(BaseTrainer):
         Note that the return values are dirictly passed to the loss
         function.
         """ 
-        logits = self.model(x, training=True)
+        
+        if isinstance(x, dict):
+            logits = self.model(**x, training=True)
+        else:
+            logits = self.model(x, training=True)
             
         if self.post_process_logits is not None:
             self.logger.info("Post process step of the logits was added to the training loop")
