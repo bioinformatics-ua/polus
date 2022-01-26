@@ -51,7 +51,7 @@ enabled by default, which can be easily accessed by the polus.core API.
 
 '''
 
-__version__="0.1.7"
+__version__="0.1.8"
 
 # add main lib sub packages
 import polus.callbacks

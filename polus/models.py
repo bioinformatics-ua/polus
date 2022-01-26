@@ -116,8 +116,6 @@ class SavableModel(PolusModel):
         
         path = os.path.join(base_path, self.name+extension)
         
-        
-        
         with open(path+".cfg","w") as f:
             json_str = complex_json_serializer(self.savable_config)
             json.dump(json_str , f)
