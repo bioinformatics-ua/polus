@@ -308,15 +308,17 @@
 <span class="sd">            has no influence on the behaviour of the training loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">## argument handling</span>
-        <span class="k">if</span> <span class="n">tf_dataset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;tf_dataset&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
-            <span class="n">tf_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;tf_dataset&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass a training dataset to the trainer.train method&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tf_dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;tf_dataset&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+                <span class="n">tf_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;tf_dataset&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass a training dataset to the trainer.train method&quot;</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="n">epochs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;epochs&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
-            <span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;epochs&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass the epochs variable to the trainer.train method&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">epochs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;epochs&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+                <span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;epochs&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass the epochs variable to the trainer.train method&quot;</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">callbacks</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="s2">&quot;callbacks&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
             <span class="n">callbacks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;callbacks&quot;</span><span class="p">]</span>
@@ -658,15 +660,17 @@
 <span class="sd">            has no influence on the behaviour of the training loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">## argument handling</span>
-        <span class="k">if</span> <span class="n">tf_dataset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;tf_dataset&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
-            <span class="n">tf_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;tf_dataset&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass a training dataset to the trainer.train method&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tf_dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;tf_dataset&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+                <span class="n">tf_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;tf_dataset&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass a training dataset to the trainer.train method&quot;</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="n">epochs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;epochs&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
-            <span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;epochs&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass the epochs variable to the trainer.train method&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">epochs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;epochs&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+                <span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;epochs&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass the epochs variable to the trainer.train method&quot;</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">callbacks</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="s2">&quot;callbacks&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
             <span class="n">callbacks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;callbacks&quot;</span><span class="p">]</span>
@@ -1152,15 +1156,17 @@ fast.ai</p>
 <span class="sd">            has no influence on the behaviour of the training loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">## argument handling</span>
-        <span class="k">if</span> <span class="n">tf_dataset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;tf_dataset&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
-            <span class="n">tf_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;tf_dataset&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass a training dataset to the trainer.train method&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tf_dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;tf_dataset&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+                <span class="n">tf_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;tf_dataset&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass a training dataset to the trainer.train method&quot;</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="n">epochs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;epochs&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
-            <span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;epochs&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass the epochs variable to the trainer.train method&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">epochs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;epochs&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+                <span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;epochs&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass the epochs variable to the trainer.train method&quot;</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">callbacks</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="s2">&quot;callbacks&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
             <span class="n">callbacks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;callbacks&quot;</span><span class="p">]</span>
