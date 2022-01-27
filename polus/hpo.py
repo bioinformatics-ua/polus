@@ -1,5 +1,4 @@
 from polus.core import Singleton, BaseLogger
-from polus.training import BaseTrainer
 from human_id import generate_id
 
 import optuna 

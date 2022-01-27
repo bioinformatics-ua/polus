@@ -9,6 +9,7 @@ cd $SCRIPTPATH
 
 # remove the old polus
 pip uninstall polus -y
+pip install -r requirements.txt
 
 python setup.py bdist_wheel
 

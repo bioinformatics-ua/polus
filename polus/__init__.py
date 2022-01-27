@@ -64,6 +64,7 @@ import polus.models
 import polus.schedulers
 import polus.training
 import polus.utils
+import polus.hpo
 import polus.ir
 import polus.ner
 import polus.experimental

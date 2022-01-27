@@ -1,10 +1,14 @@
 from polus.core import BaseLogger, get_jit_compile
 from polus.models import PolusClassifier
+from polus.hpo import HPOContext
+
 from timeit import default_timer as timer
 from collections import OrderedDict, defaultdict
 import tensorflow as tf
 import inspect
 import wandb
+import numpy as np
+
 
 class IOutput(BaseLogger):
     def __init__(self):
@@ -297,7 +301,20 @@ class EarlyStop(Callback):
         else:
             loss = sum(self.loss)/len(self.loss)
             self.loss = [] # loss per epoch
+        
+        if np.isnan(loss):
+            self.logger.info(f"The training will stop early since the loss became nan")
+            self.coordinator.trainer.early_stop = True
+            ctx = HPOContext()
+            if ctx.is_hpo_enable():
+                from optuna.exceptions import TrialPruned
+                from optuna.trial import Trial
+                if isinstance(ctx.hpo_backend, Trial): # optuna has backend
+                    raise TrialPruned
+                else:
+                    raise ValueError(f"The loss was nan, but early stop does not know how to end the run with the {ctx.hpo_backend} backend")
             
+        
         if self.last_loss < loss:
             self.current_patience += 1
             

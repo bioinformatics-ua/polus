@@ -218,15 +218,17 @@ class BaseTrainer(BaseLogger):
             has no influence on the behaviour of the training loop.
         """
         ## argument handling
-        if tf_dataset is None and "tf_dataset" in self.train_config:
-            tf_dataset = self.train_config["tf_dataset"]
-        else:
-            raise ValueError("You need to pass a training dataset to the trainer.train method")
+        if tf_dataset is None:
+            if "tf_dataset" in self.train_config:
+                tf_dataset = self.train_config["tf_dataset"]
+            else:
+                raise ValueError("You need to pass a training dataset to the trainer.train method")
         
-        if epochs is None and "epochs" in self.train_config:
-            epochs = self.train_config["epochs"]
-        else:
-            raise ValueError("You need to pass the epochs variable to the trainer.train method")
+        if epochs is None:
+            if "epochs" in self.train_config:
+                epochs = self.train_config["epochs"]
+            else:
+                raise ValueError("You need to pass the epochs variable to the trainer.train method")
         
         if len(callbacks)==0 and "callbacks" in self.train_config:
             callbacks = self.train_config["callbacks"]
