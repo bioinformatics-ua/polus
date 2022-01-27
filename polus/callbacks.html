@@ -196,6 +196,18 @@
 
             </li>
             <li>
+                    <a class="class" href="#HPOPruneCallback">HPOPruneCallback</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#HPOPruneCallback.__init__">HPOPruneCallback</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#HPOPruneCallback.on_epoch_end">on_epoch_end</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#WandBLogCallback">WandBLogCallback</a>
                             <ul class="memberlist">
                         <li>
@@ -580,6 +592,41 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">early_stop</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The training will stop early since the loss did not improve in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">patience</span><span class="si">}</span><span class="s2"> consecutive epochs&quot;</span><span class="p">)</span>
 
+
+<span class="k">class</span> <span class="nc">HPOPruneCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insperied from https://optuna.readthedocs.io/en/stable/_modules/optuna/integration/tfkeras.html#TFKerasPruningCallback</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validator_name</span><span class="p">,</span> <span class="n">metric_name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        
+        
+        <span class="c1"># this can be none, if nono this callback does do anything</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="o">=</span> <span class="n">HPOContext</span><span class="p">()</span><span class="o">.</span><span class="n">hpo_backend</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HPOPruneCallback was initialized however, there is no hpo context at the moment&quot;</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span> <span class="o">=</span> <span class="n">validator_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">=</span> <span class="n">metric_name</span>
+        
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            
+            <span class="n">current_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">hpo_backend</span><span class="p">,</span> <span class="n">Trial</span><span class="p">):</span> <span class="c1"># optuna has backend</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">current_score</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">epoch</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span><span class="o">.</span><span class="n">should_prune</span><span class="p">():</span>
+                    <span class="kn">from</span> <span class="nn">optuna.exceptions</span> <span class="kn">import</span> <span class="n">TrialPruned</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Trial was pruned at epoch </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">TrialPruned</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The current </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">hpo_backend</span><span class="si">}</span><span class="s2"> backend is not supported so we do not know how to prune&quot;</span><span class="p">)</span>
+        
             
 <span class="k">class</span> <span class="nc">WandBLogCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">,</span> <span class="n">IOutput</span><span class="p">):</span>
     
@@ -2328,6 +2375,151 @@ Note that multiple instances use the same handler</p>
             </div>
             <div><dt><a href="core.html#BaseLogger">polus.core.BaseLogger</a></dt>
                                 <dd id="EarlyStop.set_logging_level" class="function"><a href="core.html#BaseLogger.set_logging_level">set_logging_level</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="HPOPruneCallback">
+                                <div class="attr class">
+        <a class="headerlink" href="#HPOPruneCallback">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">HPOPruneCallback</span><wbr>(<span class="base"><a href="#Callback">Callback</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">HPOPruneCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insperied from https://optuna.readthedocs.io/en/stable/_modules/optuna/integration/tfkeras.html#TFKerasPruningCallback</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validator_name</span><span class="p">,</span> <span class="n">metric_name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        
+        
+        <span class="c1"># this can be none, if nono this callback does do anything</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="o">=</span> <span class="n">HPOContext</span><span class="p">()</span><span class="o">.</span><span class="n">hpo_backend</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HPOPruneCallback was initialized however, there is no hpo context at the moment&quot;</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span> <span class="o">=</span> <span class="n">validator_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">=</span> <span class="n">metric_name</span>
+        
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            
+            <span class="n">current_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">hpo_backend</span><span class="p">,</span> <span class="n">Trial</span><span class="p">):</span> <span class="c1"># optuna has backend</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">current_score</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">epoch</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span><span class="o">.</span><span class="n">should_prune</span><span class="p">():</span>
+                    <span class="kn">from</span> <span class="nn">optuna.exceptions</span> <span class="kn">import</span> <span class="n">TrialPruned</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Trial was pruned at epoch </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">TrialPruned</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The current </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">hpo_backend</span><span class="si">}</span><span class="s2"> backend is not supported so we do not know how to prune&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Insperied from https://optuna.readthedocs.io/en/stable/_modules/optuna/integration/tfkeras.html#TFKerasPruningCallback</p>
+</div>
+
+
+                            <div id="HPOPruneCallback.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#HPOPruneCallback.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">HPOPruneCallback</span><span class="signature">(validator_name, metric_name)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validator_name</span><span class="p">,</span> <span class="n">metric_name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        
+        
+        <span class="c1"># this can be none, if nono this callback does do anything</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="o">=</span> <span class="n">HPOContext</span><span class="p">()</span><span class="o">.</span><span class="n">hpo_backend</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HPOPruneCallback was initialized however, there is no hpo context at the moment&quot;</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span> <span class="o">=</span> <span class="n">validator_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">=</span> <span class="n">metric_name</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Base logging class, this sets a console and file log handler to each
+instance. Meaning that each call to the logger will write to both 
+handlers. </p>
+
+<p>Furthermore, the intended behaviour is to classes to extend this BaseLogger
+classe and by doing this, any class can access to the logger property
+Note that multiple instances use the same handler</p>
+
+<p>Main ideas from: https://www.toptal.com/python/in-depth-python-logging</p>
+</div>
+
+
+                            </div>
+                            <div id="HPOPruneCallback.on_epoch_end" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#HPOPruneCallback.on_epoch_end">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">on_epoch_end</span><span class="signature">(self, epoch)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            
+            <span class="n">current_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">hpo_backend</span><span class="p">,</span> <span class="n">Trial</span><span class="p">):</span> <span class="c1"># optuna has backend</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">current_score</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">epoch</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span><span class="o">.</span><span class="n">should_prune</span><span class="p">():</span>
+                    <span class="kn">from</span> <span class="nn">optuna.exceptions</span> <span class="kn">import</span> <span class="n">TrialPruned</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Trial was pruned at epoch </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">TrialPruned</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The current </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">hpo_backend</span><span class="si">}</span><span class="s2"> backend is not supported so we do not know how to prune&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#Callback">Callback</a></dt>
+                                <dd id="HPOPruneCallback.add_coordinator" class="function"><a href="#Callback.add_coordinator">add_coordinator</a></dd>
+
+            </div>
+            <div><dt><a href="#ICallback">ICallback</a></dt>
+                                <dd id="HPOPruneCallback.on_train_begin" class="function"><a href="#ICallback.on_train_begin">on_train_begin</a></dd>
+                <dd id="HPOPruneCallback.on_epoch_begin" class="function"><a href="#ICallback.on_epoch_begin">on_epoch_begin</a></dd>
+                <dd id="HPOPruneCallback.on_train_batch_begin" class="function"><a href="#ICallback.on_train_batch_begin">on_train_batch_begin</a></dd>
+                <dd id="HPOPruneCallback.on_train_batch_end" class="function"><a href="#ICallback.on_train_batch_end">on_train_batch_end</a></dd>
+                <dd id="HPOPruneCallback.on_train_end" class="function"><a href="#ICallback.on_train_end">on_train_end</a></dd>
+
+            </div>
+            <div><dt><a href="core.html#BaseLogger">polus.core.BaseLogger</a></dt>
+                                <dd id="HPOPruneCallback.set_logging_level" class="function"><a href="core.html#BaseLogger.set_logging_level">set_logging_level</a></dd>
 
             </div>
                                 </dl>
