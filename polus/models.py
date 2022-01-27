@@ -137,7 +137,20 @@ class SequentialSavableModel(tf.keras.Sequential, SavableModel):
     """
     def __init__(self, layers, **kwargs):
         super().__init__(layers, **kwargs)
-
+        
+class PolusClassifier(SavableModel):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    
+    @tf.function
+    def inference(self, x):
+        return tf.argmax(self(x), axis=-1, output_type=tf.int32)
+    
+class SequentialPolusClassifier(tf.keras.Sequential, PolusClassifier):
+    def __init__(self, layers, **kwargs):
+        super().__init__(layers, **kwargs)
+    
 
 from transformers.modeling_tf_utils import shape_list
 from transformers import TFBertModel, AutoTokenizer
