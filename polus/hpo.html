@@ -42,6 +42,9 @@
                         <li>
                                 <a class="function" href="#HPOContext.is_hpo_enable">is_hpo_enable</a>
                         </li>
+                        <li>
+                                <a class="function" href="#HPOContext.reset">reset</a>
+                        </li>
                 </ul>
 
             </li>
@@ -98,6 +101,9 @@
         
     <span class="k">def</span> <span class="nf">is_hpo_enable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="o">=</span> <span class="kc">None</span>
 
 <span class="k">def</span> <span class="nf">parameter</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">hpo_lambda</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">hpo_lambda</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -111,8 +117,8 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
                  <span class="n">trainer_init_function</span><span class="p">,</span>
                  <span class="n">validator_name</span><span class="p">,</span>
+                 <span class="n">metric_name</span><span class="p">,</span>
                  <span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;optuna&quot;</span><span class="p">,</span>
-                 <span class="n">metric_name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">metric_time</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -163,9 +169,9 @@
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_metrics</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_time</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">val_callback</span><span class="o">.</span><span class="n">get_metrics</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">])</span>
+                <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">_metrics</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_time</span> <span class="o">==</span> <span class="s2">&quot;last&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">val_callback</span><span class="o">.</span><span class="n">get_metrics</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">_metrics</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;value used for metric_time is not supported, found </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -177,15 +183,15 @@
     
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;optuna&quot;</span><span class="p">:</span>
-            <span class="n">study</span> <span class="o">=</span> <span class="n">optuna</span><span class="o">.</span><span class="n">create_study</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;sampler&quot;</span><span class="p">],</span>
-                                        <span class="n">pruner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;pruner&quot;</span><span class="p">],</span>
-                                        <span class="n">direction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;direction&quot;</span><span class="p">],</span>
-                                        <span class="n">study_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;study_name&quot;</span><span class="p">],</span>
-                                        <span class="n">storage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;storage&quot;</span><span class="p">],</span>
-                                        <span class="n">load_if_exists</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;load_if_exists&quot;</span><span class="p">],</span>
-                                       <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">study</span> <span class="o">=</span> <span class="n">optuna</span><span class="o">.</span><span class="n">create_study</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;sampler&quot;</span><span class="p">],</span>
+                                             <span class="n">pruner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;pruner&quot;</span><span class="p">],</span>
+                                             <span class="n">direction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;direction&quot;</span><span class="p">],</span>
+                                             <span class="n">study_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;study_name&quot;</span><span class="p">],</span>
+                                             <span class="n">storage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;storage&quot;</span><span class="p">],</span>
+                                             <span class="n">load_if_exists</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;load_if_exists&quot;</span><span class="p">],</span>
+                                           <span class="p">)</span>
 
-            <span class="n">s</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;n_trials&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">study</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;n_trials&quot;</span><span class="p">])</span>
     
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
@@ -219,6 +225,9 @@
         
     <span class="k">def</span> <span class="nf">is_hpo_enable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 
         </details>
@@ -285,6 +294,25 @@
     
 
                             </div>
+                            <div id="HPOContext.reset" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#HPOContext.reset">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">reset</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
                 </section>
                 <section id="parameter">
                             <div class="attr function"><a class="headerlink" href="#parameter">#&nbsp;&nbsp</a>
@@ -325,8 +353,8 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
                  <span class="n">trainer_init_function</span><span class="p">,</span>
                  <span class="n">validator_name</span><span class="p">,</span>
+                 <span class="n">metric_name</span><span class="p">,</span>
                  <span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;optuna&quot;</span><span class="p">,</span>
-                 <span class="n">metric_name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">metric_time</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -377,9 +405,9 @@
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_metrics</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_time</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">val_callback</span><span class="o">.</span><span class="n">get_metrics</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">])</span>
+                <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">_metrics</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_time</span> <span class="o">==</span> <span class="s2">&quot;last&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">val_callback</span><span class="o">.</span><span class="n">get_metrics</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">_metrics</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;value used for metric_time is not supported, found </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -391,15 +419,15 @@
     
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;optuna&quot;</span><span class="p">:</span>
-            <span class="n">study</span> <span class="o">=</span> <span class="n">optuna</span><span class="o">.</span><span class="n">create_study</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;sampler&quot;</span><span class="p">],</span>
-                                        <span class="n">pruner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;pruner&quot;</span><span class="p">],</span>
-                                        <span class="n">direction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;direction&quot;</span><span class="p">],</span>
-                                        <span class="n">study_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;study_name&quot;</span><span class="p">],</span>
-                                        <span class="n">storage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;storage&quot;</span><span class="p">],</span>
-                                        <span class="n">load_if_exists</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;load_if_exists&quot;</span><span class="p">],</span>
-                                       <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">study</span> <span class="o">=</span> <span class="n">optuna</span><span class="o">.</span><span class="n">create_study</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;sampler&quot;</span><span class="p">],</span>
+                                             <span class="n">pruner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;pruner&quot;</span><span class="p">],</span>
+                                             <span class="n">direction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;direction&quot;</span><span class="p">],</span>
+                                             <span class="n">study_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;study_name&quot;</span><span class="p">],</span>
+                                             <span class="n">storage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;storage&quot;</span><span class="p">],</span>
+                                             <span class="n">load_if_exists</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;load_if_exists&quot;</span><span class="p">],</span>
+                                           <span class="p">)</span>
 
-            <span class="n">s</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;n_trials&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">study</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;n_trials&quot;</span><span class="p">])</span>
     
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
@@ -419,8 +447,8 @@
             <span class="name">HPO_Objective</span><span class="signature">(
     trainer_init_function,
     validator_name,
+    metric_name,
     backend=&#39;optuna&#39;,
-    metric_name=None,
     metric_time=&#39;max&#39;
 )</span>
     </div>
@@ -430,8 +458,8 @@
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
                  <span class="n">trainer_init_function</span><span class="p">,</span>
                  <span class="n">validator_name</span><span class="p">,</span>
+                 <span class="n">metric_name</span><span class="p">,</span>
                  <span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;optuna&quot;</span><span class="p">,</span>
-                 <span class="n">metric_name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">metric_time</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -517,15 +545,15 @@ metric per train. Availble modes [max, last]</li>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;optuna&quot;</span><span class="p">:</span>
-            <span class="n">study</span> <span class="o">=</span> <span class="n">optuna</span><span class="o">.</span><span class="n">create_study</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;sampler&quot;</span><span class="p">],</span>
-                                        <span class="n">pruner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;pruner&quot;</span><span class="p">],</span>
-                                        <span class="n">direction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;direction&quot;</span><span class="p">],</span>
-                                        <span class="n">study_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;study_name&quot;</span><span class="p">],</span>
-                                        <span class="n">storage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;storage&quot;</span><span class="p">],</span>
-                                        <span class="n">load_if_exists</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;load_if_exists&quot;</span><span class="p">],</span>
-                                       <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">study</span> <span class="o">=</span> <span class="n">optuna</span><span class="o">.</span><span class="n">create_study</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;sampler&quot;</span><span class="p">],</span>
+                                             <span class="n">pruner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;pruner&quot;</span><span class="p">],</span>
+                                             <span class="n">direction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;direction&quot;</span><span class="p">],</span>
+                                             <span class="n">study_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;study_name&quot;</span><span class="p">],</span>
+                                             <span class="n">storage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;storage&quot;</span><span class="p">],</span>
+                                             <span class="n">load_if_exists</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;load_if_exists&quot;</span><span class="p">],</span>
+                                           <span class="p">)</span>
 
-            <span class="n">s</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;n_trials&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">study</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optuna_cfg</span><span class="p">[</span><span class="s2">&quot;n_trials&quot;</span><span class="p">])</span>
 </pre></div>
 
         </details>

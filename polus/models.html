@@ -158,6 +158,10 @@
     
     <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">merge_dicts</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">],</span> <span class="n">change_config</span><span class="p">)</span>
     
+    <span class="c1"># TODO: For adding the possibility to load from best HPO cfg,</span>
+    <span class="c1"># just load the best HPO trial, then add it to the HPO_Context</span>
+    <span class="c1"># it should work :) </span>
+    
     <span class="k">if</span> <span class="n">external_module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">external_module</span><span class="p">,</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;func_name&#39;</span><span class="p">])(</span><span class="o">**</span><span class="n">cfg</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -449,6 +453,10 @@
         <span class="n">cfg</span> <span class="o">=</span> <span class="n">complex_json_deserializer</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
     
     <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">merge_dicts</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">],</span> <span class="n">change_config</span><span class="p">)</span>
+    
+    <span class="c1"># TODO: For adding the possibility to load from best HPO cfg,</span>
+    <span class="c1"># just load the best HPO trial, then add it to the HPO_Context</span>
+    <span class="c1"># it should work :) </span>
     
     <span class="k">if</span> <span class="n">external_module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">external_module</span><span class="p">,</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;func_name&#39;</span><span class="p">])(</span><span class="o">**</span><span class="n">cfg</span><span class="p">)</span>
