@@ -49,6 +49,9 @@
                                 <a class="function" href="#BaseTrainer.lr_finder">lr_finder</a>
                         </li>
                         <li>
+                                <a class="function" href="#BaseTrainer.changing_train_config">changing_train_config</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#BaseTrainer.train">train</a>
                         </li>
                 </ul>
@@ -148,6 +151,8 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span> <span class="o">=</span> <span class="kc">False</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span> <span class="o">=</span> <span class="p">{}</span>
         
         <span class="c1"># an internal variable that holds the number of runned steps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">=</span> <span class="mi">0</span>
@@ -265,17 +270,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
     
+    <span class="k">def</span> <span class="nf">changing_train_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    
     <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-              <span class="n">tf_dataset</span><span class="p">,</span> 
-              <span class="n">epochs</span><span class="p">,</span>
+              <span class="n">tf_dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+              <span class="n">epochs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">callbacks</span><span class="o">=</span><span class="p">[],</span>
-              <span class="n">train_map_f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">train_map_f</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">steps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Implements the main training loop, where the model is trained by</span>
 <span class="sd">        iteratively executing the *train_step* for every *tf_dataset* sample</span>
-<span class="sd">        during a specific amount of epoch*.</span>
+<span class="sd">        during a specific amount of *epochs*.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">          tf_dataset (tf.data.Dataset): Training dataset that is compatible </span>
@@ -298,6 +307,27 @@
 <span class="sd">            this value is optional since it is only used as user feedback, and </span>
 <span class="sd">            has no influence on the behaviour of the training loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">## argument handling</span>
+        <span class="k">if</span> <span class="n">tf_dataset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;tf_dataset&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">tf_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;tf_dataset&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass a training dataset to the trainer.train method&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">epochs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;epochs&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;epochs&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass the epochs variable to the trainer.train method&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">callbacks</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="s2">&quot;callbacks&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">callbacks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;callbacks&quot;</span><span class="p">]</span>
+            
+        <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;train_map_f&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">train_map_f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;train_map_f&quot;</span><span class="p">]</span>
+            
+        <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;steps&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;steps&quot;</span><span class="p">]</span>
+        
+        <span class="c1">## function logic starts here</span>
         <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">N_STEPS</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">cardinality</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -306,20 +336,21 @@
         <span class="c1"># make backwards compatability</span>
         <span class="k">if</span> <span class="s2">&quot;custom_data_transform_f&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="n">train_map_f</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;custom_data_transform_f&quot;</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackCoordinator</span><span class="p">):</span>
             <span class="n">callbacks</span> <span class="o">=</span> <span class="n">CallbackCoordinator</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span>
                                             <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="p">,</span>
                                             <span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="p">,</span>
                                             <span class="n">steps</span> <span class="o">=</span> <span class="n">N_STEPS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span>
         
-        <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
         
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-            <span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
             
             <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">):</span>
-                <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
                 
                 <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -329,14 +360,14 @@
                 <span class="c1">## internally increments the step counter</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
                 
-                <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
 
-            <span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
             
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
                 <span class="k">break</span>
                 
-        <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span>
         
         
 <span class="k">class</span> <span class="nc">ClassifierTrainer</span><span class="p">(</span><span class="n">BaseTrainer</span><span class="p">):</span>
@@ -471,6 +502,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span> <span class="o">=</span> <span class="kc">False</span>
         
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span> <span class="o">=</span> <span class="p">{}</span>
+        
         <span class="c1"># an internal variable that holds the number of runned steps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">=</span> <span class="mi">0</span>
     
@@ -587,17 +620,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
     
+    <span class="k">def</span> <span class="nf">changing_train_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    
     <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-              <span class="n">tf_dataset</span><span class="p">,</span> 
-              <span class="n">epochs</span><span class="p">,</span>
+              <span class="n">tf_dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+              <span class="n">epochs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">callbacks</span><span class="o">=</span><span class="p">[],</span>
-              <span class="n">train_map_f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">train_map_f</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">steps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Implements the main training loop, where the model is trained by</span>
 <span class="sd">        iteratively executing the *train_step* for every *tf_dataset* sample</span>
-<span class="sd">        during a specific amount of epoch*.</span>
+<span class="sd">        during a specific amount of *epochs*.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">          tf_dataset (tf.data.Dataset): Training dataset that is compatible </span>
@@ -620,6 +657,27 @@
 <span class="sd">            this value is optional since it is only used as user feedback, and </span>
 <span class="sd">            has no influence on the behaviour of the training loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">## argument handling</span>
+        <span class="k">if</span> <span class="n">tf_dataset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;tf_dataset&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">tf_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;tf_dataset&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass a training dataset to the trainer.train method&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">epochs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;epochs&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;epochs&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass the epochs variable to the trainer.train method&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">callbacks</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="s2">&quot;callbacks&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">callbacks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;callbacks&quot;</span><span class="p">]</span>
+            
+        <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;train_map_f&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">train_map_f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;train_map_f&quot;</span><span class="p">]</span>
+            
+        <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;steps&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;steps&quot;</span><span class="p">]</span>
+        
+        <span class="c1">## function logic starts here</span>
         <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">N_STEPS</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">cardinality</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -628,20 +686,21 @@
         <span class="c1"># make backwards compatability</span>
         <span class="k">if</span> <span class="s2">&quot;custom_data_transform_f&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="n">train_map_f</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;custom_data_transform_f&quot;</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackCoordinator</span><span class="p">):</span>
             <span class="n">callbacks</span> <span class="o">=</span> <span class="n">CallbackCoordinator</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span>
                                             <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="p">,</span>
                                             <span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="p">,</span>
                                             <span class="n">steps</span> <span class="o">=</span> <span class="n">N_STEPS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span>
         
-        <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
         
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-            <span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
             
             <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">):</span>
-                <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
                 
                 <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -651,14 +710,14 @@
                 <span class="c1">## internally increments the step counter</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
                 
-                <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
 
-            <span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
             
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
                 <span class="k">break</span>
                 
-        <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span>
 </pre></div>
 
         </details>
@@ -736,6 +795,8 @@ logic needed to train models under simple classification problems.</p>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span> <span class="o">=</span> <span class="kc">False</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span> <span class="o">=</span> <span class="p">{}</span>
         
         <span class="c1"># an internal variable that holds the number of runned steps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1019,6 +1080,26 @@ fast.ai</p>
 
 
                             </div>
+                            <div id="BaseTrainer.changing_train_config" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#BaseTrainer.changing_train_config">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">changing_train_config</span><span class="signature">(self, **config)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">changing_train_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
                             <div id="BaseTrainer.train" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#BaseTrainer.train">#&nbsp;&nbsp</a>
 
@@ -1026,8 +1107,8 @@ fast.ai</p>
             <span class="def">def</span>
             <span class="name">train</span><span class="signature">(
     self,
-    tf_dataset,
-    epochs,
+    tf_dataset=None,
+    epochs=None,
     callbacks=[],
     train_map_f=None,
     steps=None,
@@ -1038,16 +1119,16 @@ fast.ai</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-              <span class="n">tf_dataset</span><span class="p">,</span> 
-              <span class="n">epochs</span><span class="p">,</span>
+              <span class="n">tf_dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+              <span class="n">epochs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">callbacks</span><span class="o">=</span><span class="p">[],</span>
-              <span class="n">train_map_f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">train_map_f</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">steps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Implements the main training loop, where the model is trained by</span>
 <span class="sd">        iteratively executing the *train_step* for every *tf_dataset* sample</span>
-<span class="sd">        during a specific amount of epoch*.</span>
+<span class="sd">        during a specific amount of *epochs*.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">          tf_dataset (tf.data.Dataset): Training dataset that is compatible </span>
@@ -1070,6 +1151,27 @@ fast.ai</p>
 <span class="sd">            this value is optional since it is only used as user feedback, and </span>
 <span class="sd">            has no influence on the behaviour of the training loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">## argument handling</span>
+        <span class="k">if</span> <span class="n">tf_dataset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;tf_dataset&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">tf_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;tf_dataset&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass a training dataset to the trainer.train method&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">epochs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;epochs&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;epochs&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to pass the epochs variable to the trainer.train method&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">callbacks</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="s2">&quot;callbacks&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">callbacks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;callbacks&quot;</span><span class="p">]</span>
+            
+        <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;train_map_f&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">train_map_f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;train_map_f&quot;</span><span class="p">]</span>
+            
+        <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;steps&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span>
+            <span class="n">steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;steps&quot;</span><span class="p">]</span>
+        
+        <span class="c1">## function logic starts here</span>
         <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">N_STEPS</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">cardinality</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1078,20 +1180,21 @@ fast.ai</p>
         <span class="c1"># make backwards compatability</span>
         <span class="k">if</span> <span class="s2">&quot;custom_data_transform_f&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="n">train_map_f</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;custom_data_transform_f&quot;</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackCoordinator</span><span class="p">):</span>
             <span class="n">callbacks</span> <span class="o">=</span> <span class="n">CallbackCoordinator</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span>
                                             <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="p">,</span>
                                             <span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="p">,</span>
                                             <span class="n">steps</span> <span class="o">=</span> <span class="n">N_STEPS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span>
         
-        <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
         
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-            <span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
             
             <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">):</span>
-                <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
                 
                 <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -1101,21 +1204,21 @@ fast.ai</p>
                 <span class="c1">## internally increments the step counter</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
                 
-                <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
 
-            <span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
             
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
                 <span class="k">break</span>
                 
-        <span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Implements the main training loop, where the model is trained by
 iteratively executing the <em>train_step</em> for every <em>tf_dataset</em> sample
-during a specific amount of epoch*.</p>
+during a specific amount of <em>epochs</em>.</p>
 
 <h6 id="args">Args</h6>
 
@@ -1354,6 +1457,7 @@ function.</p>
                                 <dd id="ClassifierTrainer.foward_without_grads" class="function"><a href="#BaseTrainer.foward_without_grads">foward_without_grads</a></dd>
                 <dd id="ClassifierTrainer.train_step" class="function"><a href="#BaseTrainer.train_step">train_step</a></dd>
                 <dd id="ClassifierTrainer.lr_finder" class="function"><a href="#BaseTrainer.lr_finder">lr_finder</a></dd>
+                <dd id="ClassifierTrainer.changing_train_config" class="function"><a href="#BaseTrainer.changing_train_config">changing_train_config</a></dd>
                 <dd id="ClassifierTrainer.train" class="function"><a href="#BaseTrainer.train">train</a></dd>
 
             </div>

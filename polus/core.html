@@ -42,6 +42,15 @@
                     <a class="function" href="#get_jit_compile">get_jit_compile</a>
             </li>
             <li>
+                    <a class="class" href="#Singleton">Singleton</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Singleton.__init__">Singleton</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#BaseLogger">BaseLogger</a>
                             <ul class="memberlist">
                         <li>
@@ -153,6 +162,22 @@ attribute is through its associated methods:</p>
         <span class="n">set_jit_compile</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># default mode</span>
     
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">)</span><span class="o">==</span><span class="s2">&quot;True&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The standard Singleton pattern in python, classes should</span>
+<span class="sd">    extend this one as metaclass, (e.g.) HPOContext(metaclass=Singleton)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span>
+
 
 
 <span class="k">class</span> <span class="nc">BaseLogger</span><span class="p">:</span>
@@ -376,6 +401,68 @@ XLA compiler.</li>
 </div>
 
 
+                </section>
+                <section id="Singleton">
+                                <div class="attr class">
+        <a class="headerlink" href="#Singleton">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">Singleton</span><wbr>(<span class="base">builtins.type</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The standard Singleton pattern in python, classes should</span>
+<span class="sd">    extend this one as metaclass, (e.g.) HPOContext(metaclass=Singleton)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>The standard Singleton pattern in python, classes should
+extend this one as metaclass, (e.g.) HPOContext(metaclass=Singleton)</p>
+</div>
+
+
+                            <div id="Singleton.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Singleton.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">Singleton</span><span class="signature">(*args, **kwargs)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>builtins.type</dt>
+                                <dd id="Singleton.mro" class="function">mro</dd>
+
+            </div>
+                                </dl>
+                            </div>
                 </section>
                 <section id="BaseLogger">
                                 <div class="attr class">

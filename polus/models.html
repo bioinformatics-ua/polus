@@ -76,6 +76,27 @@
 
             </li>
             <li>
+                    <a class="class" href="#PolusClassifier">PolusClassifier</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#PolusClassifier.__init__">PolusClassifier</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#PolusClassifier.inference">inference</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#SequentialPolusClassifier">SequentialPolusClassifier</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#SequentialPolusClassifier.__init__">SequentialPolusClassifier</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#TFBertSplited">TFBertSplited</a>
                             <ul class="memberlist">
                         <li>
@@ -251,7 +272,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
+        
+<span class="k">class</span> <span class="nc">PolusClassifier</span><span class="p">(</span><span class="n">SavableModel</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
+    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    
+<span class="k">class</span> <span class="nc">SequentialPolusClassifier</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">,</span> <span class="n">PolusClassifier</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
 
 <span class="kn">from</span> <span class="nn">transformers.modeling_tf_utils</span> <span class="kn">import</span> <span class="n">shape_list</span>
 <span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">TFBertModel</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
@@ -1353,6 +1387,512 @@ the same inference method from the SavableModel class</p>
             </div>
             <div><dt><a href="core.html#BaseLogger">polus.core.BaseLogger</a></dt>
                                 <dd id="SequentialSavableModel.set_logging_level" class="function"><a href="core.html#BaseLogger.set_logging_level">set_logging_level</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="PolusClassifier">
+                                <div class="attr class">
+        <a class="headerlink" href="#PolusClassifier">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">PolusClassifier</span><wbr>(<span class="base"><a href="#SavableModel">SavableModel</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">PolusClassifier</span><span class="p">(</span><span class="n">SavableModel</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
+    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p><code>Model</code> groups layers into an object with training and inference features.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>inputs:</strong>  The input(s) of the model: a <code>keras.Input</code> object or list of
+<code>keras.Input</code> objects.</li>
+<li><strong>outputs:</strong>  The output(s) of the model. See Functional API example below.</li>
+<li><strong>name:</strong>  String, the name of the model.</li>
+</ul>
+
+<p>There are two ways to instantiate a <code>Model</code>:</p>
+
+<p>1 - With the "Functional API", where you start from <code>Input</code>,
+you chain layer calls to specify the model's forward pass,
+and finally you create your model from inputs and outputs:</p>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,))</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Note: Only dicts, lists, and tuples of input tensors are supported. Nested
+inputs are not supported (e.g. lists of list or dicts of dict).</p>
+
+<p>A new Functional API model can also be created by using the
+intermediate tensors. This enables you to quickly extract sub-components
+of the model.</p>
+
+<p>Example:</p>
+
+<div class="codehilite"><pre><span></span><code><span class="n">inputs</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">processed</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">32</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="n">conv</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">)(</span><span class="n">processed</span><span class="p">)</span>
+<span class="n">pooling</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">GlobalAveragePooling2D</span><span class="p">()(</span><span class="n">conv</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">)(</span><span class="n">pooling</span><span class="p">)</span>
+
+<span class="n">full_model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+<span class="n">backbone</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">processed</span><span class="p">,</span> <span class="n">conv</span><span class="p">)</span>
+<span class="n">activations</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Note that the <code>backbone</code> and <code>activations</code> models are not
+created with <code>keras.Input</code> objects, but with the tensors that are originated
+from <code>keras.Inputs</code> objects. Under the hood, the layers and weights will
+be shared across these models, so that user can train the <code>full_model</code>, and
+use <code>backbone</code> or <code>activations</code> to do feature extraction.
+The inputs and outputs of the model can be nested structures of tensors as
+well, and the created models are standard Functional API models that support
+all the existing APIs.</p>
+
+<p>2 - By subclassing the <code>Model</code> class: in that case, you should define your
+layers in <code><a href="#PolusClassifier.__init__">__init__()</a></code> and you should implement the model's forward pass
+in <code><a href="#PolusClassifier.call">call()</a></code>.</p>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dense1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dense2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense1</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
+</code></pre></div>
+
+<p>If you subclass <code>Model</code>, you can optionally have
+a <code>training</code> argument (boolean) in <code><a href="#PolusClassifier.call">call()</a></code>, which you can use to specify
+a different behavior in training and inference:</p>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dense1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dense2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense1</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">training</span><span class="p">:</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Once the model is created, you can config the model with losses and metrics
+with <code>model.compile()</code>, train the model with <code>model.fit()</code>, or use the model
+to do prediction with <code>model.predict()</code>.</p>
+</div>
+
+
+                            <div id="PolusClassifier.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#PolusClassifier.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">PolusClassifier</span><span class="signature">(*args, **kwargs)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="PolusClassifier.inference" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#PolusClassifier.inference">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@tf.function</div>
+
+            <span class="def">def</span>
+            <span class="name">inference</span><span class="signature">(self, x)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
+    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#SavableModel">SavableModel</a></dt>
+                                <dd id="PolusClassifier.save" class="function"><a href="#SavableModel.save">save</a></dd>
+
+            </div>
+            <div><dt><a href="#PolusModel">PolusModel</a></dt>
+                                <dd id="PolusClassifier.init_from_data" class="function"><a href="#PolusModel.init_from_data">init_from_data</a></dd>
+                <dd id="PolusClassifier.set_name" class="function"><a href="#PolusModel.set_name">set_name</a></dd>
+
+            </div>
+            <div><dt>keras.engine.training.Model</dt>
+                                <dd id="PolusClassifier.build" class="function">build</dd>
+                <dd id="PolusClassifier.call" class="function">call</dd>
+                <dd id="PolusClassifier.compile" class="function">compile</dd>
+                <dd id="PolusClassifier.metrics" class="variable">metrics</dd>
+                <dd id="PolusClassifier.metrics_names" class="variable">metrics_names</dd>
+                <dd id="PolusClassifier.distribute_strategy" class="variable">distribute_strategy</dd>
+                <dd id="PolusClassifier.run_eagerly" class="variable">run_eagerly</dd>
+                <dd id="PolusClassifier.train_step" class="function">train_step</dd>
+                <dd id="PolusClassifier.make_train_function" class="function">make_train_function</dd>
+                <dd id="PolusClassifier.fit" class="function">fit</dd>
+                <dd id="PolusClassifier.test_step" class="function">test_step</dd>
+                <dd id="PolusClassifier.make_test_function" class="function">make_test_function</dd>
+                <dd id="PolusClassifier.evaluate" class="function">evaluate</dd>
+                <dd id="PolusClassifier.predict_step" class="function">predict_step</dd>
+                <dd id="PolusClassifier.make_predict_function" class="function">make_predict_function</dd>
+                <dd id="PolusClassifier.predict" class="function">predict</dd>
+                <dd id="PolusClassifier.reset_metrics" class="function">reset_metrics</dd>
+                <dd id="PolusClassifier.train_on_batch" class="function">train_on_batch</dd>
+                <dd id="PolusClassifier.test_on_batch" class="function">test_on_batch</dd>
+                <dd id="PolusClassifier.predict_on_batch" class="function">predict_on_batch</dd>
+                <dd id="PolusClassifier.fit_generator" class="function">fit_generator</dd>
+                <dd id="PolusClassifier.evaluate_generator" class="function">evaluate_generator</dd>
+                <dd id="PolusClassifier.predict_generator" class="function">predict_generator</dd>
+                <dd id="PolusClassifier.trainable_weights" class="variable">trainable_weights</dd>
+                <dd id="PolusClassifier.non_trainable_weights" class="variable">non_trainable_weights</dd>
+                <dd id="PolusClassifier.get_weights" class="function">get_weights</dd>
+                <dd id="PolusClassifier.save_weights" class="function">save_weights</dd>
+                <dd id="PolusClassifier.load_weights" class="function">load_weights</dd>
+                <dd id="PolusClassifier.get_config" class="function">get_config</dd>
+                <dd id="PolusClassifier.from_config" class="function">from_config</dd>
+                <dd id="PolusClassifier.to_json" class="function">to_json</dd>
+                <dd id="PolusClassifier.to_yaml" class="function">to_yaml</dd>
+                <dd id="PolusClassifier.reset_states" class="function">reset_states</dd>
+                <dd id="PolusClassifier.state_updates" class="variable">state_updates</dd>
+                <dd id="PolusClassifier.weights" class="variable">weights</dd>
+                <dd id="PolusClassifier.summary" class="function">summary</dd>
+                <dd id="PolusClassifier.layers" class="variable">layers</dd>
+                <dd id="PolusClassifier.get_layer" class="function">get_layer</dd>
+                <dd id="PolusClassifier.save_spec" class="function">save_spec</dd>
+
+            </div>
+            <div><dt>keras.engine.base_layer.Layer</dt>
+                                <dd id="PolusClassifier.add_weight" class="function">add_weight</dd>
+                <dd id="PolusClassifier.compute_output_shape" class="function">compute_output_shape</dd>
+                <dd id="PolusClassifier.compute_output_signature" class="function">compute_output_signature</dd>
+                <dd id="PolusClassifier.compute_mask" class="function">compute_mask</dd>
+                <dd id="PolusClassifier.dtype" class="variable">dtype</dd>
+                <dd id="PolusClassifier.name" class="variable">name</dd>
+                <dd id="PolusClassifier.supports_masking" class="variable">supports_masking</dd>
+                <dd id="PolusClassifier.dynamic" class="variable">dynamic</dd>
+                <dd id="PolusClassifier.stateful" class="variable">stateful</dd>
+                <dd id="PolusClassifier.trainable" class="variable">trainable</dd>
+                <dd id="PolusClassifier.activity_regularizer" class="variable">activity_regularizer</dd>
+                <dd id="PolusClassifier.input_spec" class="variable">input_spec</dd>
+                <dd id="PolusClassifier.updates" class="variable">updates</dd>
+                <dd id="PolusClassifier.losses" class="variable">losses</dd>
+                <dd id="PolusClassifier.add_loss" class="function">add_loss</dd>
+                <dd id="PolusClassifier.add_metric" class="function">add_metric</dd>
+                <dd id="PolusClassifier.add_update" class="function">add_update</dd>
+                <dd id="PolusClassifier.set_weights" class="function">set_weights</dd>
+                <dd id="PolusClassifier.finalize_state" class="function">finalize_state</dd>
+                <dd id="PolusClassifier.get_updates_for" class="function">get_updates_for</dd>
+                <dd id="PolusClassifier.get_losses_for" class="function">get_losses_for</dd>
+                <dd id="PolusClassifier.get_input_mask_at" class="function">get_input_mask_at</dd>
+                <dd id="PolusClassifier.get_output_mask_at" class="function">get_output_mask_at</dd>
+                <dd id="PolusClassifier.input_mask" class="variable">input_mask</dd>
+                <dd id="PolusClassifier.output_mask" class="variable">output_mask</dd>
+                <dd id="PolusClassifier.get_input_shape_at" class="function">get_input_shape_at</dd>
+                <dd id="PolusClassifier.get_output_shape_at" class="function">get_output_shape_at</dd>
+                <dd id="PolusClassifier.get_input_at" class="function">get_input_at</dd>
+                <dd id="PolusClassifier.get_output_at" class="function">get_output_at</dd>
+                <dd id="PolusClassifier.input" class="variable">input</dd>
+                <dd id="PolusClassifier.output" class="variable">output</dd>
+                <dd id="PolusClassifier.input_shape" class="variable">input_shape</dd>
+                <dd id="PolusClassifier.count_params" class="function">count_params</dd>
+                <dd id="PolusClassifier.output_shape" class="variable">output_shape</dd>
+                <dd id="PolusClassifier.inbound_nodes" class="variable">inbound_nodes</dd>
+                <dd id="PolusClassifier.outbound_nodes" class="variable">outbound_nodes</dd>
+                <dd id="PolusClassifier.apply" class="function">apply</dd>
+                <dd id="PolusClassifier.add_variable" class="function">add_variable</dd>
+                <dd id="PolusClassifier.variables" class="variable">variables</dd>
+                <dd id="PolusClassifier.trainable_variables" class="variable">trainable_variables</dd>
+                <dd id="PolusClassifier.non_trainable_variables" class="variable">non_trainable_variables</dd>
+                <dd id="PolusClassifier.dtype_policy" class="variable">dtype_policy</dd>
+                <dd id="PolusClassifier.compute_dtype" class="variable">compute_dtype</dd>
+                <dd id="PolusClassifier.variable_dtype" class="variable">variable_dtype</dd>
+
+            </div>
+            <div><dt>tensorflow.python.module.module.Module</dt>
+                                <dd id="PolusClassifier.name_scope" class="variable">name_scope</dd>
+                <dd id="PolusClassifier.submodules" class="variable">submodules</dd>
+                <dd id="PolusClassifier.with_name_scope" class="function">with_name_scope</dd>
+
+            </div>
+            <div><dt><a href="core.html#BaseLogger">polus.core.BaseLogger</a></dt>
+                                <dd id="PolusClassifier.set_logging_level" class="function"><a href="core.html#BaseLogger.set_logging_level">set_logging_level</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="SequentialPolusClassifier">
+                                <div class="attr class">
+        <a class="headerlink" href="#SequentialPolusClassifier">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">SequentialPolusClassifier</span><wbr>(<span class="base">keras.engine.sequential.Sequential</span>, <span class="base"><a href="#PolusClassifier">PolusClassifier</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">SequentialPolusClassifier</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">,</span> <span class="n">PolusClassifier</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p><code>Sequential</code> groups a linear stack of layers into a <code>tf.keras.Model</code>.</p>
+
+<p><code>Sequential</code> provides training and inference features on this model.</p>
+
+<p>Examples:</p>
+
+<div class="codehilite"><pre><span></span><code><span class="c1"># Optionally, the first layer can receive an `input_shape` argument:</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,)))</span>
+<span class="c1"># Afterwards, we do automatic shape inference:</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+
+<span class="c1"># This is identical to the following:</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,)))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+
+<span class="c1"># Note that you can also omit the `input_shape` argument.</span>
+<span class="c1"># In that case the model doesn&#39;t have any weights until the first call</span>
+<span class="c1"># to a training/evaluation method (since it isn&#39;t yet built):</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="c1"># model.weights not created yet</span>
+
+<span class="c1"># Whereas if you specify the input shape, the model gets built</span>
+<span class="c1"># continuously as you are adding layers:</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,)))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+<span class="c1"># Returns &quot;4&quot;</span>
+
+<span class="c1"># When using the delayed-build pattern (no input shape specified), you can</span>
+<span class="c1"># choose to manually build your model by calling</span>
+<span class="c1"># `build(batch_input_shape)`:</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+<span class="c1"># Returns &quot;4&quot;</span>
+
+<span class="c1"># Note that when using the delayed-build pattern (no input shape specified),</span>
+<span class="c1"># the model gets built the first time you call `fit`, `eval`, or `predict`,</span>
+<span class="c1"># or the first time you call the model on some input data.</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;sgd&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">)</span>
+<span class="c1"># This builds the model for the first time:</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</code></pre></div>
+</div>
+
+
+                            <div id="SequentialPolusClassifier.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#SequentialPolusClassifier.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">SequentialPolusClassifier</span><span class="signature">(layers, **kwargs)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Creates a <code>Sequential</code> model instance.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>layers:</strong>  Optional list of layers to add to the model.</li>
+<li><strong>name:</strong>  Optional name for the model.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>keras.engine.base_layer.Layer</dt>
+                                <dd id="SequentialPolusClassifier.supports_masking" class="variable">supports_masking</dd>
+                <dd id="SequentialPolusClassifier.add_weight" class="function">add_weight</dd>
+                <dd id="SequentialPolusClassifier.compute_output_signature" class="function">compute_output_signature</dd>
+                <dd id="SequentialPolusClassifier.dtype" class="variable">dtype</dd>
+                <dd id="SequentialPolusClassifier.name" class="variable">name</dd>
+                <dd id="SequentialPolusClassifier.dynamic" class="variable">dynamic</dd>
+                <dd id="SequentialPolusClassifier.stateful" class="variable">stateful</dd>
+                <dd id="SequentialPolusClassifier.trainable" class="variable">trainable</dd>
+                <dd id="SequentialPolusClassifier.activity_regularizer" class="variable">activity_regularizer</dd>
+                <dd id="SequentialPolusClassifier.updates" class="variable">updates</dd>
+                <dd id="SequentialPolusClassifier.losses" class="variable">losses</dd>
+                <dd id="SequentialPolusClassifier.add_loss" class="function">add_loss</dd>
+                <dd id="SequentialPolusClassifier.add_metric" class="function">add_metric</dd>
+                <dd id="SequentialPolusClassifier.add_update" class="function">add_update</dd>
+                <dd id="SequentialPolusClassifier.set_weights" class="function">set_weights</dd>
+                <dd id="SequentialPolusClassifier.finalize_state" class="function">finalize_state</dd>
+                <dd id="SequentialPolusClassifier.get_updates_for" class="function">get_updates_for</dd>
+                <dd id="SequentialPolusClassifier.get_losses_for" class="function">get_losses_for</dd>
+                <dd id="SequentialPolusClassifier.get_input_mask_at" class="function">get_input_mask_at</dd>
+                <dd id="SequentialPolusClassifier.get_output_mask_at" class="function">get_output_mask_at</dd>
+                <dd id="SequentialPolusClassifier.input_mask" class="variable">input_mask</dd>
+                <dd id="SequentialPolusClassifier.output_mask" class="variable">output_mask</dd>
+                <dd id="SequentialPolusClassifier.get_input_shape_at" class="function">get_input_shape_at</dd>
+                <dd id="SequentialPolusClassifier.get_output_shape_at" class="function">get_output_shape_at</dd>
+                <dd id="SequentialPolusClassifier.get_input_at" class="function">get_input_at</dd>
+                <dd id="SequentialPolusClassifier.get_output_at" class="function">get_output_at</dd>
+                <dd id="SequentialPolusClassifier.count_params" class="function">count_params</dd>
+                <dd id="SequentialPolusClassifier.inbound_nodes" class="variable">inbound_nodes</dd>
+                <dd id="SequentialPolusClassifier.outbound_nodes" class="variable">outbound_nodes</dd>
+                <dd id="SequentialPolusClassifier.apply" class="function">apply</dd>
+                <dd id="SequentialPolusClassifier.add_variable" class="function">add_variable</dd>
+                <dd id="SequentialPolusClassifier.variables" class="variable">variables</dd>
+                <dd id="SequentialPolusClassifier.trainable_variables" class="variable">trainable_variables</dd>
+                <dd id="SequentialPolusClassifier.non_trainable_variables" class="variable">non_trainable_variables</dd>
+                <dd id="SequentialPolusClassifier.dtype_policy" class="variable">dtype_policy</dd>
+                <dd id="SequentialPolusClassifier.compute_dtype" class="variable">compute_dtype</dd>
+                <dd id="SequentialPolusClassifier.variable_dtype" class="variable">variable_dtype</dd>
+
+            </div>
+            <div><dt>keras.engine.sequential.Sequential</dt>
+                                <dd id="SequentialPolusClassifier.layers" class="variable">layers</dd>
+                <dd id="SequentialPolusClassifier.add" class="function">add</dd>
+                <dd id="SequentialPolusClassifier.pop" class="function">pop</dd>
+                <dd id="SequentialPolusClassifier.build" class="function">build</dd>
+                <dd id="SequentialPolusClassifier.call" class="function">call</dd>
+                <dd id="SequentialPolusClassifier.compute_output_shape" class="function">compute_output_shape</dd>
+                <dd id="SequentialPolusClassifier.compute_mask" class="function">compute_mask</dd>
+                <dd id="SequentialPolusClassifier.get_config" class="function">get_config</dd>
+                <dd id="SequentialPolusClassifier.from_config" class="function">from_config</dd>
+                <dd id="SequentialPolusClassifier.input_spec" class="variable">input_spec</dd>
+
+            </div>
+            <div><dt>keras.engine.functional.Functional</dt>
+                                <dd id="SequentialPolusClassifier.input" class="variable">input</dd>
+                <dd id="SequentialPolusClassifier.input_shape" class="variable">input_shape</dd>
+                <dd id="SequentialPolusClassifier.output" class="variable">output</dd>
+                <dd id="SequentialPolusClassifier.output_shape" class="variable">output_shape</dd>
+
+            </div>
+            <div><dt><a href="#PolusClassifier">PolusClassifier</a></dt>
+                                <dd id="SequentialPolusClassifier.inference" class="function"><a href="#PolusClassifier.inference">inference</a></dd>
+
+            </div>
+            <div><dt><a href="#SavableModel">SavableModel</a></dt>
+                                <dd id="SequentialPolusClassifier.save" class="function"><a href="#SavableModel.save">save</a></dd>
+
+            </div>
+            <div><dt><a href="#PolusModel">PolusModel</a></dt>
+                                <dd id="SequentialPolusClassifier.init_from_data" class="function"><a href="#PolusModel.init_from_data">init_from_data</a></dd>
+                <dd id="SequentialPolusClassifier.set_name" class="function"><a href="#PolusModel.set_name">set_name</a></dd>
+
+            </div>
+            <div><dt>keras.engine.training.Model</dt>
+                                <dd id="SequentialPolusClassifier.compile" class="function">compile</dd>
+                <dd id="SequentialPolusClassifier.metrics" class="variable">metrics</dd>
+                <dd id="SequentialPolusClassifier.metrics_names" class="variable">metrics_names</dd>
+                <dd id="SequentialPolusClassifier.distribute_strategy" class="variable">distribute_strategy</dd>
+                <dd id="SequentialPolusClassifier.run_eagerly" class="variable">run_eagerly</dd>
+                <dd id="SequentialPolusClassifier.train_step" class="function">train_step</dd>
+                <dd id="SequentialPolusClassifier.make_train_function" class="function">make_train_function</dd>
+                <dd id="SequentialPolusClassifier.fit" class="function">fit</dd>
+                <dd id="SequentialPolusClassifier.test_step" class="function">test_step</dd>
+                <dd id="SequentialPolusClassifier.make_test_function" class="function">make_test_function</dd>
+                <dd id="SequentialPolusClassifier.evaluate" class="function">evaluate</dd>
+                <dd id="SequentialPolusClassifier.predict_step" class="function">predict_step</dd>
+                <dd id="SequentialPolusClassifier.make_predict_function" class="function">make_predict_function</dd>
+                <dd id="SequentialPolusClassifier.predict" class="function">predict</dd>
+                <dd id="SequentialPolusClassifier.reset_metrics" class="function">reset_metrics</dd>
+                <dd id="SequentialPolusClassifier.train_on_batch" class="function">train_on_batch</dd>
+                <dd id="SequentialPolusClassifier.test_on_batch" class="function">test_on_batch</dd>
+                <dd id="SequentialPolusClassifier.predict_on_batch" class="function">predict_on_batch</dd>
+                <dd id="SequentialPolusClassifier.fit_generator" class="function">fit_generator</dd>
+                <dd id="SequentialPolusClassifier.evaluate_generator" class="function">evaluate_generator</dd>
+                <dd id="SequentialPolusClassifier.predict_generator" class="function">predict_generator</dd>
+                <dd id="SequentialPolusClassifier.trainable_weights" class="variable">trainable_weights</dd>
+                <dd id="SequentialPolusClassifier.non_trainable_weights" class="variable">non_trainable_weights</dd>
+                <dd id="SequentialPolusClassifier.get_weights" class="function">get_weights</dd>
+                <dd id="SequentialPolusClassifier.save_weights" class="function">save_weights</dd>
+                <dd id="SequentialPolusClassifier.load_weights" class="function">load_weights</dd>
+                <dd id="SequentialPolusClassifier.to_json" class="function">to_json</dd>
+                <dd id="SequentialPolusClassifier.to_yaml" class="function">to_yaml</dd>
+                <dd id="SequentialPolusClassifier.reset_states" class="function">reset_states</dd>
+                <dd id="SequentialPolusClassifier.state_updates" class="variable">state_updates</dd>
+                <dd id="SequentialPolusClassifier.weights" class="variable">weights</dd>
+                <dd id="SequentialPolusClassifier.summary" class="function">summary</dd>
+                <dd id="SequentialPolusClassifier.get_layer" class="function">get_layer</dd>
+                <dd id="SequentialPolusClassifier.save_spec" class="function">save_spec</dd>
+
+            </div>
+            <div><dt>tensorflow.python.module.module.Module</dt>
+                                <dd id="SequentialPolusClassifier.name_scope" class="variable">name_scope</dd>
+                <dd id="SequentialPolusClassifier.submodules" class="variable">submodules</dd>
+                <dd id="SequentialPolusClassifier.with_name_scope" class="function">with_name_scope</dd>
+
+            </div>
+            <div><dt><a href="core.html#BaseLogger">polus.core.BaseLogger</a></dt>
+                                <dd id="SequentialPolusClassifier.set_logging_level" class="function"><a href="core.html#BaseLogger.set_logging_level">set_logging_level</a></dd>
 
             </div>
                                 </dl>

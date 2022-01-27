@@ -154,6 +154,9 @@
                                 <a class="function" href="#ValidationDataCallback.on_train_begin">on_train_begin</a>
                         </li>
                         <li>
+                                <a class="function" href="#ValidationDataCallback.get_metrics">get_metrics</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#ValidationDataCallback.on_epoch_end">on_epoch_end</a>
                         </li>
                 </ul>
@@ -254,6 +257,7 @@
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">polus.core</span> <span class="kn">import</span> <span class="n">BaseLogger</span><span class="p">,</span> <span class="n">get_jit_compile</span>
+<span class="kn">from</span> <span class="nn">polus.models</span> <span class="kn">import</span> <span class="n">PolusClassifier</span>
 <span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">defaultdict</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
@@ -437,7 +441,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">])</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="p">:[]</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span> <span class="p">}</span>
-        
+    
+    <span class="k">def</span> <span class="nf">get_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+    
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="n">epoch</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">validation_interval</span><span class="p">:</span>
@@ -451,11 +458,18 @@
 
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_inference_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_inference_f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">sample</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">PolusClassifier</span><span class="p">):</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">sample</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We default to just run the model over the validation data, since the models does not extend PolusClassifier neither a custom_inference_f was provided. This may result in erros down the line.&quot;</span><span class="p">)</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">sample</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
-
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample format outputed by the validator dataset is not supported, change to a dict or a two length tuple&quot;</span><span class="p">)</span>
+                    
                 <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
                     <span class="n">metric</span><span class="o">.</span><span class="n">samples_from_batch</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                    
 
                 <span class="k">del</span> <span class="n">sample</span>
 
@@ -687,7 +701,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="n">_tmp</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
-        
+
         <span class="n">_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss_per_epoch</span><span class="p">[</span><span class="n">epoch</span><span class="p">])</span>
         
         <span class="k">if</span> <span class="n">_len</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
@@ -1695,7 +1709,10 @@ Note that multiple instances use the same handler</p>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">])</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="p">:[]</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span> <span class="p">}</span>
-        
+    
+    <span class="k">def</span> <span class="nf">get_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+    
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="n">epoch</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">validation_interval</span><span class="p">:</span>
@@ -1709,11 +1726,18 @@ Note that multiple instances use the same handler</p>
 
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_inference_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_inference_f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">sample</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">PolusClassifier</span><span class="p">):</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">sample</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We default to just run the model over the validation data, since the models does not extend PolusClassifier neither a custom_inference_f was provided. This may result in erros down the line.&quot;</span><span class="p">)</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">sample</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
-
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample format outputed by the validator dataset is not supported, change to a dict or a two length tuple&quot;</span><span class="p">)</span>
+                    
                 <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
                     <span class="n">metric</span><span class="o">.</span><span class="n">samples_from_batch</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                    
 
                 <span class="k">del</span> <span class="n">sample</span>
 
@@ -1799,6 +1823,25 @@ Note that multiple instances use the same handler</p>
     
 
                             </div>
+                            <div id="ValidationDataCallback.get_metrics" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ValidationDataCallback.get_metrics">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get_metrics</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
                             <div id="ValidationDataCallback.on_epoch_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#ValidationDataCallback.on_epoch_end">#&nbsp;&nbsp</a>
 
@@ -1822,11 +1865,18 @@ Note that multiple instances use the same handler</p>
 
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_inference_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_inference_f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">sample</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">PolusClassifier</span><span class="p">):</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">sample</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We default to just run the model over the validation data, since the models does not extend PolusClassifier neither a custom_inference_f was provided. This may result in erros down the line.&quot;</span><span class="p">)</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">sample</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
-
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample format outputed by the validator dataset is not supported, change to a dict or a two length tuple&quot;</span><span class="p">)</span>
+                    
                 <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
                     <span class="n">metric</span><span class="o">.</span><span class="n">samples_from_batch</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                    
 
                 <span class="k">del</span> <span class="n">sample</span>
 
@@ -2576,7 +2626,7 @@ Note that multiple instances use the same handler</p>
             <span class="nb">print</span><span class="p">(</span><span class="n">_tmp</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
-        
+
         <span class="n">_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss_per_epoch</span><span class="p">[</span><span class="n">epoch</span><span class="p">])</span>
         
         <span class="k">if</span> <span class="n">_len</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
@@ -2712,7 +2762,7 @@ Note that multiple instances use the same handler</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
-        
+
         <span class="n">_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss_per_epoch</span><span class="p">[</span><span class="n">epoch</span><span class="p">])</span>
         
         <span class="k">if</span> <span class="n">_len</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
