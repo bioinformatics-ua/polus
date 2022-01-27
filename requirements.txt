@@ -3,3 +3,5 @@ transformers
 tensorflow-addons
 wandb
 torch
+optuna
+human-id

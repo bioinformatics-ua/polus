@@ -5,6 +5,8 @@ dist/*
 build/*
 .eggs/*
 .polus*
+logs
+tutorials/logs
 
 experimental/.ipynb_checkpoints/
 ner/.ipynb_checkpoints/

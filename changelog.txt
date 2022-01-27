@@ -1,4 +1,12 @@
-Version 0.1.8: (master)
+Version 0.1.9: (master)
+    Refactor of the validation callback, adding more deafults mode of operation
+    
+    Integration of a HPO (hyperparameter optimizer) to the polus lib
+        - Implementing optuna as the default backend for HPO
+        
+    Adding tutorials folder with python scripts for examples
+        
+Version 0.1.8: 
     Adding a mask input to the CRF layer for masking impossible transitions (binary potentials)
     Adding complex json serializer and deserializer
     Adding split_bert_model that splits a TFBertModel into two keras models based on the given TFBertLayer index
