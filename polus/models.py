@@ -23,6 +23,10 @@ def load_model(file_name_w_ext, change_config={}, external_module=None):
     
     cfg["model"] = merge_dicts(cfg["model"], change_config)
     
+    # TODO: For adding the possibility to load from best HPO cfg,
+    # just load the best HPO trial, then add it to the HPO_Context
+    # it should work :) 
+    
     if external_module is not None:
         model = getattr(external_module, cfg['func_name'])(**cfg)
     else:

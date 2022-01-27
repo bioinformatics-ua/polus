@@ -8,7 +8,7 @@ build/*
 logs
 tutorials/logs
 tutorials/pl-tutorials-venv
-
+polus_optuna_hpo.db
 experimental/.ipynb_checkpoints/
 ner/.ipynb_checkpoints/
 .ipynb_checkpoints/

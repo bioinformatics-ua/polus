@@ -14,6 +14,9 @@ class HPOContext(metaclass=Singleton):
         
     def is_hpo_enable(self):
         return self.hpo_backend is not None
+    
+    def reset(self):
+        self.hpo_backend = None
 
 def parameter(real, hpo_lambda = None):
     if hpo_lambda is not None:
@@ -27,8 +30,8 @@ class HPO_Objective(BaseLogger):
     def __init__(self, 
                  trainer_init_function,
                  validator_name,
+                 metric_name,
                  backend = "optuna",
-                 metric_name = None,
                  metric_time = "max"):
         """
         Args:
@@ -79,9 +82,9 @@ class HPO_Objective(BaseLogger):
         
         if len(_metrics)>0:
             if self.metric_time == "max":
-                return max(val_callback.get_metrics()[self.metric_name])
+                return max(_metrics)
             elif self.metric_time == "last":
-                return val_callback.get_metrics()[self.metric_name][-1]
+                return _metrics[-1]
             else:
                 raise ValueError(f"value used for metric_time is not supported, found {self.metric_time}")
         else:
@@ -93,15 +96,15 @@ class HPO_Objective(BaseLogger):
     
     def run(self):
         if self.backend == "optuna":
-            study = optuna.create_study(sampler=self.optuna_cfg["sampler"],
-                                        pruner=self.optuna_cfg["pruner"],
-                                        direction=self.optuna_cfg["direction"],
-                                        study_name=self.optuna_cfg["study_name"],
-                                        storage=self.optuna_cfg["storage"],
-                                        load_if_exists=self.optuna_cfg["load_if_exists"],
-                                       )
+            self.study = optuna.create_study(sampler=self.optuna_cfg["sampler"],
+                                             pruner=self.optuna_cfg["pruner"],
+                                             direction=self.optuna_cfg["direction"],
+                                             study_name=self.optuna_cfg["study_name"],
+                                             storage=self.optuna_cfg["storage"],
+                                             load_if_exists=self.optuna_cfg["load_if_exists"],
+                                           )
 
-            s = study.optimize(self, n_trials=self.optuna_cfg["n_trials"])
+            self.study.optimize(self, n_trials=self.optuna_cfg["n_trials"])
     
     def __enter__(self):
         return self
