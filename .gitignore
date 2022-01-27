@@ -7,6 +7,7 @@ build/*
 .polus*
 logs
 tutorials/logs
+tutorials/pl-tutorials-venv
 
 experimental/.ipynb_checkpoints/
 ner/.ipynb_checkpoints/

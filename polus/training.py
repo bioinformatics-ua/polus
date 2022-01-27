@@ -180,8 +180,9 @@ class BaseTrainer(BaseLogger):
         """
         pass
     
-    def set_train_config(self, **config):
-        self.train_config = config
+    def changing_train_config(self, **config):
+        for k,v in config.items():
+            self.train_config[k] = v
     
     def train(self, 
               tf_dataset=None, 

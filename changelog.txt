@@ -5,6 +5,9 @@ Version 0.1.9: (master)
         - Implementing optuna as the default backend for HPO
         
     Adding tutorials folder with python scripts for examples
+        - Creation of a classifier_example
+    
+    Adding more unit tests
         
 Version 0.1.8: 
     Adding a mask input to the CRF layer for masking impossible transitions (binary potentials)

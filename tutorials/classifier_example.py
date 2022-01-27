@@ -68,9 +68,9 @@ def init_trainer():
     
     # this set all the parameters that are used to call
     # trainer.train
-    trainer.set_train_config(tf_dataset=ds_train, 
-                             epochs=10,
-                             callbacks=callbacks)
+    trainer.changing_train_config(tf_dataset=ds_train, 
+                                  epochs=5,
+                                  callbacks=callbacks)
 
     return trainer
 
