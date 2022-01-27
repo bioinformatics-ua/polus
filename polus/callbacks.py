@@ -322,6 +322,41 @@ class EarlyStop(Callback):
             self.coordinator.trainer.early_stop = True
             self.logger.info(f"The training will stop early since the loss did not improve in {self.patience} consecutive epochs")
 
+
+class HPOPruneCallback(Callback):
+    """
+    Insperied from https://optuna.readthedocs.io/en/stable/_modules/optuna/integration/tfkeras.html#TFKerasPruningCallback
+    """
+    def __init__(self, validator_name, metric_name):
+        super().__init__()
+        
+        
+        
+        # this can be none, if nono this callback does do anything
+        self.hpo_backend = HPOContext().hpo_backend
+        if self.hpo_backend is None:
+            self.logger.warn(f"HPOPruneCallback was initialized however, there is no hpo context at the moment")
+            
+        self.validator_name = validator_name
+        self.metric_name = metric_name
+        
+    def on_epoch_end(self, epoch):
+        
+        if self.hpo_backend is not None:
+            
+            current_score = self.coordinator.shared_dict["validation"][self.validator_name][self.metric_name][-1]
+            
+            if isinstance(ctx.hpo_backend, Trial): # optuna has backend
+                self.hpo_backend.report(current_score, step=epoch)
+                
+                if self.hpo_backend.should_prune():
+                    from optuna.exceptions import TrialPruned
+                    message = "Trial was pruned at epoch {}.".format(epoch)
+                    raise TrialPruned(message)
+                
+            else:
+                raise ValueError(f"The current {ctx.hpo_backend} backend is not supported so we do not know how to prune")
+        
             
 class WandBLogCallback(Callback, IOutput):
     
