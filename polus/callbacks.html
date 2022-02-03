@@ -629,7 +629,7 @@
                     <span class="k">raise</span> <span class="n">TrialPruned</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
                 
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The current </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">hpo_backend</span><span class="si">}</span><span class="s2"> backend is not supported so we do not know how to prune&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The current </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span><span class="si">}</span><span class="s2"> backend is not supported so we do not know how to prune&quot;</span><span class="p">)</span>
         
             
 <span class="k">class</span> <span class="nc">WandBLogCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">,</span> <span class="n">IOutput</span><span class="p">):</span>
@@ -2431,7 +2431,7 @@ Note that multiple instances use the same handler</p>
                     <span class="k">raise</span> <span class="n">TrialPruned</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
                 
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The current </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">hpo_backend</span><span class="si">}</span><span class="s2"> backend is not supported so we do not know how to prune&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The current </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span><span class="si">}</span><span class="s2"> backend is not supported so we do not know how to prune&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2506,7 +2506,7 @@ Note that multiple instances use the same handler</p>
                     <span class="k">raise</span> <span class="n">TrialPruned</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
                 
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The current </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">hpo_backend</span><span class="si">}</span><span class="s2"> backend is not supported so we do not know how to prune&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The current </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span><span class="si">}</span><span class="s2"> backend is not supported so we do not know how to prune&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
