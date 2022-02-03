@@ -359,7 +359,7 @@ class HPOPruneCallback(Callback):
                     raise TrialPruned(message)
                 
             else:
-                raise ValueError(f"The current {ctx.hpo_backend} backend is not supported so we do not know how to prune")
+                raise ValueError(f"The current {self.hpo_backend} backend is not supported so we do not know how to prune")
         
             
 class WandBLogCallback(Callback, IOutput):
