@@ -9,8 +9,9 @@ cd $SCRIPTPATH
 
 # remove the old polus
 pip uninstall polus -y
+pip install -r requirements.txt
 
 python setup.py bdist_wheel
 
-pip install dist/polus-0.1.7-py3-none-any.whl
+pip install dist/polus-0.1.8-py3-none-any.whl
 cd -

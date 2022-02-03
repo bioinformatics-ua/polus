@@ -51,7 +51,7 @@ enabled by default, which can be easily accessed by the polus.core API.
 
 '''
 
-__version__="0.1.7"
+__version__="0.1.8"
 
 # add main lib sub packages
 import polus.callbacks
@@ -64,6 +64,7 @@ import polus.models
 import polus.schedulers
 import polus.training
 import polus.utils
+import polus.hpo
 import polus.ir
 import polus.ner
 import polus.experimental

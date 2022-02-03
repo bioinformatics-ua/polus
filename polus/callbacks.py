@@ -1,9 +1,14 @@
 from polus.core import BaseLogger, get_jit_compile
+from polus.models import PolusClassifier
+from polus.hpo import HPOContext
+
 from timeit import default_timer as timer
 from collections import OrderedDict, defaultdict
 import tensorflow as tf
 import inspect
 import wandb
+import numpy as np
+
 
 class IOutput(BaseLogger):
     def __init__(self):
@@ -182,7 +187,10 @@ class ValidationDataCallback(Callback):
             self.name = len(self.coordinator.shared_dict["validation"])
         
         self.coordinator.shared_dict["validation"][self.name] = {metric.name:[] for metric in self.coordinator.trainer.metrics }
-        
+    
+    def get_metrics(self):
+        return self.coordinator.shared_dict["validation"][self.name]
+    
     def on_epoch_end(self, epoch):
         
         if not epoch%self.validation_interval:
@@ -196,11 +204,18 @@ class ValidationDataCallback(Callback):
 
                 if self.custom_inference_f is not None:
                     y = self.custom_inference_f(self.coordinator.trainer.model, sample)
+                elif isinstance(sample, list) or isinstance(sample, tuple) and len(sample)==2:
+                    if isinstance(self.coordinator.trainer.model, PolusClassifier):
+                        y = self.coordinator.trainer.model.inference(sample[0]), sample[1]
+                    else:
+                        self.logger.warn(f"We default to just run the model over the validation data, since the models does not extend PolusClassifier neither a custom_inference_f was provided. This may result in erros down the line.")
+                        y = self.coordinator.trainer.model(sample[0]), sample[1]
                 else:
-                    y = self.coordinator.trainer.model(sample)
-
+                    raise ValueError(f"Sample format outputed by the validator dataset is not supported, change to a dict or a two length tuple")
+                    
                 for metric in self.coordinator.trainer.metrics:
                     metric.samples_from_batch(y)
+                    
 
                 del sample
 
@@ -286,7 +301,20 @@ class EarlyStop(Callback):
         else:
             loss = sum(self.loss)/len(self.loss)
             self.loss = [] # loss per epoch
+        
+        if np.isnan(loss):
+            self.logger.info(f"The training will stop early since the loss became nan")
+            self.coordinator.trainer.early_stop = True
+            ctx = HPOContext()
+            if ctx.is_hpo_enable():
+                from optuna.exceptions import TrialPruned
+                from optuna.trial import Trial
+                if isinstance(ctx.hpo_backend, Trial): # optuna has backend
+                    raise TrialPruned
+                else:
+                    raise ValueError(f"The loss was nan, but early stop does not know how to end the run with the {ctx.hpo_backend} backend")
             
+        
         if self.last_loss < loss:
             self.current_patience += 1
             
@@ -294,6 +322,41 @@ class EarlyStop(Callback):
             self.coordinator.trainer.early_stop = True
             self.logger.info(f"The training will stop early since the loss did not improve in {self.patience} consecutive epochs")
 
+
+class HPOPruneCallback(Callback):
+    """
+    Insperied from https://optuna.readthedocs.io/en/stable/_modules/optuna/integration/tfkeras.html#TFKerasPruningCallback
+    """
+    def __init__(self, validator_name, metric_name):
+        super().__init__()
+        
+        
+        
+        # this can be none, if nono this callback does do anything
+        self.hpo_backend = HPOContext().hpo_backend
+        if self.hpo_backend is None:
+            self.logger.warn(f"HPOPruneCallback was initialized however, there is no hpo context at the moment")
+            
+        self.validator_name = validator_name
+        self.metric_name = metric_name
+        
+    def on_epoch_end(self, epoch):
+        
+        if self.hpo_backend is not None:
+            
+            current_score = self.coordinator.shared_dict["validation"][self.validator_name][self.metric_name][-1]
+            
+            if isinstance(ctx.hpo_backend, Trial): # optuna has backend
+                self.hpo_backend.report(current_score, step=epoch)
+                
+                if self.hpo_backend.should_prune():
+                    from optuna.exceptions import TrialPruned
+                    message = "Trial was pruned at epoch {}.".format(epoch)
+                    raise TrialPruned(message)
+                
+            else:
+                raise ValueError(f"The current {ctx.hpo_backend} backend is not supported so we do not know how to prune")
+        
             
 class WandBLogCallback(Callback, IOutput):
     
@@ -432,7 +495,7 @@ class ConsoleLogCallback(Callback, IOutput):
             print(_tmp, end="\r")
     
     def on_epoch_end(self, epoch):
-        
+
         _len = len(self.loss_per_epoch[epoch])
         
         if _len==0:

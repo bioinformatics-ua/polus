@@ -62,6 +62,8 @@ class BaseTrainer(BaseLogger):
         self.metrics = metrics
         self.early_stop = False
         
+        self.train_config = {}
+        
         # an internal variable that holds the number of runned steps
         self.step_counter = 0
     
@@ -178,17 +180,21 @@ class BaseTrainer(BaseLogger):
         """
         pass
     
+    def changing_train_config(self, **config):
+        for k,v in config.items():
+            self.train_config[k] = v
+    
     def train(self, 
-              tf_dataset, 
-              epochs,
+              tf_dataset=None, 
+              epochs=None,
               callbacks=[],
-              train_map_f=None,
+              train_map_f = None,
               steps = None,
               **kwargs):
         """
         Implements the main training loop, where the model is trained by
         iteratively executing the *train_step* for every *tf_dataset* sample
-        during a specific amount of epoch*.
+        during a specific amount of *epochs*.
         
         Args:
           tf_dataset (tf.data.Dataset): Training dataset that is compatible 
@@ -211,6 +217,29 @@ class BaseTrainer(BaseLogger):
             this value is optional since it is only used as user feedback, and 
             has no influence on the behaviour of the training loop.
         """
+        ## argument handling
+        if tf_dataset is None:
+            if "tf_dataset" in self.train_config:
+                tf_dataset = self.train_config["tf_dataset"]
+            else:
+                raise ValueError("You need to pass a training dataset to the trainer.train method")
+        
+        if epochs is None:
+            if "epochs" in self.train_config:
+                epochs = self.train_config["epochs"]
+            else:
+                raise ValueError("You need to pass the epochs variable to the trainer.train method")
+        
+        if len(callbacks)==0 and "callbacks" in self.train_config:
+            callbacks = self.train_config["callbacks"]
+            
+        if train_map_f is None and "train_map_f" in self.train_config:
+            train_map_f = self.train_config["train_map_f"]
+            
+        if steps is None and "steps" in self.train_config:
+            steps = self.train_config["steps"]
+        
+        ## function logic starts here
         if steps is None:
             N_STEPS = tf.data.experimental.cardinality(tf_dataset).numpy()
         else:
@@ -219,20 +248,21 @@ class BaseTrainer(BaseLogger):
         # make backwards compatability
         if "custom_data_transform_f" in kwargs:
             train_map_f = kwargs.pop("custom_data_transform_f")
-        
+
         if not isinstance(callbacks, CallbackCoordinator):
             callbacks = CallbackCoordinator(callbacks,
                                             trainer = self,
                                             epochs = epochs,
                                             steps = N_STEPS)
+        self.callbacks = callbacks
         
-        callbacks.on_train_begin()
+        self.callbacks.on_train_begin()
         
         for epoch in range(epochs):
-            callbacks.on_epoch_begin(epoch)
+            self.callbacks.on_epoch_begin(epoch)
             
             for step, data in enumerate(tf_dataset):
-                callbacks.on_train_batch_begin(epoch, step)
+                self.callbacks.on_train_batch_begin(epoch, step)
                 
                 if train_map_f is not None:
                     data = train_map_f(data)
@@ -242,14 +272,14 @@ class BaseTrainer(BaseLogger):
                 ## internally increments the step counter
                 self.step_counter += 1
                 
-                callbacks.on_train_batch_end(epoch, step, loss)
+                self.callbacks.on_train_batch_end(epoch, step, loss)
 
-            callbacks.on_epoch_end(epoch)
+            self.callbacks.on_epoch_end(epoch)
             
             if self.early_stop:
                 break
                 
-        callbacks.on_train_end()
+        self.callbacks.on_train_end()
         
         
 class ClassifierTrainer(BaseTrainer):
@@ -298,7 +328,11 @@ class ClassifierTrainer(BaseTrainer):
         Note that the return values are dirictly passed to the loss
         function.
         """ 
-        logits = self.model(x, training=True)
+        
+        if isinstance(x, dict):
+            logits = self.model(**x, training=True)
+        else:
+            logits = self.model(x, training=True)
             
         if self.post_process_logits is not None:
             self.logger.info("Post process step of the logits was added to the training loop")

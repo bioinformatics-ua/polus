@@ -48,12 +48,10 @@ class IConfusionMatrixTF(IMetric):
         self.reset()
         
     def _samples_from_batch(self, samples):
-        #print(samples["tags_int"])
-        #print(samples["tags_int_pred"])
-        #
+
         self.confusion_matrix += self._build_confusion_matrix(*samples)
         
-    @tf.function(input_signature=[tf.TensorSpec(shape=(None, ), dtype=tf.int32), tf.TensorSpec(shape=(None, ), dtype=tf.int32)])
+    @tf.function(input_signature=[tf.TensorSpec(shape=(None,), dtype=tf.int32), tf.TensorSpec(shape=(None,), dtype=tf.int32)])
     def _build_confusion_matrix(self, y_true, y_pred):
         self.logger.debug("_build_confusion_matrix function was traced")
         #print(y_true)

@@ -14,9 +14,6 @@ from polus.utils import merge_dicts, flatten_dict, complex_json_serializer, comp
 #import for refering to this file, used in the load_model method
 import polus.models
 
-from transformers.modeling_tf_utils import shape_list
-from transformers import TFBertModel, AutoTokenizer
-
 def load_model(file_name_w_ext, change_config={}, external_module=None):
     
     file_name = os.path.splitext(file_name_w_ext)[0]
@@ -25,6 +22,10 @@ def load_model(file_name_w_ext, change_config={}, external_module=None):
         cfg = complex_json_deserializer(json.load(f))
     
     cfg["model"] = merge_dicts(cfg["model"], change_config)
+    
+    # TODO: For adding the possibility to load from best HPO cfg,
+    # just load the best HPO trial, then add it to the HPO_Context
+    # it should work :) 
     
     if external_module is not None:
         model = getattr(external_module, cfg['func_name'])(**cfg)
@@ -119,8 +120,6 @@ class SavableModel(PolusModel):
         
         path = os.path.join(base_path, self.name+extension)
         
-        
-        
         with open(path+".cfg","w") as f:
             json_str = complex_json_serializer(self.savable_config)
             json.dump(json_str , f)
@@ -134,8 +133,6 @@ class SavableModel(PolusModel):
             weight = self.get_weights()
             for i in range(len(weight)):
                 f.create_dataset('weight'+str(i), data=weight[i])
-    
-    
         
 class SequentialSavableModel(tf.keras.Sequential, SavableModel):
     """
@@ -144,7 +141,23 @@ class SequentialSavableModel(tf.keras.Sequential, SavableModel):
     """
     def __init__(self, layers, **kwargs):
         super().__init__(layers, **kwargs)
+        
+class PolusClassifier(SavableModel):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    
+    @tf.function
+    def inference(self, x):
+        return tf.argmax(self(x), axis=-1, output_type=tf.int32)
+    
+class SequentialPolusClassifier(tf.keras.Sequential, PolusClassifier):
+    def __init__(self, layers, **kwargs):
+        super().__init__(layers, **kwargs)
+    
 
+from transformers.modeling_tf_utils import shape_list
+from transformers import TFBertModel, AutoTokenizer
         
 from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 from transformers.file_utils import DUMMY_INPUTS, DUMMY_MASK

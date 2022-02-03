@@ -88,6 +88,11 @@ class DataLoader(BaseLogger):
         self.accelerated_map_batch = accelerated_map_batch
         self.accelerated_map_f = accelerated_map_f
         
+        if source_generator is not None:
+            self.name = source_generator.__name__
+        else:
+            self.name = "None"
+        
         self.sample_generator = self._build_sample_generator(source_generator)
 
         dytpes, shapes = find_dtype_and_shapes(self.sample_generator(), k=magic_k)
@@ -100,6 +105,12 @@ class DataLoader(BaseLogger):
         for method in filter(lambda x: not x[0].startswith("_"), inspect.getmembers(self.tf_dataset, predicate=inspect.ismethod)):
             setattr(self, method[0], method[1])
     
+    def set_name(self, _name):
+        self.name = _name
+    
+    @property
+    def __name__(self):
+        return f"{self.__class__.__name__}_{self.name}"
     
     def _build_sample_generator(self, source_generator):
         
@@ -215,21 +226,37 @@ class CachedDataLoader(DataLoader):
         self.__tf_sample_map_f = tf_sample_map_f
         self.__py_sample_map_f = py_sample_map_f
         self.cache_index = cache_index
+        if cache_index is not None and "cache_index_path" in cache_index:
+            self.cache_index_path = cache_index["cache_index_path"]
+        else:
+            # this dataset probably do not have a cache_index_path, this can happen if the DataLoader was created
+            # from merge of multiple DataLoader
+            self.cache_index_path = None
         
         # the parent DataLoader will call _build_sample_generator that contains the logic to build the dataloader
         try:
             super().__init__(source_generator = source_generator, **kwargs)
         except Exception as e:
-            # here we dont want to solve the exception, we just want to clean up de previously created files
-            self.logger.info("An error has occured so all the created files will be deleted")
-            self.clean()
+            
+            if cache_index is None:
+                # here we dont want to solve the exception, we just want to clean up de previously created files
+                self.logger.info("An error has occured so all the created files will be deleted")
+                self.clean()
             raise e
             
+    @property
+    def __name__(self):
+        if self.cache_index_path is not None:
+            _name = os.path.splitext(os.path.basename(self.cache_index_path))[0]
+            return f"{self.__class__.__name__}_{self.name}"
+        else:
+            return super().__name__
+    
     @classmethod
     def from_cached_index(cls, index_path):
         
         index_info = cls.read_index(index_path)
-        
+        index_info["cache_index_path"] = index_path
         return cls(cache_index=index_info)
         
     
@@ -249,7 +276,6 @@ class CachedDataLoader(DataLoader):
                 
             index_info["n_samples"] += index["n_samples"]
             index_info["files"].extend(index["files"])
-            
             # this is a bit starange, but it is possible to have different DL with diff chunk size so we will pick the larger one to define the conjunt
             index_info["cache_chunk_size"] = max(index_info["cache_chunk_size"], index["cache_chunk_size"])
             
