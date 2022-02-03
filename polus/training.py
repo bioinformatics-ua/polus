@@ -82,7 +82,7 @@ class BaseTrainer(BaseLogger):
         return 'Trainer'
     
     
-    def foward_without_grads(self, *inputs):
+    def forward_without_grads(self, *inputs):
         """
         Foward computation that we dont want to store variables 
         and the respective intermidiate steps for the gradients
@@ -103,12 +103,12 @@ class BaseTrainer(BaseLogger):
         """
         return inputs
     
-    def foward_with_grads(self, *inputs):
+    def forward_with_grads(self, *inputs):
         """
         Describes the computations required to produce the final loss 
         value from a predifined model or models.
         
-        Note, that foward_with_grads may use self.post_process_logits
+        Note, that forward_with_grads may use self.post_process_logits
         
         This method can be further decorated with tf.function with 
         input_signature so that it can be called from lr_finder 
@@ -126,7 +126,7 @@ class BaseTrainer(BaseLogger):
         Raises:
           NotImplementedError: if this method is not implemented
         """
-        raise NotImplementedError("foward_with_grads function must be implemented in order to compute a loss value for optimization")
+        raise NotImplementedError("forward_with_grads function must be implemented in order to compute a loss value for optimization")
     
     @tf.function#()
     def train_step(self, *inputs):
@@ -154,9 +154,9 @@ class BaseTrainer(BaseLogger):
         with tf.GradientTape() as tape:           
 
             with tape.stop_recording():
-                inputs = self.foward_without_grads(*inputs)
+                inputs = self.forward_without_grads(*inputs)
             
-            inputs = self.foward_with_grads(*inputs)
+            inputs = self.forward_with_grads(*inputs)
             
             loss_value = self.loss(*inputs)
         
@@ -307,9 +307,9 @@ class ClassifierTrainer(BaseTrainer):
         """
         super().__init__(*args, **kwargs)
     
-    def foward_with_grads(self, x, y):
+    def forward_with_grads(self, x, y):
         """
-        Override of ´polus.training.BaseTrainer.foward_with_grads´
+        Override of ´polus.training.BaseTrainer.forward_with_grads´
         
         Args:
           x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): 
