@@ -37,10 +37,10 @@
                                 <a class="function" href="#BaseTrainer.__init__">BaseTrainer</a>
                         </li>
                         <li>
-                                <a class="function" href="#BaseTrainer.foward_without_grads">foward_without_grads</a>
+                                <a class="function" href="#BaseTrainer.forward_without_grads">forward_without_grads</a>
                         </li>
                         <li>
-                                <a class="function" href="#BaseTrainer.foward_with_grads">foward_with_grads</a>
+                                <a class="function" href="#BaseTrainer.forward_with_grads">forward_with_grads</a>
                         </li>
                         <li>
                                 <a class="function" href="#BaseTrainer.train_step">train_step</a>
@@ -64,7 +64,7 @@
                                 <a class="function" href="#ClassifierTrainer.__init__">ClassifierTrainer</a>
                         </li>
                         <li>
-                                <a class="function" href="#ClassifierTrainer.foward_with_grads">foward_with_grads</a>
+                                <a class="function" href="#ClassifierTrainer.forward_with_grads">forward_with_grads</a>
                         </li>
                 </ul>
 
@@ -172,7 +172,7 @@
         <span class="k">return</span> <span class="s1">&#39;Trainer&#39;</span>
     
     
-    <span class="k">def</span> <span class="nf">foward_without_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward_without_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Foward computation that we dont want to store variables </span>
 <span class="sd">        and the respective intermidiate steps for the gradients</span>
@@ -193,12 +193,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">inputs</span>
     
-    <span class="k">def</span> <span class="nf">foward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Describes the computations required to produce the final loss </span>
 <span class="sd">        value from a predifined model or models.</span>
 <span class="sd">        </span>
-<span class="sd">        Note, that foward_with_grads may use self.post_process_logits</span>
+<span class="sd">        Note, that forward_with_grads may use self.post_process_logits</span>
 <span class="sd">        </span>
 <span class="sd">        This method can be further decorated with tf.function with </span>
 <span class="sd">        input_signature so that it can be called from lr_finder </span>
@@ -216,7 +216,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">          NotImplementedError: if this method is not implemented</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;foward_with_grads function must be implemented in order to compute a loss value for optimization&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;forward_with_grads function must be implemented in order to compute a loss value for optimization&quot;</span><span class="p">)</span>
     
     <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span><span class="c1">#()</span>
     <span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
@@ -244,9 +244,9 @@
         <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>           
 
             <span class="k">with</span> <span class="n">tape</span><span class="o">.</span><span class="n">stop_recording</span><span class="p">():</span>
-                <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">foward_without_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
+                <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_without_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
             
-            <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">foward_with_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_with_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
             
             <span class="n">loss_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
         
@@ -397,9 +397,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">foward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Override of ´polus.training.BaseTrainer.foward_with_grads´</span>
+<span class="sd">        Override of ´polus.training.BaseTrainer.forward_with_grads´</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): </span>
@@ -524,7 +524,7 @@
         <span class="k">return</span> <span class="s1">&#39;Trainer&#39;</span>
     
     
-    <span class="k">def</span> <span class="nf">foward_without_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward_without_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Foward computation that we dont want to store variables </span>
 <span class="sd">        and the respective intermidiate steps for the gradients</span>
@@ -545,12 +545,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">inputs</span>
     
-    <span class="k">def</span> <span class="nf">foward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Describes the computations required to produce the final loss </span>
 <span class="sd">        value from a predifined model or models.</span>
 <span class="sd">        </span>
-<span class="sd">        Note, that foward_with_grads may use self.post_process_logits</span>
+<span class="sd">        Note, that forward_with_grads may use self.post_process_logits</span>
 <span class="sd">        </span>
 <span class="sd">        This method can be further decorated with tf.function with </span>
 <span class="sd">        input_signature so that it can be called from lr_finder </span>
@@ -568,7 +568,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">          NotImplementedError: if this method is not implemented</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;foward_with_grads function must be implemented in order to compute a loss value for optimization&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;forward_with_grads function must be implemented in order to compute a loss value for optimization&quot;</span><span class="p">)</span>
     
     <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span><span class="c1">#()</span>
     <span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
@@ -596,9 +596,9 @@
         <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>           
 
             <span class="k">with</span> <span class="n">tape</span><span class="o">.</span><span class="n">stop_recording</span><span class="p">():</span>
-                <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">foward_without_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
+                <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_without_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
             
-            <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">foward_with_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_with_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
             
             <span class="n">loss_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
         
@@ -845,17 +845,17 @@ measurements should be taken</li>
 
 
                             </div>
-                            <div id="BaseTrainer.foward_without_grads" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BaseTrainer.foward_without_grads">#&nbsp;&nbsp</a>
+                            <div id="BaseTrainer.forward_without_grads" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#BaseTrainer.forward_without_grads">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">foward_without_grads</span><span class="signature">(self, *inputs)</span>:
+            <span class="name">forward_without_grads</span><span class="signature">(self, *inputs)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">foward_without_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">forward_without_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Foward computation that we dont want to store variables </span>
 <span class="sd">        and the respective intermidiate steps for the gradients</span>
@@ -905,22 +905,22 @@ of dictionary of tf.Tensor.</li>
 
 
                             </div>
-                            <div id="BaseTrainer.foward_with_grads" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BaseTrainer.foward_with_grads">#&nbsp;&nbsp</a>
+                            <div id="BaseTrainer.forward_with_grads" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#BaseTrainer.forward_with_grads">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">foward_with_grads</span><span class="signature">(self, *inputs)</span>:
+            <span class="name">forward_with_grads</span><span class="signature">(self, *inputs)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">foward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">forward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Describes the computations required to produce the final loss </span>
 <span class="sd">        value from a predifined model or models.</span>
 <span class="sd">        </span>
-<span class="sd">        Note, that foward_with_grads may use self.post_process_logits</span>
+<span class="sd">        Note, that forward_with_grads may use self.post_process_logits</span>
 <span class="sd">        </span>
 <span class="sd">        This method can be further decorated with tf.function with </span>
 <span class="sd">        input_signature so that it can be called from lr_finder </span>
@@ -938,7 +938,7 @@ of dictionary of tf.Tensor.</li>
 <span class="sd">        Raises:</span>
 <span class="sd">          NotImplementedError: if this method is not implemented</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;foward_with_grads function must be implemented in order to compute a loss value for optimization&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;forward_with_grads function must be implemented in order to compute a loss value for optimization&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -946,7 +946,7 @@ of dictionary of tf.Tensor.</li>
             <div class="docstring"><p>Describes the computations required to produce the final loss 
 value from a predifined model or models.</p>
 
-<p>Note, that foward_with_grads may use self.post_process_logits</p>
+<p>Note, that forward_with_grads may use self.post_process_logits</p>
 
 <p>This method can be further decorated with tf.function with 
 input_signature so that it can be called from lr_finder 
@@ -1013,9 +1013,9 @@ of dictionary of tf.Tensor.</li>
         <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>           
 
             <span class="k">with</span> <span class="n">tape</span><span class="o">.</span><span class="n">stop_recording</span><span class="p">():</span>
-                <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">foward_without_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
+                <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_without_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
             
-            <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">foward_with_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_with_grads</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
             
             <span class="n">loss_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
         
@@ -1295,9 +1295,9 @@ has no influence on the behaviour of the training loop.</li>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">foward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Override of ´polus.training.BaseTrainer.foward_with_grads´</span>
+<span class="sd">        Override of ´polus.training.BaseTrainer.forward_with_grads´</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): </span>
@@ -1384,19 +1384,19 @@ base class.</li>
 
 
                             </div>
-                            <div id="ClassifierTrainer.foward_with_grads" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ClassifierTrainer.foward_with_grads">#&nbsp;&nbsp</a>
+                            <div id="ClassifierTrainer.forward_with_grads" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ClassifierTrainer.forward_with_grads">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">foward_with_grads</span><span class="signature">(self, x, y)</span>:
+            <span class="name">forward_with_grads</span><span class="signature">(self, x, y)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">foward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">forward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Override of ´polus.training.BaseTrainer.foward_with_grads´</span>
+<span class="sd">        Override of ´polus.training.BaseTrainer.forward_with_grads´</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): </span>
@@ -1430,7 +1430,7 @@ base class.</li>
 
         </details>
 
-            <div class="docstring"><p>Override of ´<a href="#BaseTrainer.foward_with_grads">polus.training.BaseTrainer.foward_with_grads</a>´</p>
+            <div class="docstring"><p>Override of ´<a href="#BaseTrainer.forward_with_grads">polus.training.BaseTrainer.forward_with_grads</a>´</p>
 
 <h6 id="args">Args</h6>
 
@@ -1460,7 +1460,7 @@ function.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="#BaseTrainer">BaseTrainer</a></dt>
-                                <dd id="ClassifierTrainer.foward_without_grads" class="function"><a href="#BaseTrainer.foward_without_grads">foward_without_grads</a></dd>
+                                <dd id="ClassifierTrainer.forward_without_grads" class="function"><a href="#BaseTrainer.forward_without_grads">forward_without_grads</a></dd>
                 <dd id="ClassifierTrainer.train_step" class="function"><a href="#BaseTrainer.train_step">train_step</a></dd>
                 <dd id="ClassifierTrainer.lr_finder" class="function"><a href="#BaseTrainer.lr_finder">lr_finder</a></dd>
                 <dd id="ClassifierTrainer.changing_train_config" class="function"><a href="#BaseTrainer.changing_train_config">changing_train_config</a></dd>

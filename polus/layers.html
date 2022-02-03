@@ -485,9 +485,11 @@
 
 <p>This is a method that implementers of subclasses of <code>Layer</code> or <code>Model</code>
 can override if they need a state-creation step in-between
-layer instantiation and layer call.</p>
+layer instantiation and layer call. It is invoked automatically before
+the first execution of <code><a href="#CRF.call">call()</a></code>.</p>
 
-<p>This is typically used to create the weights of <code>Layer</code> subclasses.</p>
+<p>This is typically used to create the weights of <code>Layer</code> subclasses
+(at the discretion of the subclass implementer).</p>
 
 <h6 id="args">Args</h6>
 
@@ -559,10 +561,10 @@ layer instantiation and layer call.</p>
 
             <div class="docstring"><p>This is where the layer's logic lives.</p>
 
-<p>Note here that <code><a href="#CRF.call">call()</a></code> method in <code>tf.keras</code> is little bit different
-from <code>keras</code> API. In <code>keras</code> API, you can pass support masking for
-layers as additional arguments. Whereas <code>tf.keras</code> has <code><a href="#CRF.compute_mask">compute_mask()</a></code>
-method to support masking.</p>
+<p>The <code><a href="#CRF.call">call()</a></code> method may not create state (except in its first invocation,
+wrapping the creation of variables or other resources in <code>tf.init_scope()</code>).
+It is recommended to create state in <code><a href="#CRF.__init__">__init__()</a></code>, or the <code><a href="#CRF.build">build()</a></code> method
+that is called automatically before <code><a href="#CRF.call">call()</a></code> executes the first time.</p>
 
 <h6 id="args">Args</h6>
 
@@ -684,9 +686,9 @@ layer with masking support).</li>
 
             <div class="docstring"><p>Computes the output shape of the layer.</p>
 
-<p>If the layer has not been built, this method will call <code><a href="#CRF.build">build</a></code> on the
-layer. This assumes that the layer will later be used with inputs that
-match the input shape provided here.</p>
+<p>This method will cause the layer's state to be built, if that has not
+happened before. This requires that the layer will later be used with
+inputs that match the input shape provided here.</p>
 
 <h6 id="args">Args</h6>
 
