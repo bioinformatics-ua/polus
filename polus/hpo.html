@@ -86,6 +86,7 @@
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">polus.core</span> <span class="kn">import</span> <span class="n">Singleton</span><span class="p">,</span> <span class="n">BaseLogger</span>
+<span class="kn">import</span> <span class="nn">gc</span>
 <span class="kn">from</span> <span class="nn">human_id</span> <span class="kn">import</span> <span class="n">generate_id</span>
 
 <span class="kn">import</span> <span class="nn">optuna</span> 
@@ -118,18 +119,21 @@
                  <span class="n">validator_name</span><span class="p">,</span>
                  <span class="n">metric_name</span><span class="p">,</span>
                  <span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;optuna&quot;</span><span class="p">,</span>
-                 <span class="n">metric_time</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">):</span>
+                 <span class="n">metric_time</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span>
+                 <span class="n">add_pruning_cb</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">          train_init_function (func): python function that returns a BaseTrainer</span>
 <span class="sd">            </span>
-<span class="sd">          val_tf_callback (polus.callbacks.ICallback): A prepered validation callback</span>
+<span class="sd">          validator_name (polus.callbacks.ICallback): A prepared validation callback</span>
 <span class="sd">          </span>
 <span class="sd">          metric_name (str): name of the metric that we want to give the HPO</span>
 <span class="sd">          </span>
 <span class="sd">          metric_time (str): what metric value we will read, since we can record more that one</span>
 <span class="sd">            metric per train. Availble modes [max, last]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">backend</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;optuna&quot;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
         <span class="k">else</span><span class="p">:</span>
@@ -140,6 +144,7 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">=</span> <span class="n">metric_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metric_time</span> <span class="o">=</span> <span class="n">metric_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_pruning_cb</span> <span class="o">=</span> <span class="n">add_pruning_cb</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">hpo_context</span> <span class="o">=</span> <span class="n">HPOContext</span><span class="p">()</span> <span class="c1"># this is a singleton</span>
         
@@ -154,17 +159,43 @@
                 <span class="s2">&quot;load_if_exists&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                 <span class="s2">&quot;n_trials&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
             <span class="p">}</span>
-            
+    
+    <span class="k">def</span> <span class="nf">__get_validation_cb_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">polus.callbacks</span> <span class="kn">import</span> <span class="n">ValidationDataCallback</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">cb</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="n">ValidationDataCallback</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cb</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">index</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    
+    <span class="k">def</span> <span class="nf">__add_callback_after_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">cb</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">l</span><span class="p">[:</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">cb</span><span class="p">]</span> <span class="o">+</span> <span class="n">l</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+    
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">):</span>
         <span class="c1"># setting the backend trial</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hpo_context</span><span class="o">.</span><span class="n">add_hpo_backend</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span>
         
         <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer_init_function</span><span class="p">()</span>
         
+        <span class="c1"># add pruning callback to the callback list</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_pruning_cb</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">polus.callbacks</span> <span class="kn">import</span> <span class="n">ValidationDataCallback</span><span class="p">,</span> <span class="n">HPOPruneCallback</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_validation_cb_index</span><span class="p">(</span><span class="n">trainer</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;callbacks&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                
+                <span class="n">trainer</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;callbacks&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__add_callback_after_index</span><span class="p">(</span><span class="n">trainer</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;callbacks&quot;</span><span class="p">],</span>
+                                                                                 <span class="n">HPOPruneCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">),</span>
+                                                                                 <span class="n">index</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;HPO_Objective added a PruneCallback to the main training loop&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;HPO_Objective was init with add_pruning_cb, however, we could not automaticly add the pruning callback. We didn&#39;t find any Validation Callback.&quot;</span><span class="p">)</span>
+                    
         <span class="c1"># run train :)</span>
         <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 
         <span class="n">_metrics</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">]</span>
+        
+        <span class="k">del</span> <span class="n">trainer</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_metrics</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_time</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
@@ -197,6 +228,8 @@
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        <span class="c1"># deactive the HPO mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hpo_context</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
         
 </pre></div>
 
@@ -354,18 +387,21 @@
                  <span class="n">validator_name</span><span class="p">,</span>
                  <span class="n">metric_name</span><span class="p">,</span>
                  <span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;optuna&quot;</span><span class="p">,</span>
-                 <span class="n">metric_time</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">):</span>
+                 <span class="n">metric_time</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span>
+                 <span class="n">add_pruning_cb</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">          train_init_function (func): python function that returns a BaseTrainer</span>
 <span class="sd">            </span>
-<span class="sd">          val_tf_callback (polus.callbacks.ICallback): A prepered validation callback</span>
+<span class="sd">          validator_name (polus.callbacks.ICallback): A prepared validation callback</span>
 <span class="sd">          </span>
 <span class="sd">          metric_name (str): name of the metric that we want to give the HPO</span>
 <span class="sd">          </span>
 <span class="sd">          metric_time (str): what metric value we will read, since we can record more that one</span>
 <span class="sd">            metric per train. Availble modes [max, last]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">backend</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;optuna&quot;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
         <span class="k">else</span><span class="p">:</span>
@@ -376,6 +412,7 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">=</span> <span class="n">metric_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metric_time</span> <span class="o">=</span> <span class="n">metric_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_pruning_cb</span> <span class="o">=</span> <span class="n">add_pruning_cb</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">hpo_context</span> <span class="o">=</span> <span class="n">HPOContext</span><span class="p">()</span> <span class="c1"># this is a singleton</span>
         
@@ -390,17 +427,43 @@
                 <span class="s2">&quot;load_if_exists&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                 <span class="s2">&quot;n_trials&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
             <span class="p">}</span>
-            
+    
+    <span class="k">def</span> <span class="nf">__get_validation_cb_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">polus.callbacks</span> <span class="kn">import</span> <span class="n">ValidationDataCallback</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">cb</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="n">ValidationDataCallback</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cb</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">index</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    
+    <span class="k">def</span> <span class="nf">__add_callback_after_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">cb</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">l</span><span class="p">[:</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">cb</span><span class="p">]</span> <span class="o">+</span> <span class="n">l</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+    
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">):</span>
         <span class="c1"># setting the backend trial</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hpo_context</span><span class="o">.</span><span class="n">add_hpo_backend</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span>
         
         <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer_init_function</span><span class="p">()</span>
         
+        <span class="c1"># add pruning callback to the callback list</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_pruning_cb</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">polus.callbacks</span> <span class="kn">import</span> <span class="n">ValidationDataCallback</span><span class="p">,</span> <span class="n">HPOPruneCallback</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_validation_cb_index</span><span class="p">(</span><span class="n">trainer</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;callbacks&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                
+                <span class="n">trainer</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;callbacks&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__add_callback_after_index</span><span class="p">(</span><span class="n">trainer</span><span class="o">.</span><span class="n">train_config</span><span class="p">[</span><span class="s2">&quot;callbacks&quot;</span><span class="p">],</span>
+                                                                                 <span class="n">HPOPruneCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">),</span>
+                                                                                 <span class="n">index</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;HPO_Objective added a PruneCallback to the main training loop&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;HPO_Objective was init with add_pruning_cb, however, we could not automaticly add the pruning callback. We didn&#39;t find any Validation Callback.&quot;</span><span class="p">)</span>
+                    
         <span class="c1"># run train :)</span>
         <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 
         <span class="n">_metrics</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">]</span>
+        
+        <span class="k">del</span> <span class="n">trainer</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_metrics</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_time</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
@@ -433,6 +496,8 @@
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        <span class="c1"># deactive the HPO mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hpo_context</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 </pre></div>
 
         </details>
@@ -448,7 +513,8 @@
     validator_name,
     metric_name,
     backend=&#39;optuna&#39;,
-    metric_time=&#39;max&#39;
+    metric_time=&#39;max&#39;,
+    add_pruning_cb=True
 )</span>
     </div>
 
@@ -459,18 +525,21 @@
                  <span class="n">validator_name</span><span class="p">,</span>
                  <span class="n">metric_name</span><span class="p">,</span>
                  <span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;optuna&quot;</span><span class="p">,</span>
-                 <span class="n">metric_time</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">):</span>
+                 <span class="n">metric_time</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span>
+                 <span class="n">add_pruning_cb</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">          train_init_function (func): python function that returns a BaseTrainer</span>
 <span class="sd">            </span>
-<span class="sd">          val_tf_callback (polus.callbacks.ICallback): A prepered validation callback</span>
+<span class="sd">          validator_name (polus.callbacks.ICallback): A prepared validation callback</span>
 <span class="sd">          </span>
 <span class="sd">          metric_name (str): name of the metric that we want to give the HPO</span>
 <span class="sd">          </span>
 <span class="sd">          metric_time (str): what metric value we will read, since we can record more that one</span>
 <span class="sd">            metric per train. Availble modes [max, last]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">backend</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;optuna&quot;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
         <span class="k">else</span><span class="p">:</span>
@@ -481,6 +550,7 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">=</span> <span class="n">metric_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metric_time</span> <span class="o">=</span> <span class="n">metric_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_pruning_cb</span> <span class="o">=</span> <span class="n">add_pruning_cb</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">hpo_context</span> <span class="o">=</span> <span class="n">HPOContext</span><span class="p">()</span> <span class="c1"># this is a singleton</span>
         
@@ -503,7 +573,7 @@
 
 <ul>
 <li><strong>train_init_function (func):</strong>  python function that returns a BaseTrainer</li>
-<li><strong>val_tf_callback (<a href="callbacks.html#ICallback">polus.callbacks.ICallback</a>):</strong>  A prepered validation callback</li>
+<li><strong>validator_name (<a href="callbacks.html#ICallback">polus.callbacks.ICallback</a>):</strong>  A prepared validation callback</li>
 <li><strong>metric_name (str):</strong>  name of the metric that we want to give the HPO</li>
 <li><strong>metric_time (str):</strong>  what metric value we will read, since we can record more that one
 metric per train. Availble modes [max, last]</li>
