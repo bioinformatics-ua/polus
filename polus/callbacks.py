@@ -348,7 +348,7 @@ class HPOPruneCallback(Callback):
             current_score = self.coordinator.shared_dict["validation"][self.validator_name][self.metric_name][-1]
             
             from optuna.exceptions import TrialPruned
-            from optuna.trial import Trial
+            from optuna.trial import Trial, FrozenTrial
             
             if isinstance(self.hpo_backend, Trial): # optuna has backend
                 self.hpo_backend.report(current_score, step=epoch)
@@ -357,7 +357,10 @@ class HPOPruneCallback(Callback):
                     from optuna.exceptions import TrialPruned
                     message = f"Trial was pruned at epoch {epoch} with a score of {current_score}."
                     raise TrialPruned(message)
-                
+            elif isinstance(self.hpo_backend, FrozenTrial):
+                ## skip the call back
+                ## this means that the callback shoulden't be added in the first place
+                pass
             else:
                 raise ValueError(f"The current {self.hpo_backend} backend is not supported so we do not know how to prune")
         
