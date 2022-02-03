@@ -1,8 +1,10 @@
 Version 0.1.9: (master)
+
     Refactor of the validation callback, adding more deafults mode of operation
     
     Integration of a HPO (hyperparameter optimizer) to the polus lib
         - Implementing optuna as the default backend for HPO
+        - Implementing a prune callback
         
     Adding tutorials folder with python scripts for examples
         - Creation of a classifier_example

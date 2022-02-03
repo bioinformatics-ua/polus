@@ -80,6 +80,7 @@ class CallbackCoordinator(ICallback):
             c.add_coordinator(self)
             if isinstance(c, IOutput):
                 self.output_streamers.append(c)
+        
     
     def has_callback(self, callback_class):
         for c in self.callbacks:
@@ -346,12 +347,15 @@ class HPOPruneCallback(Callback):
             
             current_score = self.coordinator.shared_dict["validation"][self.validator_name][self.metric_name][-1]
             
-            if isinstance(ctx.hpo_backend, Trial): # optuna has backend
+            from optuna.exceptions import TrialPruned
+            from optuna.trial import Trial
+            
+            if isinstance(self.hpo_backend, Trial): # optuna has backend
                 self.hpo_backend.report(current_score, step=epoch)
                 
                 if self.hpo_backend.should_prune():
                     from optuna.exceptions import TrialPruned
-                    message = "Trial was pruned at epoch {}.".format(epoch)
+                    message = f"Trial was pruned at epoch {epoch} with a score of {current_score}."
                     raise TrialPruned(message)
                 
             else:

@@ -1,4 +1,5 @@
 from polus.core import Singleton, BaseLogger
+import gc
 from human_id import generate_id
 
 import optuna 
@@ -31,18 +32,21 @@ class HPO_Objective(BaseLogger):
                  validator_name,
                  metric_name,
                  backend = "optuna",
-                 metric_time = "max"):
+                 metric_time = "max",
+                 add_pruning_cb = True):
+        
         """
         Args:
           train_init_function (func): python function that returns a BaseTrainer
             
-          val_tf_callback (polus.callbacks.ICallback): A prepered validation callback
+          validator_name (polus.callbacks.ICallback): A prepared validation callback
           
           metric_name (str): name of the metric that we want to give the HPO
           
           metric_time (str): what metric value we will read, since we can record more that one
             metric per train. Availble modes [max, last]
         """
+        super().__init__()
         if backend in ["optuna"]:
             self.backend = backend
         else:
@@ -53,6 +57,7 @@ class HPO_Objective(BaseLogger):
         
         self.metric_name = metric_name
         self.metric_time = metric_time
+        self.add_pruning_cb = add_pruning_cb
         
         self.hpo_context = HPOContext() # this is a singleton
         
@@ -67,17 +72,43 @@ class HPO_Objective(BaseLogger):
                 "load_if_exists": True,
                 "n_trials": 100,
             }
-            
+    
+    def __get_validation_cb_index(self, l):
+        from polus.callbacks import ValidationDataCallback
+        for index, cb in enumerate(l):
+            if isinstance(cb, ValidationDataCallback) and cb.name == self.validator_name:
+                return index
+        return -1
+    
+    def __add_callback_after_index(self, l, cb, index):
+        return l[:index+1] + [cb] + l[index+1:]
+    
     def __call__(self, trial):
         # setting the backend trial
         self.hpo_context.add_hpo_backend(trial)
         
         trainer = self.trainer_init_function()
         
+        # add pruning callback to the callback list
+        if self.add_pruning_cb:
+            from polus.callbacks import ValidationDataCallback, HPOPruneCallback
+            index = self.__get_validation_cb_index(trainer.train_config["callbacks"])
+            if index != -1:
+                
+                trainer.train_config["callbacks"] = self.__add_callback_after_index(trainer.train_config["callbacks"],
+                                                                                 HPOPruneCallback(self.validator_name, self.metric_name),
+                                                                                 index)
+                self.logger.info("HPO_Objective added a PruneCallback to the main training loop")
+            else:
+                self.logger.warn("HPO_Objective was init with add_pruning_cb, however, we could not automaticly add the pruning callback. We didn't find any Validation Callback.")
+                    
         # run train :)
         trainer.train()
 
         _metrics = trainer.callbacks.shared_dict["validation"][self.validator_name][self.metric_name]
+        
+        del trainer
+        gc.collect()
         
         if len(_metrics)>0:
             if self.metric_time == "max":
@@ -110,6 +141,8 @@ class HPO_Objective(BaseLogger):
 
     def __exit__(self, *args, **kwargs):
         self.run()
+        # deactive the HPO mode
+        self.hpo_context.reset()
         
 
 
