@@ -464,6 +464,34 @@ class CachedDataLoader(DataLoader):
         self.shuffle_blocks = True
         
         return self
+    
+    def add_lookup_data(self, lookup_object):
+        """
+        Converts a CachedDataLoarder to a CachedDataLoaderwLookup
+        """
+        cache_base_path = os.path.splitext(self.cache_index_path)[0]
+        
+        ## manually add lookup_data to the index
+        lookup_file = f"{cache_base_path}.lookup"
+        
+        with open(lookup_file, "wb") as f:
+            pickle.dump(lookup_object, f)
+            
+        return self.add_lookup_data_path(lookup_file)
+            
+    def add_lookup_data_path(self, lookup_data_path):
+        
+        assert os.path.exists(lookup_data_path)
+        
+        # modify the index
+        self.cache_index["lookup_file"] = lookup_data_path
+        
+        with open(self.cache_index_path, "w") as f:
+            json.dump(self.cache_index, f)
+            
+        return CachedDataLoaderwLookup.from_cached_index(self.cache_index_path)
+        
+        
 
     
 class CachedDataLoaderwLookup(CachedDataLoader):

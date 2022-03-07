@@ -1,4 +1,4 @@
-from polus.data import DataLoader, CachedDataLoader, build_bert_embeddings
+from polus.data import DataLoader, CachedDataLoader, CachedDataLoaderwLookup, build_bert_embeddings
 import pytest
 import glob
 import os
@@ -26,8 +26,6 @@ def run_before_and_after_tests(tmpdir):
         shutil.rmtree(PATH_CACHE)
 
 def test_dataloader_nocache():
-    
-    
     
     def source_gen():
         for i in range(N_SAMPLES):
@@ -97,7 +95,77 @@ def test_cachedDataloader():
     
     for data_files in dataloader.cache_index["files"]:
         assert os.path.basename(data_files) in cache_files
+
+def test_cachedDataloaderwLookup():
     
+    N_SAMPLES = 1000
+    
+    def source_gen():
+        for i in range(N_SAMPLES):
+            yield {"id":i, "text":"dummy"}
+            
+    data = {"a":1, "b":2, "c":3}    
+        
+    dataloader = CachedDataLoaderwLookup(source_gen, 
+                                         lookup_data = data,
+                                         cache_chunk_size = 256,
+                                         cache_folder = PATH_CACHE)
+    
+    n_samples = 0
+    for sample in dataloader:
+        n_samples += 1
+    
+    assert n_samples == N_SAMPLES
+    assert dataloader.get_n_samples() == N_SAMPLES
+    assert sample["id"] == N_SAMPLES-1
+    assert sample["text"] == "dummy"
+    assert dataloader.get_lookup_data()["c"] == data["c"]
+    
+    # assert cache files
+    cache_files = os.listdir(PATH_CACHE)
+    assert f"{dataloader.cache_base_name}.index" in cache_files
+    assert f"{dataloader.cache_base_name}.lookup" in cache_files
+    
+    for data_files in dataloader.cache_index["files"]:
+        assert os.path.basename(data_files) in cache_files
+        
+    
+def test_cachedDataloader_convert():
+    
+    N_SAMPLES = 1000
+    
+    def source_gen():
+        for i in range(N_SAMPLES):
+            yield {"id":i, "text":"dummy"}
+            
+    dataloader = CachedDataLoader(source_gen, 
+                                  cache_chunk_size = 256,
+                                  cache_folder = PATH_CACHE)
+    
+    data = {"a":1, "b":2, "c":3}    
+    dataloader = dataloader.add_lookup_data(data)
+    
+    n_samples = 0
+    for sample in dataloader:
+        n_samples += 1
+    
+    assert isinstance(dataloader, CachedDataLoaderwLookup)
+    assert n_samples == N_SAMPLES
+    assert dataloader.get_n_samples() == N_SAMPLES
+    assert sample["id"] == N_SAMPLES-1
+    assert sample["text"] == "dummy"
+    assert dataloader.get_lookup_data()["c"] == data["c"]
+    
+    # assert cache files
+    cache_files = os.listdir(PATH_CACHE)
+    
+    base_name = os.path.splitext(os.path.basename(dataloader.cache_index_path))[0]
+    
+    assert f"{base_name}.index" in cache_files
+    assert f"{base_name}.lookup" in cache_files
+    
+    for data_files in dataloader.cache_index["files"]:
+        assert os.path.basename(data_files) in cache_files
     
 def test_cachedDataloader_mapping_f_cache():
     

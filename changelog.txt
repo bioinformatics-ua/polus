@@ -5,7 +5,9 @@ Version 0.1.9: (master)
     Integration of a HPO (hyperparameter optimizer) to the polus lib
         - Implementing optuna as the default backend for HPO
         - Implementing a prune callback
-        
+       
+    Adding add_lookup_data to the CachedDataloader, which makes a conversion to the CachedDataloaderwLookup instance
+       
     Adding tutorials folder with python scripts for examples
         - Creation of a classifier_example
     
