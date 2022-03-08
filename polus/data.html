@@ -81,7 +81,7 @@
                                 <a class="function" href="#CachedDataLoader.add_lookup_data_path">add_lookup_data_path</a>
                         </li>
                         <li>
-                                <a class="function" href="#CachedDataLoader.duplicate_index_file">duplicate_index_file</a>
+                                <a class="function" href="#CachedDataLoader.deep_copy">deep_copy</a>
                         </li>
                 </ul>
 
@@ -659,7 +659,7 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
             
         <span class="k">return</span> <span class="n">CachedDataLoaderwLookup</span><span class="o">.</span><span class="n">from_cached_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_index_path</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">duplicate_index_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">deep_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sufix</span> <span class="o">=</span> <span class="s2">&quot;copy&quot;</span> <span class="k">if</span> <span class="n">suffix</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">suffix</span>
@@ -667,6 +667,9 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
             
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_index</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        
+        <span class="c1"># update the path to the current index file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_index_path</span> <span class="o">=</span> <span class="n">path</span>
 
     
 <span class="k">class</span> <span class="nc">CachedDataLoaderwLookup</span><span class="p">(</span><span class="n">CachedDataLoader</span><span class="p">):</span>
@@ -1458,7 +1461,7 @@ and return the counter.</p>
             
         <span class="k">return</span> <span class="n">CachedDataLoaderwLookup</span><span class="o">.</span><span class="n">from_cached_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_index_path</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">duplicate_index_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">deep_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sufix</span> <span class="o">=</span> <span class="s2">&quot;copy&quot;</span> <span class="k">if</span> <span class="n">suffix</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">suffix</span>
@@ -1466,6 +1469,9 @@ and return the counter.</p>
             
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_index</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        
+        <span class="c1"># update the path to the current index file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_index_path</span> <span class="o">=</span> <span class="n">path</span>
 </pre></div>
 
         </details>
@@ -1775,17 +1781,17 @@ to the user.</p>
     
 
                             </div>
-                            <div id="CachedDataLoader.duplicate_index_file" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#CachedDataLoader.duplicate_index_file">#&nbsp;&nbsp</a>
+                            <div id="CachedDataLoader.deep_copy" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#CachedDataLoader.deep_copy">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">duplicate_index_file</span><span class="signature">(self, path=None, suffix=None)</span>:
+            <span class="name">deep_copy</span><span class="signature">(self, path=None, suffix=None)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">duplicate_index_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">deep_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sufix</span> <span class="o">=</span> <span class="s2">&quot;copy&quot;</span> <span class="k">if</span> <span class="n">suffix</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">suffix</span>
@@ -1793,6 +1799,9 @@ to the user.</p>
             
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_index</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        
+        <span class="c1"># update the path to the current index file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_index_path</span> <span class="o">=</span> <span class="n">path</span>
 </pre></div>
 
         </details>
@@ -2078,7 +2087,7 @@ to the user.</p>
                 <dd id="CachedDataLoaderwLookup.pre_shuffle" class="function"><a href="#CachedDataLoader.pre_shuffle">pre_shuffle</a></dd>
                 <dd id="CachedDataLoaderwLookup.add_lookup_data" class="function"><a href="#CachedDataLoader.add_lookup_data">add_lookup_data</a></dd>
                 <dd id="CachedDataLoaderwLookup.add_lookup_data_path" class="function"><a href="#CachedDataLoader.add_lookup_data_path">add_lookup_data_path</a></dd>
-                <dd id="CachedDataLoaderwLookup.duplicate_index_file" class="function"><a href="#CachedDataLoader.duplicate_index_file">duplicate_index_file</a></dd>
+                <dd id="CachedDataLoaderwLookup.deep_copy" class="function"><a href="#CachedDataLoader.deep_copy">deep_copy</a></dd>
 
             </div>
             <div><dt><a href="#DataLoader">DataLoader</a></dt>
