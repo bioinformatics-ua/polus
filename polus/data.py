@@ -490,8 +490,15 @@ class CachedDataLoader(DataLoader):
             json.dump(self.cache_index, f)
             
         return CachedDataLoaderwLookup.from_cached_index(self.cache_index_path)
+    
+    def duplicate_index_file(self, path=None, sufix=None):
         
-        
+        if path is None:
+            sufix = "copy" if sufix is None else sufix
+            path = f"{os.path.splitext(self.cache_index_path)[0]}_{sufix}.index"
+            
+        with open(path, "w") as f:
+            json.dump(self.cache_index, f)
 
     
 class CachedDataLoaderwLookup(CachedDataLoader):
