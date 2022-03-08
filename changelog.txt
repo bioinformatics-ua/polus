@@ -8,7 +8,7 @@ Version 0.1.9: (master)
        
     Adding add_lookup_data to the CachedDataloader, which makes a conversion to the CachedDataloaderwLookup instance
     
-    Adding duplicate_index_file method to CachedDataloader
+    Adding deep_copy method to CachedDataloader
     
     Adding tutorials folder with python scripts for examples
         - Creation of a classifier_example
