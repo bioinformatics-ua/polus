@@ -52,6 +52,22 @@
                 <li><a href="polus/utils.html">polus.utils</a></li>
         </ul>
 
+        <h2>API Documentation</h2>
+            <ul class="memberlist">
+            <li>
+                    <a class="class" href="#PolusContext">PolusContext</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#PolusContext.__init__">PolusContext</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#PolusContext.is_horovod_enabled">is_horovod_enabled</a>
+                        </li>
+                </ul>
+
+            </li>
+    </ul>
+
 
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
@@ -175,6 +191,40 @@ enabled by default, which can be easily accessed by the <a href="polus/core.html
 <span class="sd">&#39;&#39;&#39;</span>
 
 <span class="n">__version__</span><span class="o">=</span><span class="s2">&quot;0.1.9&quot;</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">horovod.tensorflow</span> <span class="k">as</span> <span class="nn">hvd</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">polus.mock.horovod</span> <span class="k">as</span> <span class="nn">hvd</span>
+
+<span class="kn">from</span> <span class="nn">polus.core</span> <span class="kn">import</span> <span class="n">Singleton</span>
+<span class="c1"># init some vars</span>
+<span class="k">class</span> <span class="nc">PolusContext</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">Singleton</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----------------DEBUG INIT POLUS CONTEXT-------------&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">gpus</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">list_physical_devices</span><span class="p">(</span><span class="s1">&#39;GPU&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gpus</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">init</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;mock&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The script found multiple GPUs, however it cannot use them since multi-gpu&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; requires horovod.tensorflow module to be installed.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;Intead the process will only use one&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The script found multiple GPUs and a horovod.tensorlfow installation. However,&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; the only one process was found, please check if you are runing the script with horovodrun.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MultiGPU training enabled, using </span><span class="si">{</span><span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="si">}</span><span class="s2"> processes &quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">set_visible_devices</span><span class="p">(</span><span class="n">gpus</span><span class="p">[</span><span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()],</span> <span class="s1">&#39;GPU&#39;</span><span class="p">)</span>
+            
+    <span class="k">def</span> <span class="nf">is_horovod_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span>
+        
+<span class="n">PolusContext</span><span class="p">()</span>
 
 <span class="c1"># add main lib sub packages</span>
 <span class="c1">#import polus.callbacks</span>
@@ -196,6 +246,100 @@ enabled by default, which can be easily accessed by the <a href="polus/core.html
         </details>
 
             </section>
+                <section id="PolusContext">
+                                <div class="attr class">
+        <a class="headerlink" href="#PolusContext">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">PolusContext</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">PolusContext</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">Singleton</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----------------DEBUG INIT POLUS CONTEXT-------------&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">gpus</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">list_physical_devices</span><span class="p">(</span><span class="s1">&#39;GPU&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gpus</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">init</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;mock&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The script found multiple GPUs, however it cannot use them since multi-gpu&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; requires horovod.tensorflow module to be installed.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;Intead the process will only use one&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The script found multiple GPUs and a horovod.tensorlfow installation. However,&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; the only one process was found, please check if you are runing the script with horovodrun.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MultiGPU training enabled, using </span><span class="si">{</span><span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="si">}</span><span class="s2"> processes &quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">set_visible_devices</span><span class="p">(</span><span class="n">gpus</span><span class="p">[</span><span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()],</span> <span class="s1">&#39;GPU&#39;</span><span class="p">)</span>
+            
+    <span class="k">def</span> <span class="nf">is_horovod_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            <div id="PolusContext.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#PolusContext.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">PolusContext</span><span class="signature">()</span>
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----------------DEBUG INIT POLUS CONTEXT-------------&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">gpus</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">list_physical_devices</span><span class="p">(</span><span class="s1">&#39;GPU&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gpus</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">init</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;mock&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The script found multiple GPUs, however it cannot use them since multi-gpu&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; requires horovod.tensorflow module to be installed.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;Intead the process will only use one&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The script found multiple GPUs and a horovod.tensorlfow installation. However,&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; the only one process was found, please check if you are runing the script with horovodrun.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MultiGPU training enabled, using </span><span class="si">{</span><span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="si">}</span><span class="s2"> processes &quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">set_visible_devices</span><span class="p">(</span><span class="n">gpus</span><span class="p">[</span><span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()],</span> <span class="s1">&#39;GPU&#39;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="PolusContext.is_horovod_enabled" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#PolusContext.is_horovod_enabled">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">is_horovod_enabled</span><span class="signature">(self)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">is_horovod_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                </section>
     </main>
 <script>
     function escapeHTML(html) {

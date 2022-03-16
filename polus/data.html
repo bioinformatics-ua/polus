@@ -198,6 +198,7 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">polus</span> <span class="kn">import</span> <span class="n">PolusContext</span>
 <span class="kn">from</span> <span class="nn">polus.core</span> <span class="kn">import</span> <span class="n">BaseLogger</span><span class="p">,</span> <span class="n">find_dtype_and_shapes</span>
 <span class="kn">from</span> <span class="nn">polus.models</span> <span class="kn">import</span> <span class="n">split_bert_model</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
@@ -206,8 +207,10 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
 
-
-
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">horovod.tensorflow</span> <span class="k">as</span> <span class="nn">hvd</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">polus.mock.horovod</span> <span class="k">as</span> <span class="nn">hvd</span>
 
 <span class="k">class</span> <span class="nc">DataLoader</span><span class="p">(</span><span class="n">BaseLogger</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -268,7 +271,11 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
         <span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_generator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span><span class="p">,</span> 
                                                          <span class="n">output_types</span><span class="o">=</span> <span class="n">dytpes</span><span class="p">,</span>
                                                          <span class="n">output_shapes</span><span class="o">=</span> <span class="n">shapes</span><span class="p">)</span>
-            
+        
+        <span class="k">if</span> <span class="n">PolusContext</span><span class="p">()</span><span class="o">.</span><span class="n">is_horovod_enabled</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------SHARDING THE DATASET!!!!-----------&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span><span class="o">.</span><span class="n">shard</span><span class="p">(</span><span class="n">num_shards</span> <span class="o">=</span> <span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">index</span><span class="o">=</span><span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">())</span>
+        
         <span class="c1"># expose all the tf dataset methods</span>
         <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">),</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">)):</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">method</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -880,7 +887,11 @@ Note for storing python objects we use the <em>pickle</em> library.</p></li>
         <span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_generator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span><span class="p">,</span> 
                                                          <span class="n">output_types</span><span class="o">=</span> <span class="n">dytpes</span><span class="p">,</span>
                                                          <span class="n">output_shapes</span><span class="o">=</span> <span class="n">shapes</span><span class="p">)</span>
-            
+        
+        <span class="k">if</span> <span class="n">PolusContext</span><span class="p">()</span><span class="o">.</span><span class="n">is_horovod_enabled</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------SHARDING THE DATASET!!!!-----------&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span><span class="o">.</span><span class="n">shard</span><span class="p">(</span><span class="n">num_shards</span> <span class="o">=</span> <span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">index</span><span class="o">=</span><span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">())</span>
+        
         <span class="c1"># expose all the tf dataset methods</span>
         <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">),</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">)):</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">method</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -1038,7 +1049,11 @@ is currently supported.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_generator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_generator</span><span class="p">,</span> 
                                                          <span class="n">output_types</span><span class="o">=</span> <span class="n">dytpes</span><span class="p">,</span>
                                                          <span class="n">output_shapes</span><span class="o">=</span> <span class="n">shapes</span><span class="p">)</span>
-            
+        
+        <span class="k">if</span> <span class="n">PolusContext</span><span class="p">()</span><span class="o">.</span><span class="n">is_horovod_enabled</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------SHARDING THE DATASET!!!!-----------&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span><span class="o">.</span><span class="n">shard</span><span class="p">(</span><span class="n">num_shards</span> <span class="o">=</span> <span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">index</span><span class="o">=</span><span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">())</span>
+        
         <span class="c1"># expose all the tf dataset methods</span>
         <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">),</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tf_dataset</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">)):</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">method</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>

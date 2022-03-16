@@ -139,6 +139,7 @@ attribute is through its associated methods:</p>
 <span class="kn">from</span> <span class="nn">logging.handlers</span> <span class="kn">import</span> <span class="n">TimedRotatingFileHandler</span>
 
 
+
 <span class="k">def</span> <span class="nf">set_jit_compile</span><span class="p">(</span><span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Changes the *jit_compile* attribute.</span>
@@ -159,9 +160,9 @@ attribute is through its associated methods:</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">set_jit_compile</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># default mode</span>
+        <span class="n">set_jit_compile</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># default mode</span>
     
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">)</span><span class="o">==</span><span class="s2">&quot;True&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">)</span><span class="o">==</span><span class="s2">&quot;False&quot;</span>
 
 
 <span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
@@ -323,6 +324,9 @@ attribute is through its associated methods:</p>
         <span class="k">return</span> <span class="n">function_wrapper</span>
     
     <span class="k">return</span> <span class="n">decorator</span>
+
+
+    
 </pre></div>
 
         </details>
@@ -390,9 +394,9 @@ XLA compiler.</li>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">set_jit_compile</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># default mode</span>
+        <span class="n">set_jit_compile</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># default mode</span>
     
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">)</span><span class="o">==</span><span class="s2">&quot;True&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;POLUS_JIT&quot;</span><span class="p">)</span><span class="o">==</span><span class="s2">&quot;False&quot;</span>
 </pre></div>
 
         </details>

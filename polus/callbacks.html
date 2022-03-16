@@ -31,6 +31,9 @@
         <h2>API Documentation</h2>
             <ul class="memberlist">
             <li>
+                    <a class="function" href="#runs_if_root">runs_if_root</a>
+            </li>
+            <li>
                     <a class="class" href="#IOutput">IOutput</a>
                             <ul class="memberlist">
                         <li>
@@ -272,6 +275,11 @@
 <span class="kn">from</span> <span class="nn">polus.models</span> <span class="kn">import</span> <span class="n">PolusClassifier</span>
 <span class="kn">from</span> <span class="nn">polus.hpo</span> <span class="kn">import</span> <span class="n">HPOContext</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">horovod.tensorflow</span> <span class="k">as</span> <span class="nn">hvd</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">polus.mock.horovod</span> <span class="k">as</span> <span class="nn">hvd</span>
+
 <span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">defaultdict</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
@@ -279,6 +287,15 @@
 <span class="kn">import</span> <span class="nn">wandb</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+
+<span class="k">def</span> <span class="nf">runs_if_root</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">method_args</span><span class="p">,</span> <span class="o">**</span><span class="n">method_kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">method_args</span><span class="p">,</span> <span class="o">**</span><span class="n">method_kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_impl</span>
 
 <span class="k">class</span> <span class="nc">IOutput</span><span class="p">(</span><span class="n">BaseLogger</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -302,6 +319,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;ICallback&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;This is an interface that cannot be instantiated&quot;</span><span class="p">)</span>
             
@@ -423,6 +441,7 @@
             <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">output_streamers</span><span class="p">:</span>
                 <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;smooth loss&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">smooth_loss</span><span class="p">)</span>
     
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -432,7 +451,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;smooth_loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">smooth_loss</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">__maybe_output</span><span class="p">()</span>
-                
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__maybe_output</span><span class="p">()</span>
 
@@ -449,7 +469,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">custom_inference_f</span> <span class="o">=</span> <span class="n">custom_inference_f</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_progress</span> <span class="o">=</span> <span class="n">show_progress</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validation_interval</span> <span class="o">=</span> <span class="n">validation_interval</span>
-        
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="s2">&quot;validation&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -462,6 +483,7 @@
     <span class="k">def</span> <span class="nf">get_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
     
+
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="n">epoch</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">validation_interval</span><span class="p">:</span>
@@ -483,18 +505,24 @@
                         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">sample</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample format outputed by the validator dataset is not supported, change to a dict or a two length tuple&quot;</span><span class="p">)</span>
-                    
-                <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
-                    <span class="n">metric</span><span class="o">.</span><span class="n">samples_from_batch</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-                    
-
                 <span class="k">del</span> <span class="n">sample</span>
+                
+                <span class="c1">## down below only the root should the reminder of the code</span>
+                <span class="c1">## THIS METHOD IS NOT EFFICIENT A MUCH MORE EFFECIENT GATHER_TO_ROOT method would be better</span>
+                <span class="n">all_predictions</span> <span class="o">=</span> <span class="n">hvd</span><span class="o">.</span><span class="n">allgather_object</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">all_predictions</span><span class="p">:</span>
+                
+                        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+                            <span class="n">metric</span><span class="o">.</span><span class="n">samples_from_batch</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+                            
+            <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">evaluate</span><span class="p">())</span>
 
-            <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">evaluate</span><span class="p">())</span>
-
-            <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">output_streamers</span><span class="p">:</span>
-                <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">output_streamers</span><span class="p">:</span>
+                    <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
             
             
 <span class="k">class</span> <span class="nc">SaveModelCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
@@ -516,7 +544,8 @@
             
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">best</span> <span class="o">=</span> <span class="mi">0</span>
-        
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
@@ -539,6 +568,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">extension</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;_epoch_</span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">base_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_folder</span><span class="p">)</span>
     
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -555,17 +585,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">patience</span> <span class="o">=</span> <span class="n">patience</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_loss</span> <span class="o">=</span> <span class="mi">1000</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span> <span class="o">=</span> <span class="n">use_smooth_loss</span>
-        
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">has_callback</span><span class="p">(</span><span class="n">LossSmoothCallback</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;LossSmoothCallback was not found on the coordinator, which is a requirement to use smooth loss. Therefore this call back will use the normal loss&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="p">[]</span>
-            
+        
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
-            
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span><span class="p">:</span>
             <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;smooth_loss&quot;</span><span class="p">]</span>
@@ -610,7 +643,8 @@
             
         <span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span> <span class="o">=</span> <span class="n">validator_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">=</span> <span class="n">metric_name</span>
-        
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -664,7 +698,7 @@
         <span class="k">else</span><span class="p">:</span> 
             <span class="k">return</span> <span class="n">d</span>
 
-    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">model_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_config</span>
@@ -702,7 +736,8 @@
         
         <span class="c1"># set the model name to the name generated by the wandb callback</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="c1">#f&quot;{self.model_name_prefix}_{wandb.run.name}&quot;)</span>
-        
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
         
         <span class="c1"># store other metrics that other callback have produced</span>
@@ -711,7 +746,8 @@
         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss</span>
         
         <span class="n">wandb</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            
+        
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         <span class="c1"># store other metrics that other callback have produced</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flatdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">())</span>
@@ -748,15 +784,17 @@
                 
         <span class="k">return</span> <span class="n">_tmp</span>
     
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Begin training of the model </span><span class="se">\&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">epochs</span><span class="si">}</span><span class="s2"> epochs&quot;</span><span class="p">)</span>
         <span class="n">jit_compiler_flag</span> <span class="o">=</span> <span class="n">get_jit_compile</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The training step will be build with jit_compiler=</span><span class="si">{</span><span class="n">jit_compiler_flag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         
-        
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Begin epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">loss_per_epoch</span><span class="p">[</span><span class="n">epoch</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
@@ -771,6 +809,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">_tmp</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
     
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
 
         <span class="n">_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss_per_epoch</span><span class="p">[</span><span class="n">epoch</span><span class="p">])</span>
@@ -787,6 +826,7 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">_tmp</span><span class="p">)</span>
     
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;End of the training&quot;</span><span class="p">)</span>
 </pre></div>
@@ -794,6 +834,29 @@
         </details>
 
             </section>
+                <section id="runs_if_root">
+                            <div class="attr function"><a class="headerlink" href="#runs_if_root">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">runs_if_root</span><span class="signature">(method)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">runs_if_root</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">method_args</span><span class="p">,</span> <span class="o">**</span><span class="n">method_kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">method_args</span><span class="p">,</span> <span class="o">**</span><span class="n">method_kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_impl</span>
+</pre></div>
+
+        </details>
+
+    
+
+                </section>
                 <section id="IOutput">
                                 <div class="attr class">
         <a class="headerlink" href="#IOutput">#&nbsp;&nbsp</a>
@@ -925,6 +988,7 @@ Note that multiple instances use the same handler</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;ICallback&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;This is an interface that cannot be instantiated&quot;</span><span class="p">)</span>
             
@@ -964,6 +1028,7 @@ Note that multiple instances use the same handler</p>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;ICallback&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;This is an interface that cannot be instantiated&quot;</span><span class="p">)</span>
 </pre></div>
@@ -1629,6 +1694,7 @@ Note that multiple instances use the same handler</p>
             <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">output_streamers</span><span class="p">:</span>
                 <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;smooth loss&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">smooth_loss</span><span class="p">)</span>
     
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1638,7 +1704,8 @@ Note that multiple instances use the same handler</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;smooth_loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">smooth_loss</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">__maybe_output</span><span class="p">()</span>
-                
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__maybe_output</span><span class="p">()</span>
 </pre></div>
@@ -1685,14 +1752,16 @@ Note that multiple instances use the same handler</p>
                             <div id="LossSmoothCallback.on_train_batch_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#LossSmoothCallback.on_train_batch_end">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_train_batch_end</span><span class="signature">(self, epoch, step, loss)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mov_avg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_avg</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">loss</span>
@@ -1711,14 +1780,16 @@ Note that multiple instances use the same handler</p>
                             <div id="LossSmoothCallback.on_epoch_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#LossSmoothCallback.on_epoch_end">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_epoch_end</span><span class="signature">(self, epoch)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__maybe_output</span><span class="p">()</span>
 </pre></div>
 
@@ -1772,7 +1843,8 @@ Note that multiple instances use the same handler</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">custom_inference_f</span> <span class="o">=</span> <span class="n">custom_inference_f</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_progress</span> <span class="o">=</span> <span class="n">show_progress</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validation_interval</span> <span class="o">=</span> <span class="n">validation_interval</span>
-        
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="s2">&quot;validation&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1785,6 +1857,7 @@ Note that multiple instances use the same handler</p>
     <span class="k">def</span> <span class="nf">get_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
     
+
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="n">epoch</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">validation_interval</span><span class="p">:</span>
@@ -1806,18 +1879,24 @@ Note that multiple instances use the same handler</p>
                         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">sample</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample format outputed by the validator dataset is not supported, change to a dict or a two length tuple&quot;</span><span class="p">)</span>
-                    
-                <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
-                    <span class="n">metric</span><span class="o">.</span><span class="n">samples_from_batch</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-                    
-
                 <span class="k">del</span> <span class="n">sample</span>
+                
+                <span class="c1">## down below only the root should the reminder of the code</span>
+                <span class="c1">## THIS METHOD IS NOT EFFICIENT A MUCH MORE EFFECIENT GATHER_TO_ROOT method would be better</span>
+                <span class="n">all_predictions</span> <span class="o">=</span> <span class="n">hvd</span><span class="o">.</span><span class="n">allgather_object</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">all_predictions</span><span class="p">:</span>
+                
+                        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+                            <span class="n">metric</span><span class="o">.</span><span class="n">samples_from_batch</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+                            
+            <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">evaluate</span><span class="p">())</span>
 
-            <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">evaluate</span><span class="p">())</span>
-
-            <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">output_streamers</span><span class="p">:</span>
-                <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">output_streamers</span><span class="p">:</span>
+                    <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
 </pre></div>
 
         </details>
@@ -1873,14 +1952,16 @@ Note that multiple instances use the same handler</p>
                             <div id="ValidationDataCallback.on_train_begin" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#ValidationDataCallback.on_train_begin">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_train_begin</span><span class="signature">(self)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="s2">&quot;validation&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         
@@ -1945,18 +2026,24 @@ Note that multiple instances use the same handler</p>
                         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">sample</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample format outputed by the validator dataset is not supported, change to a dict or a two length tuple&quot;</span><span class="p">)</span>
-                    
-                <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
-                    <span class="n">metric</span><span class="o">.</span><span class="n">samples_from_batch</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-                    
-
                 <span class="k">del</span> <span class="n">sample</span>
+                
+                <span class="c1">## down below only the root should the reminder of the code</span>
+                <span class="c1">## THIS METHOD IS NOT EFFICIENT A MUCH MORE EFFECIENT GATHER_TO_ROOT method would be better</span>
+                <span class="n">all_predictions</span> <span class="o">=</span> <span class="n">hvd</span><span class="o">.</span><span class="n">allgather_object</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">all_predictions</span><span class="p">:</span>
+                
+                        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+                            <span class="n">metric</span><span class="o">.</span><span class="n">samples_from_batch</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+                            
+            <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">evaluate</span><span class="p">())</span>
 
-            <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">evaluate</span><span class="p">())</span>
-
-            <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">output_streamers</span><span class="p">:</span>
-                <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">output_streamers</span><span class="p">:</span>
+                    <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
 </pre></div>
 
         </details>
@@ -2015,7 +2102,8 @@ Note that multiple instances use the same handler</p>
             
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">best</span> <span class="o">=</span> <span class="mi">0</span>
-        
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
@@ -2038,6 +2126,7 @@ Note that multiple instances use the same handler</p>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">extension</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;_epoch_</span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">base_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_folder</span><span class="p">)</span>
     
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2105,14 +2194,16 @@ Note that multiple instances use the same handler</p>
                             <div id="SaveModelCallback.on_epoch_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#SaveModelCallback.on_epoch_end">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_epoch_end</span><span class="signature">(self, epoch)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
             <span class="n">_last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;validation&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">validation_name</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -2143,14 +2234,16 @@ Note that multiple instances use the same handler</p>
                             <div id="SaveModelCallback.on_train_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#SaveModelCallback.on_train_end">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_train_end</span><span class="signature">(self)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_train_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_train_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
@@ -2204,17 +2297,20 @@ Note that multiple instances use the same handler</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">patience</span> <span class="o">=</span> <span class="n">patience</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_loss</span> <span class="o">=</span> <span class="mi">1000</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span> <span class="o">=</span> <span class="n">use_smooth_loss</span>
-        
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">has_callback</span><span class="p">(</span><span class="n">LossSmoothCallback</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;LossSmoothCallback was not found on the coordinator, which is a requirement to use smooth loss. Therefore this call back will use the normal loss&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="p">[]</span>
-            
+        
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
-            
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span><span class="p">:</span>
             <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;smooth_loss&quot;</span><span class="p">]</span>
@@ -2286,14 +2382,16 @@ Note that multiple instances use the same handler</p>
                             <div id="EarlyStop.on_train_begin" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#EarlyStop.on_train_begin">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_train_begin</span><span class="signature">(self)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">has_callback</span><span class="p">(</span><span class="n">LossSmoothCallback</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;LossSmoothCallback was not found on the coordinator, which is a requirement to use smooth loss. Therefore this call back will use the normal loss&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span> <span class="o">=</span> <span class="kc">False</span>
@@ -2308,14 +2406,16 @@ Note that multiple instances use the same handler</p>
                             <div id="EarlyStop.on_train_batch_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#EarlyStop.on_train_batch_end">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_train_batch_end</span><span class="signature">(self, epoch, step, loss)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
 </pre></div>
@@ -2328,14 +2428,16 @@ Note that multiple instances use the same handler</p>
                             <div id="EarlyStop.on_epoch_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#EarlyStop.on_epoch_end">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_epoch_end</span><span class="signature">(self, epoch)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_smooth_loss</span><span class="p">:</span>
             <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">shared_dict</span><span class="p">[</span><span class="s2">&quot;smooth_loss&quot;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2415,7 +2517,8 @@ Note that multiple instances use the same handler</p>
             
         <span class="bp">self</span><span class="o">.</span><span class="n">validator_name</span> <span class="o">=</span> <span class="n">validator_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">=</span> <span class="n">metric_name</span>
-        
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -2487,14 +2590,16 @@ Note that multiple instances use the same handler</p>
                             <div id="HPOPruneCallback.on_epoch_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#HPOPruneCallback.on_epoch_end">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_epoch_end</span><span class="signature">(self, epoch)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpo_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             
@@ -2585,7 +2690,7 @@ Note that multiple instances use the same handler</p>
         <span class="k">else</span><span class="p">:</span> 
             <span class="k">return</span> <span class="n">d</span>
 
-    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">model_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_config</span>
@@ -2623,7 +2728,8 @@ Note that multiple instances use the same handler</p>
         
         <span class="c1"># set the model name to the name generated by the wandb callback</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="c1">#f&quot;{self.model_name_prefix}_{wandb.run.name}&quot;)</span>
-        
+    
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
         
         <span class="c1"># store other metrics that other callback have produced</span>
@@ -2632,7 +2738,8 @@ Note that multiple instances use the same handler</p>
         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss</span>
         
         <span class="n">wandb</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            
+        
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         <span class="c1"># store other metrics that other callback have produced</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flatdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">())</span>
@@ -2693,14 +2800,16 @@ Note that multiple instances use the same handler</p>
                             <div id="WandBLogCallback.on_train_begin" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#WandBLogCallback.on_train_begin">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_train_begin</span><span class="signature">(self)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">model_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_config</span>
         <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;savable_config&quot;</span><span class="p">):</span>
@@ -2747,14 +2856,16 @@ Note that multiple instances use the same handler</p>
                             <div id="WandBLogCallback.on_train_batch_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#WandBLogCallback.on_train_batch_end">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_train_batch_end</span><span class="signature">(self, epoch, step, loss)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
         
         <span class="c1"># store other metrics that other callback have produced</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flatdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">())</span>
@@ -2772,14 +2883,16 @@ Note that multiple instances use the same handler</p>
                             <div id="WandBLogCallback.on_epoch_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#WandBLogCallback.on_epoch_end">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_epoch_end</span><span class="signature">(self, epoch)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         <span class="c1"># store other metrics that other callback have produced</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flatdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">())</span>
         
@@ -2857,15 +2970,17 @@ Note that multiple instances use the same handler</p>
                 
         <span class="k">return</span> <span class="n">_tmp</span>
     
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Begin training of the model </span><span class="se">\&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">epochs</span><span class="si">}</span><span class="s2"> epochs&quot;</span><span class="p">)</span>
         <span class="n">jit_compiler_flag</span> <span class="o">=</span> <span class="n">get_jit_compile</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The training step will be build with jit_compiler=</span><span class="si">{</span><span class="n">jit_compiler_flag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         
-        
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Begin epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">loss_per_epoch</span><span class="p">[</span><span class="n">epoch</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
@@ -2880,6 +2995,7 @@ Note that multiple instances use the same handler</p>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">_tmp</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
     
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
 
         <span class="n">_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss_per_epoch</span><span class="p">[</span><span class="n">epoch</span><span class="p">])</span>
@@ -2896,6 +3012,7 @@ Note that multiple instances use the same handler</p>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">_tmp</span><span class="p">)</span>
     
+    <span class="nd">@runs_if_root</span>
     <span class="k">def</span> <span class="nf">on_train_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;End of the training&quot;</span><span class="p">)</span>
 </pre></div>
@@ -2939,14 +3056,16 @@ Note that multiple instances use the same handler</p>
                             <div id="ConsoleLogCallback.on_train_begin" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#ConsoleLogCallback.on_train_begin">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_train_begin</span><span class="signature">(self)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Begin training of the model </span><span class="se">\&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">epochs</span><span class="si">}</span><span class="s2"> epochs&quot;</span><span class="p">)</span>
         <span class="n">jit_compiler_flag</span> <span class="o">=</span> <span class="n">get_jit_compile</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The training step will be build with jit_compiler=</span><span class="si">{</span><span class="n">jit_compiler_flag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -2960,14 +3079,16 @@ Note that multiple instances use the same handler</p>
                             <div id="ConsoleLogCallback.on_epoch_begin" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#ConsoleLogCallback.on_epoch_begin">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_epoch_begin</span><span class="signature">(self, epoch)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_epoch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_epoch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Begin epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -2979,14 +3100,16 @@ Note that multiple instances use the same handler</p>
                             <div id="ConsoleLogCallback.on_train_batch_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#ConsoleLogCallback.on_train_batch_end">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_train_batch_end</span><span class="signature">(self, epoch, step, loss)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">loss_per_epoch</span><span class="p">[</span><span class="n">epoch</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
         
@@ -3009,14 +3132,16 @@ Note that multiple instances use the same handler</p>
                             <div id="ConsoleLogCallback.on_epoch_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#ConsoleLogCallback.on_epoch_end">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_epoch_end</span><span class="signature">(self, epoch)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
 
         <span class="n">_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss_per_epoch</span><span class="p">[</span><span class="n">epoch</span><span class="p">])</span>
         
@@ -3041,14 +3166,16 @@ Note that multiple instances use the same handler</p>
                             <div id="ConsoleLogCallback.on_train_end" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#ConsoleLogCallback.on_train_end">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@runs_if_root</div>
+
             <span class="def">def</span>
             <span class="name">on_train_end</span><span class="signature">(self)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_train_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@runs_if_root</span>
+    <span class="k">def</span> <span class="nf">on_train_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;End of the training&quot;</span><span class="p">)</span>
 </pre></div>
 
