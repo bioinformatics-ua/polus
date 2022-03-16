@@ -1,10 +1,12 @@
+
 from polus.core import BaseLogger, get_jit_compile
 from polus.models import PolusClassifier
 from polus.hpo import HPOContext
 
-try:
+from polus import PolusContext
+if PolusContext().is_horovod_enabled():
     import horovod.tensorflow as hvd
-except ModuleNotFoundError:
+else:
     import polus.mock.horovod as hvd
 
 from timeit import default_timer as timer

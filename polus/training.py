@@ -1,13 +1,13 @@
 import tensorflow as tf
 
 
-from polus import PolusContext
 from polus.core import BaseLogger, get_jit_compile
 from polus.callbacks import CallbackCoordinator
 
-try:
+from polus import PolusContext
+if PolusContext().is_horovod_enabled():
     import horovod.tensorflow as hvd
-except ModuleNotFoundError:
+else:
     import polus.mock.horovod as hvd
 
 class BaseTrainer(BaseLogger):
@@ -85,6 +85,14 @@ class BaseTrainer(BaseLogger):
             #raise ValueError(f"{self.__class__.__name__} must define self.trainable_weights before call the super!!!")
         #self.trainable_weights = None
         self.use_horovod = PolusContext().is_horovod_enabled()
+        
+        if self.use_horovod:
+            if hasattr(optimizer, "learning_rate"):
+                _new_lr = optimizer.learning_rate.read_value()*hvd.size()
+                optimizer.learning_rate.assign(_new_lr)
+                self.logger.info(f"The learning rate was adjusted to account for the multiGPU training, local lr is {_new_lr}")
+            else:
+                self.logger.info(f"It was not possible to change the learning rate to adjusted for the multiGPU training, please make the attention to multiply the learning rate by hvd.size()")
 
             
         

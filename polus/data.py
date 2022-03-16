@@ -30,7 +30,7 @@ import pickle
 import random
 import json
 import inspect
-from polus import PolusContext
+
 from polus.core import BaseLogger, find_dtype_and_shapes
 from polus.models import split_bert_model
 import tensorflow as tf
@@ -39,9 +39,10 @@ from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 from functools import wraps
 from timeit import default_timer as timer
 
-try:
+from polus import PolusContext
+if PolusContext().is_horovod_enabled():
     import horovod.tensorflow as hvd
-except ModuleNotFoundError:
+else:
     import polus.mock.horovod as hvd
 
 class DataLoader(BaseLogger):

@@ -54,7 +54,7 @@ def get_jit_compile():
     if os.environ.get("POLUS_JIT") is None:
         set_jit_compile(False) # default mode
     
-    return os.environ.get("POLUS_JIT")=="False"
+    return os.environ.get("POLUS_JIT")=="True"
 
 
 class Singleton(type):
