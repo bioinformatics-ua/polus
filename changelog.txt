@@ -1,4 +1,8 @@
-Version 0.1.9: (master)
+Version 0.2.0: (master)
+
+    
+
+Version 0.1.9:
 
     Refactor of the validation callback, adding more deafults mode of operation
     

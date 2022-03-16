@@ -4,6 +4,12 @@ A powerful tensorflow toolkit for creating/training complex deep learning models
 
 This toolkit is currently under development and aims to focus on biomedical tasks, although it can also also be used in other domains.
 
+### Installation
+
+```
+pip install polus
+```
+
 ### Documentation
 
 Still in work, but some of it can be already consulted here: https://bioinformatics-ua.github.io/polus/
