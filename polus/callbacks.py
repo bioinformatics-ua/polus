@@ -2,6 +2,11 @@ from polus.core import BaseLogger, get_jit_compile
 from polus.models import PolusClassifier
 from polus.hpo import HPOContext
 
+try:
+    import horovod.tensorflow as hvd
+except ModuleNotFoundError:
+    import polus.mock.horovod as hvd
+
 from timeit import default_timer as timer
 from collections import OrderedDict, defaultdict
 import tensorflow as tf
@@ -9,6 +14,15 @@ import inspect
 import wandb
 import numpy as np
 
+
+from functools import wraps
+
+def runs_if_root(method):
+    @wraps(method)
+    def _impl(self, *method_args, **method_kwargs):
+        if hvd.local_rank()==0:
+            return method(self, *method_args, **method_kwargs)
+    return _impl
 
 class IOutput(BaseLogger):
     def __init__(self):
@@ -32,6 +46,7 @@ class ICallback(BaseLogger):
     """
     def __init__(self):
         super().__init__()
+        
         if self.__class__.__name__ == "ICallback":
             raise Exception("This is an interface that cannot be instantiated")
             
@@ -153,6 +168,7 @@ class LossSmoothCallback(Callback):
             for output in self.coordinator.output_streamers:
                 output.write("smooth loss", self.smooth_loss)
     
+    @runs_if_root
     def on_train_batch_end(self, epoch, step, loss):
         
         self.n += 1
@@ -162,7 +178,8 @@ class LossSmoothCallback(Callback):
         self.coordinator.shared_dict["smooth_loss"] = self.smooth_loss
         
         self.__maybe_output()
-                
+    
+    @runs_if_root
     def on_epoch_end(self, epoch):
         self.__maybe_output()
 
@@ -179,7 +196,8 @@ class ValidationDataCallback(Callback):
         self.custom_inference_f = custom_inference_f
         self.show_progress = show_progress
         self.validation_interval = validation_interval
-        
+    
+    @runs_if_root
     def on_train_begin(self):
         if "validation" not in self.coordinator.shared_dict:
             self.coordinator.shared_dict["validation"] = {}
@@ -192,6 +210,7 @@ class ValidationDataCallback(Callback):
     def get_metrics(self):
         return self.coordinator.shared_dict["validation"][self.name]
     
+
     def on_epoch_end(self, epoch):
         
         if not epoch%self.validation_interval:
@@ -213,18 +232,24 @@ class ValidationDataCallback(Callback):
                         y = self.coordinator.trainer.model(sample[0]), sample[1]
                 else:
                     raise ValueError(f"Sample format outputed by the validator dataset is not supported, change to a dict or a two length tuple")
-                    
-                for metric in self.coordinator.trainer.metrics:
-                    metric.samples_from_batch(y)
-                    
-
                 del sample
+                
+                ## down below only the root should the reminder of the code
+                ## THIS METHOD IS NOT EFFICIENT A MUCH MORE EFFECIENT GATHER_TO_ROOT method would be better
+                all_predictions = hvd.allgather_object(y)
+                
+                if hvd.local_rank() == 0:
+                    for pred in all_predictions:
+                
+                        for metric in self.coordinator.trainer.metrics:
+                            metric.samples_from_batch(pred)
+                            
+            if hvd.local_rank() == 0:
+                for metric in self.coordinator.trainer.metrics:
+                    self.coordinator.shared_dict["validation"][self.name][metric.name].append(metric.evaluate())
 
-            for metric in self.coordinator.trainer.metrics:
-                self.coordinator.shared_dict["validation"][self.name][metric.name].append(metric.evaluate())
-
-            for output in self.coordinator.output_streamers:
-                output.write(f"Validation {self.name}", self.coordinator.shared_dict["validation"][self.name])
+                for output in self.coordinator.output_streamers:
+                    output.write(f"Validation {self.name}", self.coordinator.shared_dict["validation"][self.name])
             
             
 class SaveModelCallback(Callback):
@@ -246,7 +271,8 @@ class SaveModelCallback(Callback):
             
         if self.strategy == "best":
             self.best = 0
-        
+    
+    @runs_if_root
     def on_epoch_end(self, epoch):
         
         if self.strategy == "best":
@@ -269,6 +295,7 @@ class SaveModelCallback(Callback):
             else:
                 self.coordinator.trainer.model.save(extension=f"_epoch_{epoch}", base_path=self.cache_folder)
     
+    @runs_if_root
     def on_train_end(self):
         if self.strategy == "end":
             if self.cache_folder is None:
@@ -285,17 +312,20 @@ class EarlyStop(Callback):
         self.patience = patience
         self.last_loss = 1000
         self.use_smooth_loss = use_smooth_loss
-        
+    
+    @runs_if_root
     def on_train_begin(self):
         if self.use_smooth_loss and not self.coordinator.has_callback(LossSmoothCallback):
             self.logger.warn("LossSmoothCallback was not found on the coordinator, which is a requirement to use smooth loss. Therefore this call back will use the normal loss")
             self.use_smooth_loss = False
             self.loss = []
-            
+        
+    @runs_if_root
     def on_train_batch_end(self, epoch, step, loss):
         if not self.use_smooth_loss:
             self.loss.append(loss)
-            
+    
+    @runs_if_root
     def on_epoch_end(self, epoch):
         if self.use_smooth_loss:
             loss = self.coordinator.shared_dict["smooth_loss"]
@@ -340,7 +370,8 @@ class HPOPruneCallback(Callback):
             
         self.validator_name = validator_name
         self.metric_name = metric_name
-        
+    
+    @runs_if_root
     def on_epoch_end(self, epoch):
         
         if self.hpo_backend is not None:
@@ -394,7 +425,7 @@ class WandBLogCallback(Callback, IOutput):
         else: 
             return d
 
-    
+    @runs_if_root
     def on_train_begin(self):
         if self.model_config is not None:
             model_config = self.model_config
@@ -432,7 +463,8 @@ class WandBLogCallback(Callback, IOutput):
         
         # set the model name to the name generated by the wandb callback
         self.coordinator.trainer.model.set_name(wandb.run.name)#f"{self.model_name_prefix}_{wandb.run.name}")
-        
+    
+    @runs_if_root
     def on_train_batch_end(self, epoch, step, loss):
         
         # store other metrics that other callback have produced
@@ -441,7 +473,8 @@ class WandBLogCallback(Callback, IOutput):
         data["loss"] = loss
         
         wandb.log(data)
-            
+        
+    @runs_if_root
     def on_epoch_end(self, epoch):
         # store other metrics that other callback have produced
         data = self.__flatdict(self.flush())
@@ -478,15 +511,17 @@ class ConsoleLogCallback(Callback, IOutput):
                 
         return _tmp
     
+    @runs_if_root
     def on_train_begin(self):
         self.logger.info(f"Begin training of the model \"{self.coordinator.trainer.model.name}\" for {self.coordinator.epochs} epochs")
         jit_compiler_flag = get_jit_compile()
         self.logger.debug(f"The training step will be build with jit_compiler={jit_compiler_flag}")
         
-        
+    @runs_if_root
     def on_epoch_begin(self, epoch):
         self.logger.info(f"Begin epoch {epoch}")
     
+    @runs_if_root
     def on_train_batch_end(self, epoch, step, loss):
         
         self.loss_per_epoch[epoch].append(loss)
@@ -501,6 +536,7 @@ class ConsoleLogCallback(Callback, IOutput):
         else:
             print(_tmp, end="\r")
     
+    @runs_if_root
     def on_epoch_end(self, epoch):
 
         _len = len(self.loss_per_epoch[epoch])
@@ -517,5 +553,6 @@ class ConsoleLogCallback(Callback, IOutput):
         
         self.logger.info(_tmp)
     
+    @runs_if_root
     def on_train_end(self):
         self.logger.info(f"End of the training")

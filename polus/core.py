@@ -31,6 +31,7 @@ import tensorflow as tf
 from logging.handlers import TimedRotatingFileHandler
 
 
+
 def set_jit_compile(mode: bool):
     """
     Changes the *jit_compile* attribute.
@@ -51,9 +52,9 @@ def get_jit_compile():
     """
     
     if os.environ.get("POLUS_JIT") is None:
-        set_jit_compile(True) # default mode
+        set_jit_compile(False) # default mode
     
-    return os.environ.get("POLUS_JIT")=="True"
+    return os.environ.get("POLUS_JIT")=="False"
 
 
 class Singleton(type):
@@ -215,3 +216,6 @@ def execute_if(condition_var, error_message="", on=True):
         return function_wrapper
     
     return decorator
+
+
+    

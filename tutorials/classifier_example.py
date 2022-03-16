@@ -31,13 +31,13 @@ def init_trainer():
         normalize_img, num_parallel_calls=tf.data.AUTOTUNE)
     ds_train = ds_train.cache()
     ds_train = ds_train.shuffle(len(x_train))
-    ds_train = ds_train.batch(128)
+    ds_train = ds_train.batch(128, drop_remainder=True)
     ds_train = ds_train.prefetch(tf.data.AUTOTUNE)
     
     ds_test = DataLoader(train_gen(x_test, y_test))
     ds_test = ds_test.map(
         normalize_img, num_parallel_calls=tf.data.AUTOTUNE)
-    ds_test = ds_test.batch(128, drop_remainder=True)
+    ds_test = ds_test.batch(128)
     ds_test = ds_test.cache()
     ds_test = ds_test.prefetch(tf.data.AUTOTUNE)
 

@@ -1,7 +1,14 @@
 import tensorflow as tf
 
+
+from polus import PolusContext
 from polus.core import BaseLogger, get_jit_compile
 from polus.callbacks import CallbackCoordinator
+
+try:
+    import horovod.tensorflow as hvd
+except ModuleNotFoundError:
+    import polus.mock.horovod as hvd
 
 class BaseTrainer(BaseLogger):
     """
@@ -69,7 +76,7 @@ class BaseTrainer(BaseLogger):
     
         # choosing the training weights
         if not hasattr(self, "trainable_weights"):
-            self.logger.warn((f"Since no specific trainable_weights were defined" 
+            self.logger.warning((f"Since no specific trainable_weights were defined" 
                               f" during the {self.__class__.__name__} instantiation,"
                               f" the trainer will optimizer all the variables"
                               f" found on the model instance"))
@@ -77,7 +84,10 @@ class BaseTrainer(BaseLogger):
             self.trainable_weights = model.trainable_weights
             #raise ValueError(f"{self.__class__.__name__} must define self.trainable_weights before call the super!!!")
         #self.trainable_weights = None
+        self.use_horovod = PolusContext().is_horovod_enabled()
 
+            
+        
     def __str__(self):
         return 'Trainer'
     
@@ -160,6 +170,8 @@ class BaseTrainer(BaseLogger):
             
             loss_value = self.loss(*inputs)
         
+        tape = hvd.DistributedGradientTape(tape)
+        
         # using auto-diff to get the gradients
         grads = tape.gradient(loss_value, self.trainable_weights)
         
@@ -168,7 +180,7 @@ class BaseTrainer(BaseLogger):
             grads = self.post_process_grads(grads)
             
         self.optimizer.apply_gradients(zip(grads, self.trainable_weights))
-        
+
         return loss_value
     
     def lr_finder(self, tf_dataset, use_lr_found=False):
@@ -184,6 +196,11 @@ class BaseTrainer(BaseLogger):
         for k,v in config.items():
             self.train_config[k] = v
     
+    def broadcast_init_vars(self):
+        # broadcast the model variables (init) and optimizer vars 
+        hvd.broadcast_variables(self.trainable_weights, root_rank=0)
+        hvd.broadcast_variables(self.optimizer.variables(), root_rank=0)
+        
     def train(self, 
               tf_dataset=None, 
               epochs=None,
@@ -254,6 +271,8 @@ class BaseTrainer(BaseLogger):
                                             trainer = self,
                                             epochs = epochs,
                                             steps = N_STEPS)
+            
+            
         self.callbacks = callbacks
         
         self.callbacks.on_train_begin()
@@ -267,6 +286,9 @@ class BaseTrainer(BaseLogger):
                 if train_map_f is not None:
                     data = train_map_f(data)
                 
+                if step==0 and self.use_horovod:
+                    self.broadcast_init_vars()
+
                 loss = self.train_step(*data)
                 
                 ## internally increments the step counter
