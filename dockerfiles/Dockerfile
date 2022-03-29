@@ -3,7 +3,7 @@ FROM nvidia/cuda:${CUDA_DOCKER_VERSION}
 
 ARG TENSORFLOW_VERSION=2.8.0
 ARG CUDNN_VERSION=8.2.4.15-1+cuda11.4
-ARG NCCL_VERSION=2.11.4-1+cuda11.4
+ARG NCCLVERSION=2.11.4-1+cuda11.4
 ARG HOROVOD_VERSION=0.24.2
 ARG PYTHON_VERSION=3.8
 
@@ -20,9 +20,9 @@ RUN apt-get update && apt-get install -y --allow-downgrades --allow-change-held-
         vim \
         wget \
         ca-certificates \
-        libcudnn8='${CUDNN_VERSION}' \
-        libnccl2='${NCCL_VERSION}' \
-        libnccl-dev='${NCCL_VERSION}' \
+        libcudnn8=${CUDNN_VERSION} \
+        libnccl2=${NCCLVERSION} \
+        libnccl-dev=${NCCLVERSION} \
         libjpeg-dev \
         libpng-dev \
         python${PYTHON_VERSION} \
