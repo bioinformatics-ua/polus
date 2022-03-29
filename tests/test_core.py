@@ -3,11 +3,11 @@ import tensorflow as tf
 
 def test_jit_compile_flag():
     
-    assert get_jit_compile() == True
-    set_jit_compile(False)
     assert get_jit_compile() == False
     set_jit_compile(True)
     assert get_jit_compile() == True
+    set_jit_compile(False)
+    assert get_jit_compile() == False
     
 def test_singleton_pattern():
     

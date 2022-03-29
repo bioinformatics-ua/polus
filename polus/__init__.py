@@ -51,7 +51,42 @@ enabled by default, which can be easily accessed by the polus.core API.
 
 '''
 
-__version__="0.1.9"
+__version__="0.2.0"
+import tensorflow as tf
+
+try:
+    import horovod.tensorflow as hvd
+except ModuleNotFoundError:
+    import polus.mock.horovod as hvd
+
+from polus.core import Singleton
+# init some vars
+class PolusContext(metaclass=Singleton):
+    
+    def __init__(self):
+        print("-----------------DEBUG INIT POLUS CONTEXT-------------")
+        self.use_horovod = False
+        gpus = tf.config.experimental.list_physical_devices('GPU')
+        if len(gpus) > 1:
+            if hvd.init() == "mock":
+                print(f"The script found multiple GPUs, however it cannot use them since multi-gpu"
+                                 f" requires horovod.tensorflow module to be installed.\n"
+                                 f"Intead the process will only use one")
+            else:
+                if hvd.size() <= 1:
+                    print(f"The script found multiple GPUs and a horovod.tensorlfow installation. However,"
+                                 f" the only one process was found, please check if you are runing the script with horovodrun.")
+                else:
+                    if hvd.local_rank() == 0:
+                        print(f"MultiGPU training enabled, using {hvd.size()} processes ")
+                    self.use_horovod = True
+
+            tf.config.experimental.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
+            
+    def is_horovod_enabled(self):
+        return self.use_horovod
+        
+PolusContext()
 
 # add main lib sub packages
 #import polus.callbacks

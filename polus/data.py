@@ -30,6 +30,7 @@ import pickle
 import random
 import json
 import inspect
+
 from polus.core import BaseLogger, find_dtype_and_shapes
 from polus.models import split_bert_model
 import tensorflow as tf
@@ -38,8 +39,11 @@ from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 from functools import wraps
 from timeit import default_timer as timer
 
-
-
+from polus import PolusContext
+if PolusContext().is_horovod_enabled():
+    import horovod.tensorflow as hvd
+else:
+    import polus.mock.horovod as hvd
 
 class DataLoader(BaseLogger):
     """
@@ -100,7 +104,11 @@ class DataLoader(BaseLogger):
         self.tf_dataset = tf.data.Dataset.from_generator(self.sample_generator, 
                                                          output_types= dytpes,
                                                          output_shapes= shapes)
-            
+        
+        if PolusContext().is_horovod_enabled():
+            print("----------SHARDING THE DATASET!!!!-----------")
+            self.tf_dataset = self.tf_dataset.shard(num_shards = hvd.size(), index=hvd.local_rank())
+        
         # expose all the tf dataset methods
         for method in filter(lambda x: not x[0].startswith("_"), inspect.getmembers(self.tf_dataset, predicate=inspect.ismethod)):
             setattr(self, method[0], method[1])

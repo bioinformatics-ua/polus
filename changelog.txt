@@ -1,5 +1,10 @@
-Version 0.2.0: (master)
+Version 0.2.1: (master)
 
+
+Version 0.2.0:
+    Adding multiGPU training with the integration of the horovod library, which handles the communication between the GPU or machines.
+        
+    Adding a dockerfile for installing the horovod since it can be a hassle to install horovod with the correct dependencies
     
 
 Version 0.1.9:
