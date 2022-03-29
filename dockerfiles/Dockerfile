@@ -20,9 +20,9 @@ RUN apt-get update && apt-get install -y --allow-downgrades --allow-change-held-
         vim \
         wget \
         ca-certificates \
-        libcudnn8=${CUDNN_VERSION} \
-        libnccl2=2.11.4-1+cuda11.4 \
-        libnccl-dev=2.11.4-1+cuda11.4 \
+        libcudnn8='${CUDNN_VERSION}' \
+        libnccl2='${NCCL_VERSION}' \
+        libnccl-dev='${NCCL_VERSION}' \
         libjpeg-dev \
         libpng-dev \
         python${PYTHON_VERSION} \
