@@ -51,7 +51,7 @@ enabled by default, which can be easily accessed by the polus.core API.
 
 '''
 
-__version__="0.1.9"
+__version__="0.2.0"
 import tensorflow as tf
 
 try:
