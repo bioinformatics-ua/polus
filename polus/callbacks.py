@@ -238,11 +238,16 @@ class ValidationDataCallback(Callback):
                 
                 ## down below only the root should the reminder of the code
                 ## THIS METHOD IS NOT EFFICIENT A MUCH MORE EFFECIENT GATHER_TO_ROOT method would be better
-                all_predictions = hvd.allgather_object(y)
                 
+                # Using tf.Tensor may be more performing, however, this should be a fairly low size data
+                #if isinstance(y, tf.Tensor):
+                #    all_predictions = hvd.allgather(y)
+                #else:
+                #    all_predictions = hvd.allgather_object(y)
+                all_predictions = hvd.allgather_object(y)
+
                 if hvd.local_rank() == 0:
                     for pred in all_predictions:
-                
                         for metric in self.coordinator.trainer.metrics:
                             metric.samples_from_batch(pred)
                             

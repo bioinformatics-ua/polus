@@ -77,7 +77,8 @@ class PolusContext(metaclass=Singleton):
                     print(f"The script found multiple GPUs and a horovod.tensorlfow installation. However,"
                                  f" the only one process was found, please check if you are runing the script with horovodrun.")
                 else:
-                    print(f"MultiGPU training enabled, using {hvd.size()} processes ")
+                    if hvd.local_rank() == 0:
+                        print(f"MultiGPU training enabled, using {hvd.size()} processes ")
                     self.use_horovod = True
 
             tf.config.experimental.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
