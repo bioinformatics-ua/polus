@@ -75,7 +75,7 @@ class PolusContext(metaclass=Singleton):
             else:
                 if hvd.size() <= 1:
                     print(f"The script found multiple GPUs and a horovod.tensorlfow installation. However,"
-                                 f" the only one process was found, please check if you are runing the script with horovodrun.")
+                                 f" only one process was initialized, please check if you are runing the script with horovodrun or mpirun.")
                 else:
                     if hvd.local_rank() == 0:
                         print(f"MultiGPU training enabled, using {hvd.size()} processes ")

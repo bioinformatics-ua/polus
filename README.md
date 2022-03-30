@@ -10,6 +10,15 @@ This toolkit is currently under development and aims to focus on biomedical task
 pip install polus
 ```
 
+For training the models in multiGPU scenario, polus leverage the horovod library for dataparalelism, which means that horovod must be
+correctly installed to be able to run the training in multiGPUs.
+
+To easy this process we made available a docker image with all the correct dependencies to perform the multiGPU training in polus.
+
+```
+docker pull talmeidawastaken/polus
+```
+
 ### Documentation
 
 Still in work, but some of it can be already consulted here: https://bioinformatics-ua.github.io/polus/
