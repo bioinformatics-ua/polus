@@ -215,7 +215,7 @@ enabled by default, which can be easily accessed by the <a href="polus/core.html
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The script found multiple GPUs and a horovod.tensorlfow installation. However,&quot;</span>
-                                 <span class="sa">f</span><span class="s2">&quot; the only one process was found, please check if you are runing the script with horovodrun.&quot;</span><span class="p">)</span>
+                                 <span class="sa">f</span><span class="s2">&quot; only one process was initialized, please check if you are runing the script with horovodrun or mpirun.&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MultiGPU training enabled, using </span><span class="si">{</span><span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="si">}</span><span class="s2"> processes &quot;</span><span class="p">)</span>
@@ -273,7 +273,7 @@ enabled by default, which can be easily accessed by the <a href="polus/core.html
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The script found multiple GPUs and a horovod.tensorlfow installation. However,&quot;</span>
-                                 <span class="sa">f</span><span class="s2">&quot; the only one process was found, please check if you are runing the script with horovodrun.&quot;</span><span class="p">)</span>
+                                 <span class="sa">f</span><span class="s2">&quot; only one process was initialized, please check if you are runing the script with horovodrun or mpirun.&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MultiGPU training enabled, using </span><span class="si">{</span><span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="si">}</span><span class="s2"> processes &quot;</span><span class="p">)</span>
@@ -310,7 +310,7 @@ enabled by default, which can be easily accessed by the <a href="polus/core.html
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The script found multiple GPUs and a horovod.tensorlfow installation. However,&quot;</span>
-                                 <span class="sa">f</span><span class="s2">&quot; the only one process was found, please check if you are runing the script with horovodrun.&quot;</span><span class="p">)</span>
+                                 <span class="sa">f</span><span class="s2">&quot; only one process was initialized, please check if you are runing the script with horovodrun or mpirun.&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">hvd</span><span class="o">.</span><span class="n">local_rank</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MultiGPU training enabled, using </span><span class="si">{</span><span class="n">hvd</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="si">}</span><span class="s2"> processes &quot;</span><span class="p">)</span>
