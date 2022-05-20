@@ -1,9 +1,9 @@
 import tensorflow as tf
 from tensorflow_addons.text import crf_log_likelihood, crf_decode
 
-from polus.core import BaseLogger
+from polus import logger
 
-class CRF(tf.keras.layers.Layer, BaseLogger):
+class CRF(tf.keras.layers.Layer):
     """
     #
     # Code from:
@@ -27,7 +27,7 @@ class CRF(tf.keras.layers.Layer, BaseLogger):
             (batch_size, sentence length, output_dim)
         """
         super().__init__(**kwargs)
-        BaseLogger.__init__(self)
+
         self.output_dim = int(output_dim)
         self.input_spec = tf.keras.layers.InputSpec(min_ndim=3)
         self.sequence_lengths = None

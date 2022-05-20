@@ -1,6 +1,27 @@
-from polus.utils import flatten_dict, is_jsonable, complex_json_serializer, complex_json_deserializer
+from polus.utils import flatten_dict, is_jsonable, complex_json_serializer, complex_json_deserializer, Singleton
 import tensorflow as tf 
 import json
+
+    
+def test_singleton_pattern():
+    
+    class A(metaclass=Singleton):
+        def __init__(self):
+            self.number = 5
+            
+        def increment(self):
+            self.number += 1
+            
+    
+    instance1 = A()
+    assert instance1.number==5
+    instance2 = A()
+    instance2.increment()
+
+    
+    assert instance1 is instance2
+    assert instance1.number==6
+    
 
 def test_simple_flatten_dict():
     

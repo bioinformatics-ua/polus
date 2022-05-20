@@ -13,5 +13,5 @@ pip install -r requirements.txt
 
 python setup.py bdist_wheel
 
-pip install dist/polus-0.2.0-py3-none-any.whl
+pip install dist/$(ls dist -Art | tail -n 1)
 cd -

@@ -51,34 +51,64 @@ enabled by default, which can be easily accessed by the polus.core API.
 
 '''
 
-__version__="0.2.0"
+__version__="0.2.1"
+import logging
+from logging.handlers import TimedRotatingFileHandler
+
 import tensorflow as tf
+import os
+import sys
+# setting up logger
+logger = logging.getLogger(__name__)
+
+FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s: %(message)s")
+DEBUG_FORMATTER = logging.Formatter("%(asctime)s — %(filename)s:%(name)s:%(funcName)s:%(lineno)d: %(message)s")
+
+logger.setLevel(logging.WARN)
+
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setFormatter(FORMATTER)
+
+logger.addHandler(console_handler)
+
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+
+file_handler = TimedRotatingFileHandler(os.path.join("logs", "polus.log"), when='midnight', encoding='utf-8')
+file_handler.setLevel(logging.WARN)
+file_handler.setFormatter(FORMATTER)
+logger.addHandler(file_handler)
+
+file_handler_db = TimedRotatingFileHandler(os.path.join("logs", "debug.log"), when='midnight', encoding='utf-8')
+file_handler_db.setLevel(logging.DEBUG)
+file_handler_db.setFormatter(DEBUG_FORMATTER)
+logger.addHandler(file_handler_db)
 
 try:
     import horovod.tensorflow as hvd
 except ModuleNotFoundError:
     import polus.mock.horovod as hvd
 
-from polus.core import Singleton
+from polus.utils import Singleton
 # init some vars
 class PolusContext(metaclass=Singleton):
     
     def __init__(self):
-        print("-----------------DEBUG INIT POLUS CONTEXT-------------")
+        logger.debug("-----------------DEBUG INIT POLUS CONTEXT-------------")
         self.use_horovod = False
         gpus = tf.config.experimental.list_physical_devices('GPU')
         if len(gpus) > 1:
             if hvd.init() == "mock":
-                print(f"The script found multiple GPUs, however it cannot use them since multi-gpu"
+                logger.info(f"The script found multiple GPUs, however it cannot use them since multi-gpu"
                                  f" requires horovod.tensorflow module to be installed.\n"
                                  f"Intead the process will only use one")
             else:
                 if hvd.size() <= 1:
-                    print(f"The script found multiple GPUs and a horovod.tensorlfow installation. However,"
+                    logger.info(f"The script found multiple GPUs and a horovod.tensorlfow installation. However,"
                                  f" only one process was initialized, please check if you are runing the script with horovodrun or mpirun.")
                 else:
                     if hvd.local_rank() == 0:
-                        print(f"MultiGPU training enabled, using {hvd.size()} processes ")
+                        logger.info(f"MultiGPU training enabled, using {hvd.size()} processes ")
                     self.use_horovod = True
 
             tf.config.experimental.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
@@ -87,6 +117,8 @@ class PolusContext(metaclass=Singleton):
         return self.use_horovod
         
 PolusContext()
+
+
 
 # add main lib sub packages
 #import polus.callbacks

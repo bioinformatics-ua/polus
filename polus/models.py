@@ -7,7 +7,8 @@ import h5py
 import pickle
 import types
 
-from polus.core import BaseLogger,get_jit_compile
+from polus import logger
+from polus.core import get_jit_compile
 from functools import wraps
 from polus.utils import merge_dicts, flatten_dict, complex_json_serializer, complex_json_deserializer
 
@@ -81,14 +82,11 @@ def from_config(func):
     return function_wrapper
 
 
-class PolusModel(tf.keras.Model, BaseLogger):
+class PolusModel(tf.keras.Model):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
-        # This class also extends BaseLogger, but Keras last subclass do not call super 
-        # so it must be manually called
-        BaseLogger.__init__(self)
     
     def init_from_data(self, *args, **kwargs):
         """

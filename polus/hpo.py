@@ -1,4 +1,5 @@
-from polus.core import Singleton, BaseLogger
+from polus import logger
+from polus.utils import Singleton
 import gc
 from human_id import generate_id
 
@@ -26,7 +27,7 @@ def parameter(real, hpo_lambda = None):
         
     return real
     
-class HPO_Objective(BaseLogger):
+class HPO_Objective:
     def __init__(self, 
                  trainer_init_function,
                  validator_name,
@@ -98,9 +99,9 @@ class HPO_Objective(BaseLogger):
                 trainer.train_config["callbacks"] = self.__add_callback_after_index(trainer.train_config["callbacks"],
                                                                                  HPOPruneCallback(self.validator_name, self.metric_name),
                                                                                  index)
-                self.logger.info("HPO_Objective added a PruneCallback to the main training loop")
+                logger.info("HPO_Objective added a PruneCallback to the main training loop")
             else:
-                self.logger.warn("HPO_Objective was init with add_pruning_cb, however, we could not automaticly add the pruning callback. We didn't find any Validation Callback.")
+                logger.warn("HPO_Objective was init with add_pruning_cb, however, we could not automaticly add the pruning callback. We didn't find any Validation Callback.")
                     
         # run train :)
         trainer.train()

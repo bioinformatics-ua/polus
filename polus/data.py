@@ -31,7 +31,8 @@ import random
 import json
 import inspect
 
-from polus.core import BaseLogger, find_dtype_and_shapes
+from polus import logger
+from polus.core import find_dtype_and_shapes
 from polus.models import split_bert_model
 import tensorflow as tf
 from transformers import TFAutoModel
@@ -45,7 +46,7 @@ if PolusContext().is_horovod_enabled():
 else:
     import polus.mock.horovod as hvd
 
-class DataLoader(BaseLogger):
+class DataLoader:
     """
     Base class of a data loader that builds higly efficient datasets (*tf.data.Dataset*)
     from full python generators. 
@@ -149,7 +150,7 @@ class DataLoader(BaseLogger):
                     
                     start_bert_t = timer()
                     data = self.accelerated_map_f(data)
-                    self.logger.debug(f"Time taken to run BERT {timer()-start_bert_t}")
+                    logger.debug(f"Time taken to run BERT {timer()-start_bert_t}")
                     ## debatching in python
                     ## TODO: this may be a bottleneck since python is slow
                     start_unbatch_t = timer()
@@ -164,7 +165,7 @@ class DataLoader(BaseLogger):
                             yield [ v[i] for v in data ] 
                     else:
                         raise ValueError(f"the accelerated_map_f function does not yield a dict nor tuple nor a list")
-                    self.logger.debug(f"Time taken to unbatch {timer()-start_unbatch_t}")
+                    logger.debug(f"Time taken to unbatch {timer()-start_unbatch_t}")
             
         return generator
 
@@ -181,7 +182,7 @@ class DataLoader(BaseLogger):
         if hasattr(self, "n_samples"):
             return self.n_samples
         else:
-            self.logger.info("this dataset does not have the number of samples in cache so it will take some time to counting")
+            logger.info("this dataset does not have the number of samples in cache so it will take some time to counting")
             n_samples = 0
             for _ in self.tf_dataset:
                 n_samples += 1
@@ -248,7 +249,7 @@ class CachedDataLoader(DataLoader):
             
             if cache_index is None:
                 # here we dont want to solve the exception, we just want to clean up de previously created files
-                self.logger.info("An error has occured so all the created files will be deleted")
+                logger.info("An error has occured so all the created files will be deleted")
                 self.clean()
             raise e
             
@@ -314,7 +315,7 @@ class CachedDataLoader(DataLoader):
         
         if not os.path.exists(self.cache_index_path):
              # build a generator that reads the files from cache
-            self.logger.info(f"DataLoader will store the samples in {self.cache_base_path}, with a max_sample per file of {self.cache_chunk_size}, this may take a while")
+            logger.info(f"DataLoader will store the samples in {self.cache_base_path}, with a max_sample per file of {self.cache_chunk_size}, this may take a while")
             # there are no history of a previous generator so we must generate the samples once and then store in cache
             # normaly apply the accelerated_map_f to the source_generator
             generator = super()._build_sample_generator(source_generator)
@@ -350,7 +351,7 @@ class CachedDataLoader(DataLoader):
                     for data in py_source_generator():
                         yield self.__py_sample_map_f(data)
         else:
-            self.logger.info(f"We found a compatible cache file for this DataLoader")
+            logger.info(f"We found a compatible cache file for this DataLoader")
             
         return self._build_cache_generator(generator)
     
@@ -381,7 +382,7 @@ class CachedDataLoader(DataLoader):
             n_samples = 0
             
             # TODO: Change the tf section here so that all the tf function launched here can be destroyed
-            self.logger.info("Starting to cache the dataset, this may take a while")
+            logger.info("Starting to cache the dataset, this may take a while")
             
             for data in generator():
                 n_samples += 1
@@ -409,7 +410,7 @@ class CachedDataLoader(DataLoader):
         
         if self.do_clean_up:
             # TODO: make test to see if this thing works
-            self.logger.info("The current tf session will be reseted to clear the computation done by the mapping function")
+            logger.info("The current tf session will be reseted to clear the computation done by the mapping function")
             tf.keras.backend.clear_session()
         
         # read the index from file
@@ -433,7 +434,7 @@ class CachedDataLoader(DataLoader):
         self.n_samples = self.cache_index["n_samples"]
         self.cache_chunk_size = self.cache_index["cache_chunk_size"]
                  
-        self.logger.info(f"Total number of samples in dataset: {self.n_samples}")
+        logger.info(f"Total number of samples in dataset: {self.n_samples}")
         
         def generator():
             aux_file_index = list(range(len(self.cache_index["files"])))
@@ -596,7 +597,7 @@ class CachedDataLoaderwLookup(CachedDataLoader):
         return super().__build_generator_from_index()
 
     
-class IAccelerated_Map(BaseLogger):
+class IAccelerated_Map:
     def __init__(self):
         super().__init__()
         

@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-
-from polus.core import BaseLogger, get_jit_compile
+from polus import logger
+from polus.core import get_jit_compile
 from polus.callbacks import CallbackCoordinator
 
 from polus import PolusContext
@@ -10,7 +10,7 @@ if PolusContext().is_horovod_enabled():
 else:
     import polus.mock.horovod as hvd
 
-class BaseTrainer(BaseLogger):
+class BaseTrainer:
     """
     Base trainer class, this class implements an abstraction
     of all the logic needed to perform a gradient descent type
@@ -76,7 +76,7 @@ class BaseTrainer(BaseLogger):
     
         # choosing the training weights
         if not hasattr(self, "trainable_weights"):
-            self.logger.warning((f"Since no specific trainable_weights were defined" 
+            logger.warning((f"Since no specific trainable_weights were defined" 
                               f" during the {self.__class__.__name__} instantiation,"
                               f" the trainer will optimizer all the variables"
                               f" found on the model instance"))
@@ -90,9 +90,9 @@ class BaseTrainer(BaseLogger):
             if hasattr(optimizer, "learning_rate"):
                 _new_lr = optimizer.learning_rate.read_value()*hvd.size()
                 optimizer.learning_rate.assign(_new_lr)
-                self.logger.info(f"The learning rate was adjusted to account for the multiGPU training, local lr is {_new_lr}")
+                logger.info(f"The learning rate was adjusted to account for the multiGPU training, local lr is {_new_lr}")
             else:
-                self.logger.info(f"It was not possible to change the learning rate to adjusted for the multiGPU training, please make the attention to multiply the learning rate by hvd.size()")
+                logger.info(f"It was not possible to change the learning rate to adjusted for the multiGPU training, please make the attention to multiply the learning rate by hvd.size()")
 
             
         
@@ -167,7 +167,7 @@ class BaseTrainer(BaseLogger):
           the value outputed by the self.loss function
         
         """
-        self.logger.debug("train_step was traced (May appear twice, more than that means that the training step is receving inputs with different shapes or dtypes)")
+        logger.debug("train_step was traced (May appear twice, more than that means that the training step is receving inputs with different shapes or dtypes)")
         
         with tf.GradientTape() as tape:           
 
@@ -184,7 +184,7 @@ class BaseTrainer(BaseLogger):
         grads = tape.gradient(loss_value, self.trainable_weights)
         
         if self.post_process_grads is not None:
-            self.logger.info("Post process of the gradients was added to the training loop")
+            logger.info("Post process of the gradients was added to the training loop")
             grads = self.post_process_grads(grads)
             
         self.optimizer.apply_gradients(zip(grads, self.trainable_weights))
@@ -365,7 +365,7 @@ class ClassifierTrainer(BaseTrainer):
             logits = self.model(x, training=True)
             
         if self.post_process_logits is not None:
-            self.logger.info("Post process step of the logits was added to the training loop")
+            logger.info("Post process step of the logits was added to the training loop")
             logits = self.post_process_logits(logits)
 
         return y, logits#self.loss(y, logits)

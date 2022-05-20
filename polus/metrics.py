@@ -1,9 +1,10 @@
 import tensorflow as tf
 
-from polus.core import BaseLogger, get_jit_compile
+from polus import logger
+from polus.core import get_jit_compile
 
 
-class IMetric(BaseLogger):
+class IMetric:
     def __init__(self, reduce_f=None):
         super().__init__()
         if self.__class__.__name__ == "IMetric":
@@ -53,7 +54,7 @@ class IConfusionMatrixTF(IMetric):
         
     @tf.function(input_signature=[tf.TensorSpec(shape=(None,), dtype=tf.int32), tf.TensorSpec(shape=(None,), dtype=tf.int32)])
     def _build_confusion_matrix(self, y_true, y_pred):
-        self.logger.debug("_build_confusion_matrix function was traced")
+        logger.debug("_build_confusion_matrix function was traced")
         #print(y_true)
         #y_true = tf.reshape(y_true, (-1,))
         #y_pred = tf.reshape(y_pred, (-1,))
@@ -74,7 +75,7 @@ class MacroF1Score(IConfusionMatrixTF):
     
     @tf.function(input_signature=[tf.TensorSpec(shape=(None, None), dtype=tf.int32)])
     def _tfevaluate(self, matrix):
-        self.logger.debug("MacroF1Score function was traced")
+        logger.debug("MacroF1Score function was traced")
         
         tp = tf.cast(tf.linalg.tensor_diag_part(matrix), tf.float64)
         fp_tp = tf.cast(tf.math.reduce_sum(matrix, axis=-1), tf.float64)
