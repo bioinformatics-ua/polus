@@ -28,7 +28,7 @@ import logging
 import os
 import sys
 import tensorflow as tf
-
+import inspect
 
 
 def set_jit_compile(mode: bool):
@@ -71,16 +71,12 @@ def find_dtype_and_shapes(data_generator, k=10):
         shape. If set to -1 it will read the entire generator
     """
     
-    
-    
     if k==-1:
         samples = [ sample for sample in data_generator ]
     elif k>0:
         generator = iter(data_generator)
         samples = [ next(generator) for i in range(k) ]
 
-    
-            
     if isinstance(samples[0], dict):
         
         dtypes = {}

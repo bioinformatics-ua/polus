@@ -11,14 +11,14 @@ efficient preprocessing, hence the main classes here are the DataLoaders.
 - `polus.data.DataLoader`: Base class of data loader and automatically converts python
   generators to highly efficient *tf.data.Dataset*. Furthermore, it also supports
   GPU preprocessing which differs from *tf.data.Dataset*, since it only runs on CPU
-  
+ 
 - `polus.data.CachedDataLoader`: Extension of `polus.DataLoader`, adds the ability to seamlessly
-  store the preprocessed samples in the disk, following a chunking mechanism. Besides the 
+  store the preprocessed samples in the disk, following a chunking mechanism. Besides the
   organizational advantage, this also enables us to implement a *pre_shuffle* mechanism
   that occurs at the chunk level, making it a much more efficient process since we can
-  fully shuffle the dataset without the need to have it in memory. 
+  fully shuffle the dataset without the need to have it in memory.
 
-- `polus.data.CachedDataLoaderwLookup`: Extension of `polus.data.CachedDataLoader`, adds the 
+- `polus.data.CachedDataLoaderwLookup`: Extension of `polus.data.CachedDataLoader`, adds the
   functionality to store arbitrary python objects jointly with the stored DataLoader.
   Note for storing python objects we use the *pickle* library.
 
@@ -29,7 +29,7 @@ import os
 import pickle
 import random
 import json
-import inspect
+import types
 
 from polus import logger
 from polus.core import find_dtype_and_shapes
@@ -49,36 +49,22 @@ else:
 class DataLoader:
     """
     Base class of a data loader that builds higly efficient datasets (*tf.data.Dataset*)
-    from full python generators. 
+    from full python generators.
     
     The python generator must return a dictionary of samples, and no other format
     is currently supported.
     
     """
-    def __init__(self, 
-                 source_generator,
-                 accelerated_map_f = None,
-                 accelerated_map_batch = 128,
-                 show_progress = False,
+    def __init__(self,
+                 sample_generator,
                  magic_k=10):
         """
         
         Args:
-          source_generator (python generator): Must be a python generator that returns a 
-            **dictionary of samples**. Since this generator will be converted into a 
-            *tf.data.Dataset*, all the datatypes must be supported in TensorFlow, which is
+          sample_generator (python generator): Must be a python generator that returns a
+            **dictionary of samples**. Since this generator may be converted into a
+            *tf.data.Dataset*, all the datatypes should be supported in TensorFlow, which is
             true for all python primitives types.
-          
-          accelerated_map_f (func or `polus.data.IAccelerated_Map`): A function or interface, that
-            describe a transformation to be applied to the samples from the *source_generator*.
-            By default, this function will execute in the best hardware found on the host device,
-            i.e., it should be used for mapping computations that should run on a GPU, e.g., 
-            contextualized embeddings from BERT.
-            
-          accelerated_map_batch (int): The size of the batch that is fed to the *accelerated_map_f*
-            recalling that when running on GPU it is more efficient to perform batch-wise operations.
-            
-          show_progress (boolean): If true prints the current batch that was fed to accelerated_map_f.
           
           magic_k (int): Integer number that defines how many samples would be executed in order to infer
             the shape and type of the data.
@@ -89,30 +75,28 @@ class DataLoader:
         """
         super().__init__()
         
-        self.show_progress = show_progress
-        self.accelerated_map_batch = accelerated_map_batch
-        self.accelerated_map_f = accelerated_map_f
-        
-        if source_generator is not None:
-            self.name = source_generator.__name__
+        if sample_generator is not None:
+            self.name = sample_generator.__name__
         else:
             self.name = "None"
         
-        self.sample_generator = self._build_sample_generator(source_generator)
+        self.sample_generator = sample_generator
+        self.magic_k = magic_k
 
-        dytpes, shapes = find_dtype_and_shapes(self.sample_generator(), k=magic_k)
+    def to_tfDataset(self):
+        dytpes, shapes = find_dtype_and_shapes(self, 
+                                               k=self.magic_k)
         
-        self.tf_dataset = tf.data.Dataset.from_generator(self.sample_generator, 
-                                                         output_types= dytpes,
-                                                         output_shapes= shapes)
+        tf_dataset = tf.data.Dataset.from_generator(lambda : self,
+                                                    output_types= dytpes,
+                                                    output_shapes= shapes)
         
         if PolusContext().is_horovod_enabled():
             print("----------SHARDING THE DATASET!!!!-----------")
-            self.tf_dataset = self.tf_dataset.shard(num_shards = hvd.size(), index=hvd.local_rank())
+            tf_dataset = tf_dataset.shard(num_shards = hvd.size(), index=hvd.local_rank())
+            
+        return tf_dataset
         
-        # expose all the tf dataset methods
-        for method in filter(lambda x: not x[0].startswith("_"), inspect.getmembers(self.tf_dataset, predicate=inspect.ismethod)):
-            setattr(self, method[0], method[1])
     
     def set_name(self, _name):
         self.name = _name
@@ -120,63 +104,23 @@ class DataLoader:
     @property
     def __name__(self):
         return f"{self.__class__.__name__}_{self.name}"
-    
-    def _build_sample_generator(self, source_generator):
-        
-        # Logic to construct a generator that maybe applies the accelerated_map_f to the source_generator
-        if self.accelerated_map_f is None:
-            generator = source_generator
-        
-        else:
-            # build and store the accelerated_map_f
-            if isinstance(self.accelerated_map_f, IAccelerated_Map):
-                # get the map function and run any heavy init only 1 time!
-                self.accelerated_map_f = self.accelerated_map_f.build()
-                        
-            def generator():
-                
-                # BATCH = 128
-                dytpes, shapes = find_dtype_and_shapes(source_generator())
-                inner_tf_dataset = tf.data.Dataset.from_generator(source_generator, 
-                                                                  output_types= dytpes,
-                                                                  output_shapes= shapes)\
-                                                  .batch(self.accelerated_map_batch)\
-                                                  .prefetch(10)
-                
-                for i, data in enumerate(inner_tf_dataset):
-                    
-                    if self.show_progress:
-                        print(f"Iteration: {i*self.accelerated_map_batch}", end="\r")
-                    
-                    start_bert_t = timer()
-                    data = self.accelerated_map_f(data)
-                    logger.debug(f"Time taken to run BERT {timer()-start_bert_t}")
-                    ## debatching in python
-                    ## TODO: this may be a bottleneck since python is slow
-                    start_unbatch_t = timer()
-                    if isinstance(data, dict):
-                        key = list(data.keys())[0]
-                        n_samples = data[key].shape[0] #batch size
-                        for i in range(n_samples):
-                            yield { k:v[i] for k, v in data.items() } 
-                    elif isinstance(data, (list,tuple)):
-                        n_samples = data[0].shape[0]
-                        for i in range(n_samples):
-                            yield [ v[i] for v in data ] 
-                    else:
-                        raise ValueError(f"the accelerated_map_f function does not yield a dict nor tuple nor a list")
-                    logger.debug(f"Time taken to unbatch {timer()-start_unbatch_t}")
-            
-        return generator
 
     def __iter__(self):
-        return self.tf_dataset.__iter__()
+        # returns the function iterator
+        if not isinstance(self.sample_generator, types.GeneratorType):
+            sample_generator = self.sample_generator()
+            if isinstance(sample_generator, types.GeneratorType):
+                return sample_generator
+            else:
+                raise ValueError("The sample_generator that was set in the DataLoader was a function that did not return an generator, it must return a generator")
+        else:
+            return iter(self.sample_generator)
 
     def get_n_samples(self):
         """
         Returns the number of samples that the DataLoader contains,
         if the DataLoader does not know how many samples it has, then
-        the DataLoader will first count the samples and then cache it 
+        the DataLoader will first count the samples and then cache it
         and return the counter.
         """
         if hasattr(self, "n_samples"):
@@ -184,23 +128,21 @@ class DataLoader:
         else:
             logger.info("this dataset does not have the number of samples in cache so it will take some time to counting")
             n_samples = 0
-            for _ in self.tf_dataset:
+            for _ in self:
                 n_samples += 1
                 
             self.n_samples = n_samples
             
             return self.n_samples
         
-        
-        
 class CachedDataLoader(DataLoader):
     """
     Extension of a the DataLoader class that adds the ability to seamlessly
-    store the preprocessed samples in the disk, following a chunking mechanism. Besides the 
+    store the preprocessed samples in the disk, following a chunking mechanism. Besides the
     organizational advantage, this also enables us to implement a *pre_shuffle* mechanism
     that occurs at the chunk level, making it a must more efficient process since we can
-    fully shuffle the dataset without the need to have its memory. of a data loader 
-    that builds higly efficient datasets (*tf.data.Dataset*) from full python generators. 
+    fully shuffle the dataset without the need to have its memory. of a data loader
+    that builds higly efficient datasets (*tf.data.Dataset*) from full python generators.
     
     Since this class involves the storage of files on disk, if any exception is raised, the
     DataLoader will automatically clean all the created files before raising the exception
@@ -208,16 +150,14 @@ class CachedDataLoader(DataLoader):
     
     """
     
-    def __init__(self, 
-                 source_generator = None,
-                 tf_sample_map_f = None, # sample mapping function written and executed in tensorflow that is applied before the data is stored in cache
-                 py_sample_map_f = None, # sample mapping function written and executed in python that is applied before the data is stored in cache
-                 do_clean_up = False,
+    def __init__(self,
+                 sample_generator = None,
+                 clean_up_function = None,
                  cache_additional_identifier = "",
                  cache_chunk_size = 8192,
                  cache_folder=os.path.join(".polus_cache","data"),
                  cache_index = None, # this variable is used to init a CacheDataLoader with an already cached index usefull in merge
-                 **kwargs): 
+                 **kwargs):
         """
         
         Args:
@@ -225,26 +165,25 @@ class CachedDataLoader(DataLoader):
           
         """
         # impossible condition
-        assert source_generator is not None or cache_index is not None
+        assert sample_generator is not None or cache_index is not None
 
         self.cache_folder = cache_folder
         self.cache_chunk_size = cache_chunk_size
         self.cache_additional_identifier = cache_additional_identifier
         self.shuffle_blocks = False
-        self.do_clean_up = do_clean_up
-        self.__tf_sample_map_f = tf_sample_map_f
-        self.__py_sample_map_f = py_sample_map_f
+        self.clean_up_function = clean_up_function
         self.cache_index = cache_index
+        
         if cache_index is not None and "cache_index_path" in cache_index:
             self.cache_index_path = cache_index["cache_index_path"]
         else:
             # this dataset probably do not have a cache_index_path, this can happen if the DataLoader was created
             # from merge of multiple DataLoader
             self.cache_index_path = None
-        
-        # the parent DataLoader will call _build_sample_generator that contains the logic to build the dataloader
+
         try:
-            super().__init__(source_generator = source_generator, **kwargs)
+            sample_generator = self._build_sample_generator(sample_generator)
+            super().__init__(sample_generator = sample_generator, **kwargs)
         except Exception as e:
             
             if cache_index is None:
@@ -296,7 +235,7 @@ class CachedDataLoader(DataLoader):
             index = json.load(f)
         return index
     
-    def _build_sample_generator(self, source_generator):
+    def _build_sample_generator(self, sample_generator):
         
         if self.cache_index is not None:
             # we are alredy have the data needed to create the DataLoader
@@ -307,51 +246,18 @@ class CachedDataLoader(DataLoader):
             os.makedirs(self.cache_folder)
 
         # get path to cache
-        self.cache_base_name = self.__build_cache_base_name(source_generator)
+        self.cache_base_name = self.__build_cache_base_name(sample_generator)
         self.cache_base_path = os.path.join(self.cache_folder, self.cache_base_name)
         self.cache_index_path = f"{self.cache_base_path}.index"
-        
-        generator = None
         
         if not os.path.exists(self.cache_index_path):
              # build a generator that reads the files from cache
             logger.info(f"DataLoader will store the samples in {self.cache_base_path}, with a max_sample per file of {self.cache_chunk_size}, this may take a while")
             # there are no history of a previous generator so we must generate the samples once and then store in cache
-            # normaly apply the accelerated_map_f to the source_generator
-            generator = super()._build_sample_generator(source_generator)
-            
-            if self.__tf_sample_map_f is not None:
-                tf_source_generator = generator
-                
-                if isinstance(self.__tf_sample_map_f, IAccelerated_Map):
-                    # get the map function and run any heavy init only 1 time!
-                    self.__tf_sample_map_f = self.__tf_sample_map_f.build()
-                
-                def generator():
-                    
-                    dytpes, shapes = find_dtype_and_shapes(tf_source_generator())
-                    inner_tf_dataset = tf.data.Dataset.from_generator(tf_source_generator, 
-                                                                      output_types= dytpes,
-                                                                      output_shapes= shapes)\
-                                                      .map(self.__tf_sample_map_f, num_parallel_calls=tf.data.AUTOTUNE)\
-                                                      .prefetch(tf.data.AUTOTUNE)
-
-                    for data in inner_tf_dataset:
-                        yield data
-            
-            if self.__py_sample_map_f is not None:
-                
-                py_source_generator = generator
-                
-                if isinstance(self.__py_sample_map_f, IAccelerated_Map):
-                    # get the map function and run any heavy init only 1 time!
-                    self.__py_sample_map_f = self.__py_sample_map_f.build()
-                
-                def generator():
-                    for data in py_source_generator():
-                        yield self.__py_sample_map_f(data)
+            generator = sample_generator
         else:
             logger.info(f"We found a compatible cache file for this DataLoader")
+            generator = None
             
         return self._build_cache_generator(generator)
     
@@ -393,7 +299,7 @@ class CachedDataLoader(DataLoader):
                     
                     write_to_file(_file_index, _temp_data, index_info)
                     
-                    # clean up 
+                    # clean up
                     _temp_data = []
                     _file_index+=1
             
@@ -408,10 +314,10 @@ class CachedDataLoader(DataLoader):
             # write the index file
             self.write_index_file(index_info)
         
-        if self.do_clean_up:
+        if self.clean_up_function is not None:
             # TODO: make test to see if this thing works
-            logger.info("The current tf session will be reseted to clear the computation done by the mapping function")
-            tf.keras.backend.clear_session()
+            logger.info("Executing the clean up function after the cached dataset was created")
+            self.clean_up_function()
         
         # read the index from file
         self.cache_index = self.__class__.read_index(self.cache_index_path)
@@ -440,7 +346,9 @@ class CachedDataLoader(DataLoader):
             aux_file_index = list(range(len(self.cache_index["files"])))
             
             if self.shuffle_blocks:
+                print("PRE SHUFFLE", aux_file_index)
                 random.shuffle(aux_file_index)
+                print("POST SHUFFLE", aux_file_index)
                 
             for file_index in aux_file_index:
                 with open(self.cache_index["files"][file_index], "rb") as f:
@@ -449,21 +357,12 @@ class CachedDataLoader(DataLoader):
                  
         return generator
         
-    def __build_cache_base_name(self, source_generator):
+    def __build_cache_base_name(self, sample_generator):
         name = ""
         if self.cache_additional_identifier!="":
             name = f"{self.cache_additional_identifier}_"
-        
-        if self.accelerated_map_f is not None:
-            name += self.accelerated_map_f.__name__
             
-        if self.__tf_sample_map_f is not None:
-            name += self.__tf_sample_map_f.__name__
-            
-        if self.__py_sample_map_f is not None:
-            name += self.__py_sample_map_f.__name__
-            
-        return f"{name}_{source_generator.__name__}"
+        return f"{name}_chunk{self.cache_chunk_size}_{sample_generator.__name__}"
     
     
     def pre_shuffle(self):
@@ -518,7 +417,7 @@ class CachedDataLoaderwLookup(CachedDataLoader):
     Correspond to a CachedDataLoader but also keeps track of an aditional lookup file
     """
     
-    def __init__(self, 
+    def __init__(self,
                  *args,
                  lookup_data=None,
                  cache_index=None,  # this variable is used to init a CacheDataLoader with an already cached index usefull in merge
@@ -646,3 +545,6 @@ def build_bert_embeddings(checkpoint, bert_layer_index=None, **kwargs):
             return bert_model(kwargs)
         
     return embeddings
+
+
+

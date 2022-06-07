@@ -25,7 +25,7 @@ def run_before_and_after_tests(tmpdir):
     if os.path.exists(PATH_CACHE):
         shutil.rmtree(PATH_CACHE)
 
-def test_dataloader_nocache():
+def test_dataloader():
     
     def source_gen():
         for i in range(N_SAMPLES):
@@ -33,40 +33,37 @@ def test_dataloader_nocache():
             
     dataloader = DataLoader(source_gen)
     
+    samples_cumulative_equality = True
     n_samples = 0
     for sample in dataloader:
+        samples_cumulative_equality = samples_cumulative_equality and (sample["id"] == n_samples)
         n_samples += 1
     
+    assert samples_cumulative_equality
     assert n_samples == N_SAMPLES
     assert dataloader.get_n_samples() == N_SAMPLES
     assert sample["id"] == N_SAMPLES-1
     assert sample["text"] == "dummy"
-
-def test_dataloader_mapping_f_nocache():
     
-    N_SAMPLES = 1000
+def test_dataloader_tfDataset():
     
-    def mapping_f(sample):
-        sample["new_entry"] = sample["id"]*2
-        return sample
-
     def source_gen():
         for i in range(N_SAMPLES):
             yield {"id":i, "text":"dummy"}
             
-    dataloader = DataLoader(source_gen, 
-                            accelerated_map_f=mapping_f)
+    dataloader = DataLoader(source_gen)
     
+    samples_cumulative_equality = True
     n_samples = 0
-    for sample in dataloader:
+    for sample in dataloader.to_tfDataset():
+        samples_cumulative_equality = samples_cumulative_equality and (sample["id"].numpy() == n_samples)
         n_samples += 1
     
+    assert samples_cumulative_equality
     assert n_samples == N_SAMPLES
     assert dataloader.get_n_samples() == N_SAMPLES
-    assert sample["id"] == N_SAMPLES-1
-    assert sample["text"] == "dummy"
-    assert sample["new_entry"] == sample["id"]*2
-
+    assert sample["id"].numpy() == N_SAMPLES-1
+    assert sample["text"].numpy().decode() == "dummy"
     
 def test_cachedDataloader():
     
@@ -80,14 +77,49 @@ def test_cachedDataloader():
                                   cache_chunk_size = 256,
                                   cache_folder = PATH_CACHE)
     
+    samples_cumulative_equality = True
     n_samples = 0
     for sample in dataloader:
+        samples_cumulative_equality = samples_cumulative_equality and (sample["id"] == n_samples)
         n_samples += 1
     
+    assert samples_cumulative_equality
     assert n_samples == N_SAMPLES
     assert dataloader.get_n_samples() == N_SAMPLES
     assert sample["id"] == N_SAMPLES-1
     assert sample["text"] == "dummy"
+    
+    # assert cache files
+    cache_files = os.listdir(PATH_CACHE)
+    assert f"{dataloader.cache_base_name}.index" in cache_files
+    
+    for data_files in dataloader.cache_index["files"]:
+        assert os.path.basename(data_files) in cache_files
+        
+    
+def test_cachedDataloader_tfDataset():
+    
+    N_SAMPLES = 1000
+    
+    def source_gen():
+        for i in range(N_SAMPLES):
+            yield {"id":i, "text":"dummy"}
+            
+    dataloader = CachedDataLoader(source_gen, 
+                                  cache_chunk_size = 256,
+                                  cache_folder = PATH_CACHE)
+    
+    samples_cumulative_equality = True
+    n_samples = 0
+    for sample in dataloader.to_tfDataset():
+        samples_cumulative_equality = samples_cumulative_equality and (sample["id"].numpy() == n_samples)
+        n_samples += 1
+    
+    assert samples_cumulative_equality
+    assert n_samples == N_SAMPLES
+    assert dataloader.get_n_samples() == N_SAMPLES
+    assert sample["id"].numpy() == N_SAMPLES-1
+    assert sample["text"].numpy().decode() == "dummy"
     
     # assert cache files
     cache_files = os.listdir(PATH_CACHE)
@@ -167,7 +199,8 @@ def test_cachedDataloader_convert():
     for data_files in dataloader.cache_index["files"]:
         assert os.path.basename(data_files) in cache_files
     
-def test_cachedDataloader_mapping_f_cache():
+
+def test_cachedDataloader_custom_gens():
     
     N_SAMPLES = 1000
     
@@ -179,23 +212,27 @@ def test_cachedDataloader_mapping_f_cache():
         for i in range(N_SAMPLES):
             yield {"id":i, "text":"dummy"}
             
-    dataloader = CachedDataLoader(source_gen, 
-                                  cache_chunk_size = 256,
-                                  cache_folder = PATH_CACHE,
-                                  accelerated_map_f=mapping_f)
+    def new_gen():
+        for s in source_gen():
+            yield mapping_f(s)
+            
+    dataloader = CachedDataLoader(new_gen, 
+                                  cache_chunk_size = 16,
+                                  cache_folder = PATH_CACHE)
     
+    samples_cumulative_equality = True
     n_samples = 0
     for sample in dataloader:
+        samples_cumulative_equality = samples_cumulative_equality and (sample["id"] == n_samples and sample["id"]*2==sample["new_entry"])
         n_samples += 1
     
+    assert samples_cumulative_equality # this test ensures order
     assert n_samples == N_SAMPLES
     assert dataloader.get_n_samples() == N_SAMPLES
-    assert sample["id"] == N_SAMPLES-1
     assert sample["text"] == "dummy"
     assert sample["new_entry"] == sample["id"]*2
     
-    
-def test_cachedDataloader_mapping_f_cache_pre_shuffle():
+def test_cachedDataloader_pre_shuffle():
     
     N_SAMPLES = 1000
     
@@ -207,67 +244,32 @@ def test_cachedDataloader_mapping_f_cache_pre_shuffle():
         for i in range(N_SAMPLES):
             yield {"id":i, "text":"dummy"}
             
-    dataloader = CachedDataLoader(source_gen, 
-                                  cache_chunk_size = 256,
-                                  cache_folder = PATH_CACHE,
-                                  accelerated_map_f=mapping_f)
-    
-    dataloader.pre_shuffle()
-    
-    n_samples = 0
-    for sample in dataloader:
-        n_samples += 1
-    
-    assert n_samples == N_SAMPLES
-    assert dataloader.get_n_samples() == N_SAMPLES
-    assert sample["text"] == "dummy"
-    assert sample["new_entry"] == sample["id"]*2
-    
-def test_cachedDataloader_mapping_f_and_py_sample_f_cache_pre_shuffle():
-    
-    N_SAMPLES = 1000
-    
-    def mapping_f(samples):
-        samples["new_entry"] = samples["id"]*2
-        return samples
-    
-    def samples_map(sample):
-        sample["new_entry_sample_map"] = str(int(sample["id"].numpy()))
-        return sample
-    
-    def source_gen():
-        for i in range(N_SAMPLES):
-            yield {"id":i, "text":"dummy"}
+    def new_gen():
+        for s in source_gen():
+            yield mapping_f(s)
             
-    dataloader = CachedDataLoader(source_gen, 
-                                  cache_chunk_size = 256,
-                                  cache_folder = PATH_CACHE,
-                                  accelerated_map_f=mapping_f,
-                                  py_sample_map_f=samples_map)
+    dataloader = CachedDataLoader(new_gen, 
+                                  cache_chunk_size = 16,
+                                  cache_folder = PATH_CACHE)
     
     dataloader.pre_shuffle()
     
+    samples_cumulative_equality = True
     n_samples = 0
     for sample in dataloader:
+        samples_cumulative_equality = samples_cumulative_equality and (sample["id"] == n_samples and sample["id"]*2==sample["new_entry"])
         n_samples += 1
     
+    assert not samples_cumulative_equality # this test ensures order
     assert n_samples == N_SAMPLES
     assert dataloader.get_n_samples() == N_SAMPLES
     assert sample["text"] == "dummy"
     assert sample["new_entry"] == sample["id"]*2
-    assert sample["new_entry_sample_map"] == str(int(sample["id"].numpy()))
-    
-def test_cachedDataloader_MERGE_mapping_f_and_py_sample_f_cache_pre_shuffle():
     
     
-    def mapping_f(samples):
-        samples["new_entry"] = samples["id"]*2
-        return samples
-    
-    def samples_map(sample):
-        sample["new_entry_sample_map"] = str(int(sample["id"].numpy()))
-        return sample
-    
+def test_cachedDataloader_MERGE_pre_shuffle():
+
+        
     def source_gen_1():
         for i in range(1000):
             yield {"id":i, "text":"dummy"}
@@ -285,10 +287,8 @@ def test_cachedDataloader_MERGE_mapping_f_and_py_sample_f_cache_pre_shuffle():
     for source_gen in [source_gen_1, source_gen_2, source_gen_3]:
         
         dataloaders.append(CachedDataLoader(source_gen, 
-                                      cache_chunk_size = 256,
-                                      cache_folder = PATH_CACHE,
-                                      accelerated_map_f=mapping_f,
-                                      py_sample_map_f=samples_map))
+                                      cache_chunk_size = 64,
+                                      cache_folder = PATH_CACHE))
     
     
     N_SAMPLES = 1000 + 500 + 721
@@ -300,84 +300,30 @@ def test_cachedDataloader_MERGE_mapping_f_and_py_sample_f_cache_pre_shuffle():
     text_samples = []
     
     n_samples = 0
+    samples_cumulative_equality = True
     for sample in dataloader:
+        samples_cumulative_equality = samples_cumulative_equality and (sample["id"] == n_samples)
         n_samples += 1
         if not n_samples%100:
             text_samples.append(sample["text"])
     
+    assert not samples_cumulative_equality # this test ensures order
     assert n_samples == N_SAMPLES
     assert dataloader.get_n_samples() == N_SAMPLES
     assert all([text in ["dummy", "dummy2", "dummy3"] for text in text_samples])
-    assert sample["new_entry"] == sample["id"]*2
-    assert sample["new_entry_sample_map"] == str(int(sample["id"].numpy()))
-    
-def test_cachedDataloader_mapping_f_and_py_sample_f_tf_sample_f_cache_pre_shuffle():
-    
-    N_SAMPLES = 1000
-    
-    def mapping_f(samples):
-        samples["new_entry"] = samples["id"]*2
-        return samples
-    
-    def tf_samples_map(sample):
-        sample["tf_new_entry"] = sample["id"] + 1 
-        return sample
-    
-    def samples_map(sample):
-        sample["new_entry_sample_map"] = str(int(sample["id"].numpy()))
-        return sample
-    
-    def source_gen():
-        for i in range(N_SAMPLES):
-            yield {"id":i, "text":"dummy"}
-            
-    dataloader = CachedDataLoader(source_gen, 
-                                  cache_chunk_size = 256,
-                                  cache_folder = PATH_CACHE,
-                                  accelerated_map_f=mapping_f,
-                                  py_sample_map_f=samples_map,
-                                  tf_sample_map_f=tf_samples_map)
-    
-    dataloader.pre_shuffle()
-    
-    n_samples = 0
-    for sample in dataloader:
-        n_samples += 1
-    
-    assert n_samples == N_SAMPLES
-    assert dataloader.get_n_samples() == N_SAMPLES
-    assert sample["text"] == "dummy"
-    assert sample["new_entry"] == sample["id"]*2
-    assert sample["new_entry_sample_map"] == str(int(sample["id"].numpy()))
-    assert sample["tf_new_entry"] == sample["id"] + 1
     
     
 def test_cachedDataloader_from_cache_name():
     
     N_SAMPLES = 1000
     
-    def mapping_f(samples):
-        samples["new_entry"] = samples["id"]*2
-        return samples
-    
-    def tf_samples_map(sample):
-        sample["tf_new_entry"] = sample["id"] + 1 
-        return sample
-    
-    def samples_map(sample):
-        sample["new_entry_sample_map"] = str(int(sample["id"].numpy()))
-        return sample
-    
     def source_gen():
         for i in range(N_SAMPLES):
             yield {"id":i, "text":"dummy"}
             
     dataloader = CachedDataLoader(source_gen, 
                                   cache_chunk_size = 256,
-                                  cache_folder = PATH_CACHE,
-                                  accelerated_map_f=mapping_f,
-                                  py_sample_map_f=samples_map,
-                                  tf_sample_map_f=tf_samples_map)
+                                  cache_folder = PATH_CACHE)
     
     from_cached_index = dataloader.cache_index_path
     
@@ -388,16 +334,16 @@ def test_cachedDataloader_from_cache_name():
     dl.pre_shuffle()
     
     n_samples = 0
+    samples_cumulative_equality = True
     for sample in dl:
+        samples_cumulative_equality = samples_cumulative_equality and (sample["id"] == n_samples)
         n_samples += 1
     
+    assert not samples_cumulative_equality # this test ensures order
     assert n_samples == N_SAMPLES
     assert dl.get_n_samples() == N_SAMPLES
     assert sample["text"] == "dummy"
-    assert sample["new_entry"] == sample["id"]*2
-    assert sample["new_entry_sample_map"] == str(int(sample["id"].numpy()))
-    assert sample["tf_new_entry"] == sample["id"] + 1
-    
+
 
 def test_get_bert_embedding_parameters():
     
