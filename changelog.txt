@@ -1,5 +1,7 @@
 Version 0.2.1: (master)
-
+    
+    Changing dataAPI, now utilizes python generates and only makes a conversion to tf.data.Dataset when calling to_tfDataset()
+    
 
 Version 0.2.0:
     Adding multiGPU training with the integration of the horovod library, which handles the communication between the GPU or machines.
