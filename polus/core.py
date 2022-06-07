@@ -28,8 +28,7 @@ import logging
 import os
 import sys
 import tensorflow as tf
-from logging.handlers import TimedRotatingFileHandler
-
+import inspect
 
 
 def set_jit_compile(mode: bool):
@@ -55,77 +54,6 @@ def get_jit_compile():
         set_jit_compile(False) # default mode
     
     return os.environ.get("POLUS_JIT")=="True"
-
-
-class Singleton(type):
-    """
-    The standard Singleton pattern in python, classes should
-    extend this one as metaclass, (e.g.) HPOContext(metaclass=Singleton)
-    """
-    def __init__(self, *args, **kwargs):
-        self.__instance = None
-        super().__init__(*args, **kwargs)
-        
-    def __call__(self, *args, **kwargs):
-        if self.__instance is None:
-            self.__instance = super().__call__(*args, **kwargs)
-        return self.__instance
-
-
-
-class BaseLogger:
-    def __init__(self, logging_level=logging.DEBUG, log_name="polus.log"):
-        """
-        Base logging class, this sets a console and file log handler to each
-        instance. Meaning that each call to the logger will write to both 
-        handlers. 
-        
-        Furthermore, the intended behaviour is to classes to extend this BaseLogger
-        classe and by doing this, any class can access to the logger property
-        Note that multiple instances use the same handler
-        
-        Main ideas from: https://www.toptal.com/python/in-depth-python-logging
-        """
-        super().__init__()
-        
-        # Note by: Tiago
-        # This is a bad solution if the framework scales to a lot of
-        # instance during the training of a object.
-        # If needed consider to change to a more managle behaviour
-        
-        self.logger = logging.getLogger(self.__class__.__name__)
-        
-        if not self.logger.hasHandlers():
-            
-            FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
-            
-            self.logger.setLevel(logging_level)
-
-            console_handler = logging.StreamHandler(sys.stdout)
-            console_handler.setFormatter(FORMATTER)
-            self.logger.addHandler(console_handler)
-
-            if not os.path.exists('logs'):
-                os.makedirs('logs')
-
-            file_handler = TimedRotatingFileHandler(os.path.join("logs", log_name), when='midnight', encoding='utf-8')
-            file_handler.setFormatter(FORMATTER)
-            self.logger.addHandler(file_handler)
-
-            self.logger.propagate = False
-    
-    def set_logging_level(self, logging_level):
-        """
-        
-        Args:
-          logging_level (int): A valid logging level supperted by the
-            logging package, see https://docs.python.org/3/library/logging.html#logging-levels
-            
-        Returns:
-          None
-        
-        """
-        self.logger.setLevel(logging_level)
         
 def find_dtype_and_shapes(data_generator, k=10):
     """
@@ -143,16 +71,12 @@ def find_dtype_and_shapes(data_generator, k=10):
         shape. If set to -1 it will read the entire generator
     """
     
-    
-    
     if k==-1:
         samples = [ sample for sample in data_generator ]
     elif k>0:
         generator = iter(data_generator)
         samples = [ next(generator) for i in range(k) ]
 
-    
-            
     if isinstance(samples[0], dict):
         
         dtypes = {}

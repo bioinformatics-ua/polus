@@ -26,7 +26,7 @@ def init_trainer():
         return tf.cast(data["x"], tf.float32) / 255., tf.cast(data["y"], tf.int32)
     
     
-    ds_train = DataLoader(train_gen(x_train, y_train))
+    ds_train = DataLoader(train_gen(x_train, y_train)).to_tfDataset()
     ds_train = ds_train.map(
         normalize_img, num_parallel_calls=tf.data.AUTOTUNE)
     ds_train = ds_train.cache()
@@ -34,7 +34,7 @@ def init_trainer():
     ds_train = ds_train.batch(128, drop_remainder=True)
     ds_train = ds_train.prefetch(tf.data.AUTOTUNE)
     
-    ds_test = DataLoader(train_gen(x_test, y_test))
+    ds_test = DataLoader(train_gen(x_test, y_test)).to_tfDataset()
     ds_test = ds_test.map(
         normalize_img, num_parallel_calls=tf.data.AUTOTUNE)
     ds_test = ds_test.batch(128)

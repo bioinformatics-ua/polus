@@ -1,5 +1,5 @@
-
-from polus.core import BaseLogger, get_jit_compile
+from polus import logger
+from polus.core import get_jit_compile
 from polus.models import PolusClassifier
 from polus.hpo import HPOContext
 
@@ -26,7 +26,7 @@ def runs_if_root(method):
             return method(self, *method_args, **method_kwargs)
     return _impl
 
-class IOutput(BaseLogger):
+class IOutput:
     def __init__(self):
         super().__init__()
         if self.__class__.__name__ == "IOutputStream":
@@ -42,7 +42,7 @@ class IOutput(BaseLogger):
         self.data = OrderedDict()
         return _tmp
 
-class ICallback(BaseLogger):
+class ICallback:
     """
     Interface
     """
@@ -87,7 +87,7 @@ class CallbackCoordinator(ICallback):
         # This dict is shared across all the callbacks
         self.shared_dict = {}
         
-        self.logger.info(f"{len(self.callbacks)} callbacks were registered to be used")
+        logger.info(f"{len(self.callbacks)} callbacks were registered to be used")
         
         # store the callbacks that are outputStream
         self.output_streamers = []
@@ -218,7 +218,7 @@ class ValidationDataCallback(Callback):
         if not epoch%self.validation_interval:
             # only do validation at X interval
 
-            self.logger.info(f"Running validation for {self.name} set")
+            logger.info(f"Running validation for {self.name} set")
             # make inference
             for step, sample in enumerate(self.tf_validation):
                 if self.show_progress:
@@ -230,7 +230,7 @@ class ValidationDataCallback(Callback):
                     if isinstance(self.coordinator.trainer.model, PolusClassifier):
                         y = self.coordinator.trainer.model.inference(sample[0]), sample[1]
                     else:
-                        self.logger.warn(f"We default to just run the model over the validation data, since the models does not extend PolusClassifier neither a custom_inference_f was provided. This may result in erros down the line.")
+                        logger.warn(f"We default to just run the model over the validation data, since the models does not extend PolusClassifier neither a custom_inference_f was provided. This may result in erros down the line.")
                         y = self.coordinator.trainer.model(sample[0]), sample[1]
                 else:
                     raise ValueError(f"Sample format outputed by the validator dataset is not supported, change to a dict or a two length tuple")
@@ -274,7 +274,7 @@ class SaveModelCallback(Callback):
         self.selection_dict_key = selection_dict_key
         
         if self.strategy not in ["every", "best", "end"]:
-            self.logger.warn(f"The selected strategy ({strategy}) is not supported, so this callback will be ignored")
+            logger.warn(f"The selected strategy ({strategy}) is not supported, so this callback will be ignored")
             
         if self.strategy == "best":
             self.best = 0
@@ -323,7 +323,7 @@ class EarlyStop(Callback):
     @runs_if_root
     def on_train_begin(self):
         if self.use_smooth_loss and not self.coordinator.has_callback(LossSmoothCallback):
-            self.logger.warn("LossSmoothCallback was not found on the coordinator, which is a requirement to use smooth loss. Therefore this call back will use the normal loss")
+            logger.warn("LossSmoothCallback was not found on the coordinator, which is a requirement to use smooth loss. Therefore this call back will use the normal loss")
             self.use_smooth_loss = False
             self.loss = []
         
@@ -341,7 +341,7 @@ class EarlyStop(Callback):
             self.loss = [] # loss per epoch
         
         if np.isnan(loss):
-            self.logger.info(f"The training will stop early since the loss became nan")
+            logger.info(f"The training will stop early since the loss became nan")
             self.coordinator.trainer.early_stop = True
             ctx = HPOContext()
             if ctx.is_hpo_enable():
@@ -358,7 +358,7 @@ class EarlyStop(Callback):
             
         if self.current_patience > self.patience:
             self.coordinator.trainer.early_stop = True
-            self.logger.info(f"The training will stop early since the loss did not improve in {self.patience} consecutive epochs")
+            logger.info(f"The training will stop early since the loss did not improve in {self.patience} consecutive epochs")
 
 
 class HPOPruneCallback(Callback):
@@ -373,7 +373,7 @@ class HPOPruneCallback(Callback):
         # this can be none, if nono this callback does do anything
         self.hpo_backend = HPOContext().hpo_backend
         if self.hpo_backend is None:
-            self.logger.warn(f"HPOPruneCallback was initialized however, there is no hpo context at the moment")
+            logger.warn(f"HPOPruneCallback was initialized however, there is no hpo context at the moment")
             
         self.validator_name = validator_name
         self.metric_name = metric_name
@@ -440,7 +440,7 @@ class WandBLogCallback(Callback, IOutput):
             model_config = self.coordinator.trainer.model.savable_config
         else:
             model_config = {}
-            self.logger.warning(f"The training will log information to WandB, however, the callback was unable to find the model configuration, you should explicitly set the model configuration or use @savable_model decorator")
+            logger.warning(f"The training will log information to WandB, however, the callback was unable to find the model configuration, you should explicitly set the model configuration or use @savable_model decorator")
                 
         if self.entity is None:
             wandb.init(project=self.project,
@@ -520,13 +520,13 @@ class ConsoleLogCallback(Callback, IOutput):
     
     @runs_if_root
     def on_train_begin(self):
-        self.logger.info(f"Begin training of the model \"{self.coordinator.trainer.model.name}\" for {self.coordinator.epochs} epochs")
+        logger.info(f"Begin training of the model \"{self.coordinator.trainer.model.name}\" for {self.coordinator.epochs} epochs")
         jit_compiler_flag = get_jit_compile()
-        self.logger.debug(f"The training step will be build with jit_compiler={jit_compiler_flag}")
+        logger.debug(f"The training step will be build with jit_compiler={jit_compiler_flag}")
         
     @runs_if_root
     def on_epoch_begin(self, epoch):
-        self.logger.info(f"Begin epoch {epoch}")
+        logger.info(f"Begin epoch {epoch}")
     
     @runs_if_root
     def on_train_batch_end(self, epoch, step, loss):
@@ -539,7 +539,7 @@ class ConsoleLogCallback(Callback, IOutput):
         _tmp += self.__dict2srt(self.flush())
         
         if self.log_on_train_step:
-            self.logger.info(_tmp)
+            logger.info(_tmp)
         else:
             print(_tmp, end="\r")
     
@@ -558,8 +558,8 @@ class ConsoleLogCallback(Callback, IOutput):
         # print the reminder of the messages that other callbacks may have set  
         _tmp += self.__dict2srt(self.flush())
         
-        self.logger.info(_tmp)
+        logger.info(_tmp)
     
     @runs_if_root
     def on_train_end(self):
-        self.logger.info(f"End of the training")
+        logger.info(f"End of the training")

@@ -1,5 +1,9 @@
 Version 0.2.1: (master)
-
+    
+    Major refactor of the data.py API, now utilizes python generates and only makes a conversion to tf.data.Dataset when calling to_tfDataset()
+    
+    Changing the logging mechanism, now it utilizes a global library logger, instead of the BaseLogger Class (which was depricated)
+    
 
 Version 0.2.0:
     Adding multiGPU training with the integration of the horovod library, which handles the communication between the GPU or machines.
