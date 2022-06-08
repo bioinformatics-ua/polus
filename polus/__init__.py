@@ -55,7 +55,6 @@ __version__="0.2.1"
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
-import tensorflow as tf
 import os
 import sys
 # setting up logger
@@ -64,7 +63,14 @@ logger = logging.getLogger(__name__)
 FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s: %(message)s")
 DEBUG_FORMATTER = logging.Formatter("%(asctime)s — %(filename)s:%(name)s:%(funcName)s:%(lineno)d: %(message)s")
 
-logger.setLevel(logging.WARN)
+if "POLUS_LOGGER_LEVEL" in os.environ:
+    m = {"DEBUG": logging.DEBUG, 
+         "INFO": logging.INFO, 
+         "WARN": logging.WARN, 
+         "ERROR": logging.ERROR}
+    logger.setLevel(os.environ["POLUS_LOGGER_LEVEL"])
+else:
+    logger.setLevel(logging.DEBUG)
 
 console_handler = logging.StreamHandler(sys.stdout)
 console_handler.setFormatter(FORMATTER)
@@ -83,6 +89,8 @@ file_handler_db = TimedRotatingFileHandler(os.path.join("logs", "debug.log"), wh
 file_handler_db.setLevel(logging.DEBUG)
 file_handler_db.setFormatter(DEBUG_FORMATTER)
 logger.addHandler(file_handler_db)
+
+import tensorflow as tf
 
 try:
     import horovod.tensorflow as hvd
