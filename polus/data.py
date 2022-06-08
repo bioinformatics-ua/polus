@@ -346,9 +346,7 @@ class CachedDataLoader(DataLoader):
             aux_file_index = list(range(len(self.cache_index["files"])))
             
             if self.shuffle_blocks:
-                print("PRE SHUFFLE", aux_file_index)
                 random.shuffle(aux_file_index)
-                print("POST SHUFFLE", aux_file_index)
                 
             for file_index in aux_file_index:
                 with open(self.cache_index["files"][file_index], "rb") as f:
