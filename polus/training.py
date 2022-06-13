@@ -1,4 +1,5 @@
 import tensorflow as tf
+import os
 
 from polus import logger
 from polus.core import get_jit_compile

@@ -1,4 +1,6 @@
 tensorflow>=2.6.0
+tensorboard
+tensorboard_plugin_profile
 transformers
 tensorflow-addons
 wandb
