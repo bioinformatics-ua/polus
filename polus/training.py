@@ -278,6 +278,7 @@ class BaseTrainer:
         # add polus env var
         if os.getenv("POLUS_PROFILER", 'False').lower() in ('true', '1', 't', 'y', 'yes'):
             # add the profiler callback
+            logger.info("POLUS_PROFILER env was set to True, so the Profiler callback was added to training")
             callbacks.append(Profiler())
             
             
