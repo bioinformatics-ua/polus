@@ -15,6 +15,7 @@ import tensorflow as tf
 import inspect
 import wandb
 import numpy as np
+import os
 
 
 from functools import wraps
@@ -402,7 +403,59 @@ class HPOPruneCallback(Callback):
             else:
                 raise ValueError(f"The current {self.hpo_backend} backend is not supported so we do not know how to prune")
         
-            
+
+class Profiler(Callback):
+    """
+    Tensorflow profiler that traces all of tf operations exectuted duting a specific interval
+    """
+    def __init__(self, 
+                 write_graph=True, 
+                 steps_interval=[10,20],
+                 logs_dir="logs/tensorboard_logs"):
+        self.write_graph = write_graph
+        self.steps_interval = steps_interval
+        self.logs_dir = logs_dir
+        
+        self.trace_started = False
+        
+    @runs_if_root
+    def on_train_begin(self):
+
+        if not os.path.exists(self.logs_dir):
+            os.makedirs(self.logs_dir)
+        
+        self._tensorboard_writer = tf.summary.create_file_writer(os.path.join(self.logs_dir, "training_graph"))
+        
+        # cold init
+        tf.profiler.experimental.start(self.logs_dir)
+        tf.profiler.experimental.stop(save=False)
+
+        
+    @runs_if_root
+    def on_train_end(self):
+        logger.debug("Writing the training graph")
+        with self._tensorboard_writer.as_default():
+            tf.summary.graph(self.coordinator.trainer.train_step._concrete_stateful_fn.graph)
+    
+    @runs_if_root
+    def on_train_batch_begin(self, epoch, step):
+        if self.coordinator.trainer.step_counter > self.steps_interval[0] and not self.trace_started:
+            logger.info("Profiler - trace start!")
+            tf.summary.trace_on(graph=True, profiler=False)
+            tf.profiler.experimental.start(self.logs_dir)
+            self.trace_started = True
+            #tracer_context = tf.profiler.experimental.Trace("Train", step_num=step, _r=1)
+    
+    @runs_if_root
+    def on_train_batch_end(self, epoch, step, loss):
+        if self.coordinator.trainer.step_counter > self.steps_interval[1] and self.trace_started:
+            with self._tensorboard_writer.as_default():
+                tf.summary.trace_export(name="trace", step=tf.cast(step, dtype=tf.int64))
+            tf.profiler.experimental.stop()
+            self.trace_started = False
+            self.coordinator.trainer.early_stop = True
+        
+        
 class WandBLogCallback(Callback, IOutput):
     
     def __init__(self, project, init_args, entity=None, additional_info=None, model_config=None, model_name_prefix=""):

@@ -2,7 +2,7 @@ import tensorflow as tf
 
 from polus import logger
 from polus.core import get_jit_compile
-from polus.callbacks import CallbackCoordinator
+from polus.callbacks import CallbackCoordinator, Profiler
 
 from polus import PolusContext
 if PolusContext().is_horovod_enabled():
@@ -274,13 +274,19 @@ class BaseTrainer:
         if "custom_data_transform_f" in kwargs:
             train_map_f = kwargs.pop("custom_data_transform_f")
 
+        # add polus env var
+        if os.getenv("POLUS_PROFILER", 'False').lower() in ('true', '1', 't', 'y', 'yes'):
+            # add the profiler callback
+            callbacks.append(Profiler())
+            
+            
         if not isinstance(callbacks, CallbackCoordinator):
             callbacks = CallbackCoordinator(callbacks,
                                             trainer = self,
                                             epochs = epochs,
                                             steps = N_STEPS)
             
-            
+        
         self.callbacks = callbacks
         
         self.callbacks.on_train_begin()
@@ -288,8 +294,18 @@ class BaseTrainer:
         for epoch in range(epochs):
             self.callbacks.on_epoch_begin(epoch)
             
-            for step, data in enumerate(tf_dataset):
+            _iter = iter(tf_dataset)
+            step = 0
+            
+            while True:
+                
+            #for step, data in enumerate(tf_dataset):
                 self.callbacks.on_train_batch_begin(epoch, step)
+                
+                data = next(_iter, None)
+
+                if data is None:
+                    break
                 
                 if train_map_f is not None:
                     data = train_map_f(data)
@@ -299,10 +315,15 @@ class BaseTrainer:
 
                 loss = self.train_step(*data)
                 
+                self.callbacks.on_train_batch_end(epoch, step, loss)
+                
                 ## internally increments the step counter
                 self.step_counter += 1
+                step +=1
                 
-                self.callbacks.on_train_batch_end(epoch, step, loss)
+                if self.early_stop:
+                    break
+                
 
             self.callbacks.on_epoch_end(epoch)
             
