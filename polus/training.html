@@ -373,119 +373,120 @@
 </span><span id="L-278"><a href="#L-278"><span class="linenos">278</span></a>        <span class="c1"># add polus env var</span>
 </span><span id="L-279"><a href="#L-279"><span class="linenos">279</span></a>        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;POLUS_PROFILER&quot;</span><span class="p">,</span> <span class="s1">&#39;False&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">):</span>
 </span><span id="L-280"><a href="#L-280"><span class="linenos">280</span></a>            <span class="c1"># add the profiler callback</span>
-</span><span id="L-281"><a href="#L-281"><span class="linenos">281</span></a>            <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Profiler</span><span class="p">())</span>
-</span><span id="L-282"><a href="#L-282"><span class="linenos">282</span></a>            
+</span><span id="L-281"><a href="#L-281"><span class="linenos">281</span></a>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;POLUS_PROFILER env was set to True, so the Profiler callback was added to training&quot;</span><span class="p">)</span>
+</span><span id="L-282"><a href="#L-282"><span class="linenos">282</span></a>            <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Profiler</span><span class="p">())</span>
 </span><span id="L-283"><a href="#L-283"><span class="linenos">283</span></a>            
-</span><span id="L-284"><a href="#L-284"><span class="linenos">284</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackCoordinator</span><span class="p">):</span>
-</span><span id="L-285"><a href="#L-285"><span class="linenos">285</span></a>            <span class="n">callbacks</span> <span class="o">=</span> <span class="n">CallbackCoordinator</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span>
-</span><span id="L-286"><a href="#L-286"><span class="linenos">286</span></a>                                            <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-287"><a href="#L-287"><span class="linenos">287</span></a>                                            <span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="p">,</span>
-</span><span id="L-288"><a href="#L-288"><span class="linenos">288</span></a>                                            <span class="n">steps</span> <span class="o">=</span> <span class="n">N_STEPS</span><span class="p">)</span>
-</span><span id="L-289"><a href="#L-289"><span class="linenos">289</span></a>            
-</span><span id="L-290"><a href="#L-290"><span class="linenos">290</span></a>        
-</span><span id="L-291"><a href="#L-291"><span class="linenos">291</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span>
-</span><span id="L-292"><a href="#L-292"><span class="linenos">292</span></a>        
-</span><span id="L-293"><a href="#L-293"><span class="linenos">293</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
-</span><span id="L-294"><a href="#L-294"><span class="linenos">294</span></a>        
-</span><span id="L-295"><a href="#L-295"><span class="linenos">295</span></a>        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-</span><span id="L-296"><a href="#L-296"><span class="linenos">296</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
-</span><span id="L-297"><a href="#L-297"><span class="linenos">297</span></a>            
-</span><span id="L-298"><a href="#L-298"><span class="linenos">298</span></a>            <span class="n">_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span>
-</span><span id="L-299"><a href="#L-299"><span class="linenos">299</span></a>            <span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-300"><a href="#L-300"><span class="linenos">300</span></a>            
-</span><span id="L-301"><a href="#L-301"><span class="linenos">301</span></a>            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="L-302"><a href="#L-302"><span class="linenos">302</span></a>                
-</span><span id="L-303"><a href="#L-303"><span class="linenos">303</span></a>            <span class="c1">#for step, data in enumerate(tf_dataset):</span>
-</span><span id="L-304"><a href="#L-304"><span class="linenos">304</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
-</span><span id="L-305"><a href="#L-305"><span class="linenos">305</span></a>                
-</span><span id="L-306"><a href="#L-306"><span class="linenos">306</span></a>                <span class="n">data</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">_iter</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-</span><span id="L-307"><a href="#L-307"><span class="linenos">307</span></a>
-</span><span id="L-308"><a href="#L-308"><span class="linenos">308</span></a>                <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-309"><a href="#L-309"><span class="linenos">309</span></a>                    <span class="k">break</span>
-</span><span id="L-310"><a href="#L-310"><span class="linenos">310</span></a>                
-</span><span id="L-311"><a href="#L-311"><span class="linenos">311</span></a>                <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-312"><a href="#L-312"><span class="linenos">312</span></a>                    <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="L-313"><a href="#L-313"><span class="linenos">313</span></a>                
-</span><span id="L-314"><a href="#L-314"><span class="linenos">314</span></a>                <span class="k">if</span> <span class="n">step</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span><span class="p">:</span>
-</span><span id="L-315"><a href="#L-315"><span class="linenos">315</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">broadcast_init_vars</span><span class="p">()</span>
-</span><span id="L-316"><a href="#L-316"><span class="linenos">316</span></a>
-</span><span id="L-317"><a href="#L-317"><span class="linenos">317</span></a>                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
-</span><span id="L-318"><a href="#L-318"><span class="linenos">318</span></a>                
-</span><span id="L-319"><a href="#L-319"><span class="linenos">319</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
-</span><span id="L-320"><a href="#L-320"><span class="linenos">320</span></a>                
-</span><span id="L-321"><a href="#L-321"><span class="linenos">321</span></a>                <span class="c1">## internally increments the step counter</span>
-</span><span id="L-322"><a href="#L-322"><span class="linenos">322</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="L-323"><a href="#L-323"><span class="linenos">323</span></a>                <span class="n">step</span> <span class="o">+=</span><span class="mi">1</span>
-</span><span id="L-324"><a href="#L-324"><span class="linenos">324</span></a>                
-</span><span id="L-325"><a href="#L-325"><span class="linenos">325</span></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
-</span><span id="L-326"><a href="#L-326"><span class="linenos">326</span></a>                    <span class="k">break</span>
-</span><span id="L-327"><a href="#L-327"><span class="linenos">327</span></a>                
-</span><span id="L-328"><a href="#L-328"><span class="linenos">328</span></a>
-</span><span id="L-329"><a href="#L-329"><span class="linenos">329</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
-</span><span id="L-330"><a href="#L-330"><span class="linenos">330</span></a>            
-</span><span id="L-331"><a href="#L-331"><span class="linenos">331</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
-</span><span id="L-332"><a href="#L-332"><span class="linenos">332</span></a>                <span class="k">break</span>
-</span><span id="L-333"><a href="#L-333"><span class="linenos">333</span></a>                
-</span><span id="L-334"><a href="#L-334"><span class="linenos">334</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span>
-</span><span id="L-335"><a href="#L-335"><span class="linenos">335</span></a>        
+</span><span id="L-284"><a href="#L-284"><span class="linenos">284</span></a>            
+</span><span id="L-285"><a href="#L-285"><span class="linenos">285</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackCoordinator</span><span class="p">):</span>
+</span><span id="L-286"><a href="#L-286"><span class="linenos">286</span></a>            <span class="n">callbacks</span> <span class="o">=</span> <span class="n">CallbackCoordinator</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span>
+</span><span id="L-287"><a href="#L-287"><span class="linenos">287</span></a>                                            <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-288"><a href="#L-288"><span class="linenos">288</span></a>                                            <span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="p">,</span>
+</span><span id="L-289"><a href="#L-289"><span class="linenos">289</span></a>                                            <span class="n">steps</span> <span class="o">=</span> <span class="n">N_STEPS</span><span class="p">)</span>
+</span><span id="L-290"><a href="#L-290"><span class="linenos">290</span></a>            
+</span><span id="L-291"><a href="#L-291"><span class="linenos">291</span></a>        
+</span><span id="L-292"><a href="#L-292"><span class="linenos">292</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span>
+</span><span id="L-293"><a href="#L-293"><span class="linenos">293</span></a>        
+</span><span id="L-294"><a href="#L-294"><span class="linenos">294</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
+</span><span id="L-295"><a href="#L-295"><span class="linenos">295</span></a>        
+</span><span id="L-296"><a href="#L-296"><span class="linenos">296</span></a>        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+</span><span id="L-297"><a href="#L-297"><span class="linenos">297</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+</span><span id="L-298"><a href="#L-298"><span class="linenos">298</span></a>            
+</span><span id="L-299"><a href="#L-299"><span class="linenos">299</span></a>            <span class="n">_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span>
+</span><span id="L-300"><a href="#L-300"><span class="linenos">300</span></a>            <span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-301"><a href="#L-301"><span class="linenos">301</span></a>            
+</span><span id="L-302"><a href="#L-302"><span class="linenos">302</span></a>            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="L-303"><a href="#L-303"><span class="linenos">303</span></a>                
+</span><span id="L-304"><a href="#L-304"><span class="linenos">304</span></a>            <span class="c1">#for step, data in enumerate(tf_dataset):</span>
+</span><span id="L-305"><a href="#L-305"><span class="linenos">305</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+</span><span id="L-306"><a href="#L-306"><span class="linenos">306</span></a>                
+</span><span id="L-307"><a href="#L-307"><span class="linenos">307</span></a>                <span class="n">data</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">_iter</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="L-308"><a href="#L-308"><span class="linenos">308</span></a>
+</span><span id="L-309"><a href="#L-309"><span class="linenos">309</span></a>                <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-310"><a href="#L-310"><span class="linenos">310</span></a>                    <span class="k">break</span>
+</span><span id="L-311"><a href="#L-311"><span class="linenos">311</span></a>                
+</span><span id="L-312"><a href="#L-312"><span class="linenos">312</span></a>                <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-313"><a href="#L-313"><span class="linenos">313</span></a>                    <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="L-314"><a href="#L-314"><span class="linenos">314</span></a>                
+</span><span id="L-315"><a href="#L-315"><span class="linenos">315</span></a>                <span class="k">if</span> <span class="n">step</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span><span class="p">:</span>
+</span><span id="L-316"><a href="#L-316"><span class="linenos">316</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">broadcast_init_vars</span><span class="p">()</span>
+</span><span id="L-317"><a href="#L-317"><span class="linenos">317</span></a>
+</span><span id="L-318"><a href="#L-318"><span class="linenos">318</span></a>                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+</span><span id="L-319"><a href="#L-319"><span class="linenos">319</span></a>                
+</span><span id="L-320"><a href="#L-320"><span class="linenos">320</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
+</span><span id="L-321"><a href="#L-321"><span class="linenos">321</span></a>                
+</span><span id="L-322"><a href="#L-322"><span class="linenos">322</span></a>                <span class="c1">## internally increments the step counter</span>
+</span><span id="L-323"><a href="#L-323"><span class="linenos">323</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="L-324"><a href="#L-324"><span class="linenos">324</span></a>                <span class="n">step</span> <span class="o">+=</span><span class="mi">1</span>
+</span><span id="L-325"><a href="#L-325"><span class="linenos">325</span></a>                
+</span><span id="L-326"><a href="#L-326"><span class="linenos">326</span></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
+</span><span id="L-327"><a href="#L-327"><span class="linenos">327</span></a>                    <span class="k">break</span>
+</span><span id="L-328"><a href="#L-328"><span class="linenos">328</span></a>                
+</span><span id="L-329"><a href="#L-329"><span class="linenos">329</span></a>
+</span><span id="L-330"><a href="#L-330"><span class="linenos">330</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+</span><span id="L-331"><a href="#L-331"><span class="linenos">331</span></a>            
+</span><span id="L-332"><a href="#L-332"><span class="linenos">332</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
+</span><span id="L-333"><a href="#L-333"><span class="linenos">333</span></a>                <span class="k">break</span>
+</span><span id="L-334"><a href="#L-334"><span class="linenos">334</span></a>                
+</span><span id="L-335"><a href="#L-335"><span class="linenos">335</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span>
 </span><span id="L-336"><a href="#L-336"><span class="linenos">336</span></a>        
-</span><span id="L-337"><a href="#L-337"><span class="linenos">337</span></a><span class="k">class</span> <span class="nc">ClassifierTrainer</span><span class="p">(</span><span class="n">BaseTrainer</span><span class="p">):</span>
-</span><span id="L-338"><a href="#L-338"><span class="linenos">338</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-339"><a href="#L-339"><span class="linenos">339</span></a><span class="sd">    Standard classifier that extens the base trainer.</span>
-</span><span id="L-340"><a href="#L-340"><span class="linenos">340</span></a><span class="sd">    </span>
-</span><span id="L-341"><a href="#L-341"><span class="linenos">341</span></a><span class="sd">    This trainer can be use to solve simple classification </span>
-</span><span id="L-342"><a href="#L-342"><span class="linenos">342</span></a><span class="sd">    or regression tasks.</span>
-</span><span id="L-343"><a href="#L-343"><span class="linenos">343</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-344"><a href="#L-344"><span class="linenos">344</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-</span><span id="L-345"><a href="#L-345"><span class="linenos">345</span></a>                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-</span><span id="L-346"><a href="#L-346"><span class="linenos">346</span></a>                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="L-347"><a href="#L-347"><span class="linenos">347</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-348"><a href="#L-348"><span class="linenos">348</span></a><span class="sd">        Args:</span>
-</span><span id="L-349"><a href="#L-349"><span class="linenos">349</span></a><span class="sd">          args: positional arguments that are passed into the</span>
-</span><span id="L-350"><a href="#L-350"><span class="linenos">350</span></a><span class="sd">            base class, e.g., the model variable.</span>
-</span><span id="L-351"><a href="#L-351"><span class="linenos">351</span></a><span class="sd">            </span>
-</span><span id="L-352"><a href="#L-352"><span class="linenos">352</span></a><span class="sd">          trainable_weights (list of tf.Variables): List of </span>
-</span><span id="L-353"><a href="#L-353"><span class="linenos">353</span></a><span class="sd">            trainable variables that will be optimized. Note </span>
-</span><span id="L-354"><a href="#L-354"><span class="linenos">354</span></a><span class="sd">            that this variables must belongs to the model to </span>
-</span><span id="L-355"><a href="#L-355"><span class="linenos">355</span></a><span class="sd">            be trained.</span>
-</span><span id="L-356"><a href="#L-356"><span class="linenos">356</span></a><span class="sd">          </span>
-</span><span id="L-357"><a href="#L-357"><span class="linenos">357</span></a><span class="sd">          kwargs: keyword arguments that are passed into the</span>
-</span><span id="L-358"><a href="#L-358"><span class="linenos">358</span></a><span class="sd">            base class.</span>
-</span><span id="L-359"><a href="#L-359"><span class="linenos">359</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-360"><a href="#L-360"><span class="linenos">360</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="L-361"><a href="#L-361"><span class="linenos">361</span></a>    
-</span><span id="L-362"><a href="#L-362"><span class="linenos">362</span></a>    <span class="k">def</span> <span class="nf">forward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-</span><span id="L-363"><a href="#L-363"><span class="linenos">363</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-364"><a href="#L-364"><span class="linenos">364</span></a><span class="sd">        Override of ´polus.training.BaseTrainer.forward_with_grads´</span>
-</span><span id="L-365"><a href="#L-365"><span class="linenos">365</span></a><span class="sd">        </span>
-</span><span id="L-366"><a href="#L-366"><span class="linenos">366</span></a><span class="sd">        Args:</span>
-</span><span id="L-367"><a href="#L-367"><span class="linenos">367</span></a><span class="sd">          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): </span>
-</span><span id="L-368"><a href="#L-368"><span class="linenos">368</span></a><span class="sd">            Samples, in a TensorFlow format, that are fed to the model.</span>
-</span><span id="L-369"><a href="#L-369"><span class="linenos">369</span></a><span class="sd">            </span>
-</span><span id="L-370"><a href="#L-370"><span class="linenos">370</span></a><span class="sd">          y (object): The true label associated with the model, this</span>
-</span><span id="L-371"><a href="#L-371"><span class="linenos">371</span></a><span class="sd">            normally are represented as integer or float.</span>
-</span><span id="L-372"><a href="#L-372"><span class="linenos">372</span></a><span class="sd">            </span>
-</span><span id="L-373"><a href="#L-373"><span class="linenos">373</span></a><span class="sd">        Returns:</span>
-</span><span id="L-374"><a href="#L-374"><span class="linenos">374</span></a><span class="sd">          y (object): The true label associated with the model, this</span>
-</span><span id="L-375"><a href="#L-375"><span class="linenos">375</span></a><span class="sd">            normally are represented as integer or float.</span>
-</span><span id="L-376"><a href="#L-376"><span class="linenos">376</span></a><span class="sd">            </span>
-</span><span id="L-377"><a href="#L-377"><span class="linenos">377</span></a><span class="sd">          logits (tf.Tensor): prediction of the model over the input</span>
-</span><span id="L-378"><a href="#L-378"><span class="linenos">378</span></a><span class="sd">            data *x*.</span>
-</span><span id="L-379"><a href="#L-379"><span class="linenos">379</span></a><span class="sd">            </span>
-</span><span id="L-380"><a href="#L-380"><span class="linenos">380</span></a><span class="sd">        Note that the return values are dirictly passed to the loss</span>
-</span><span id="L-381"><a href="#L-381"><span class="linenos">381</span></a><span class="sd">        function.</span>
-</span><span id="L-382"><a href="#L-382"><span class="linenos">382</span></a><span class="sd">        &quot;&quot;&quot;</span> 
-</span><span id="L-383"><a href="#L-383"><span class="linenos">383</span></a>        
-</span><span id="L-384"><a href="#L-384"><span class="linenos">384</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-</span><span id="L-385"><a href="#L-385"><span class="linenos">385</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-386"><a href="#L-386"><span class="linenos">386</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="L-387"><a href="#L-387"><span class="linenos">387</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-388"><a href="#L-388"><span class="linenos">388</span></a>            
-</span><span id="L-389"><a href="#L-389"><span class="linenos">389</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-390"><a href="#L-390"><span class="linenos">390</span></a>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Post process step of the logits was added to the training loop&quot;</span><span class="p">)</span>
-</span><span id="L-391"><a href="#L-391"><span class="linenos">391</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
-</span><span id="L-392"><a href="#L-392"><span class="linenos">392</span></a>
-</span><span id="L-393"><a href="#L-393"><span class="linenos">393</span></a>        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">logits</span><span class="c1">#self.loss(y, logits)</span>
+</span><span id="L-337"><a href="#L-337"><span class="linenos">337</span></a>        
+</span><span id="L-338"><a href="#L-338"><span class="linenos">338</span></a><span class="k">class</span> <span class="nc">ClassifierTrainer</span><span class="p">(</span><span class="n">BaseTrainer</span><span class="p">):</span>
+</span><span id="L-339"><a href="#L-339"><span class="linenos">339</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-340"><a href="#L-340"><span class="linenos">340</span></a><span class="sd">    Standard classifier that extens the base trainer.</span>
+</span><span id="L-341"><a href="#L-341"><span class="linenos">341</span></a><span class="sd">    </span>
+</span><span id="L-342"><a href="#L-342"><span class="linenos">342</span></a><span class="sd">    This trainer can be use to solve simple classification </span>
+</span><span id="L-343"><a href="#L-343"><span class="linenos">343</span></a><span class="sd">    or regression tasks.</span>
+</span><span id="L-344"><a href="#L-344"><span class="linenos">344</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-345"><a href="#L-345"><span class="linenos">345</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+</span><span id="L-346"><a href="#L-346"><span class="linenos">346</span></a>                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="L-347"><a href="#L-347"><span class="linenos">347</span></a>                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="L-348"><a href="#L-348"><span class="linenos">348</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-349"><a href="#L-349"><span class="linenos">349</span></a><span class="sd">        Args:</span>
+</span><span id="L-350"><a href="#L-350"><span class="linenos">350</span></a><span class="sd">          args: positional arguments that are passed into the</span>
+</span><span id="L-351"><a href="#L-351"><span class="linenos">351</span></a><span class="sd">            base class, e.g., the model variable.</span>
+</span><span id="L-352"><a href="#L-352"><span class="linenos">352</span></a><span class="sd">            </span>
+</span><span id="L-353"><a href="#L-353"><span class="linenos">353</span></a><span class="sd">          trainable_weights (list of tf.Variables): List of </span>
+</span><span id="L-354"><a href="#L-354"><span class="linenos">354</span></a><span class="sd">            trainable variables that will be optimized. Note </span>
+</span><span id="L-355"><a href="#L-355"><span class="linenos">355</span></a><span class="sd">            that this variables must belongs to the model to </span>
+</span><span id="L-356"><a href="#L-356"><span class="linenos">356</span></a><span class="sd">            be trained.</span>
+</span><span id="L-357"><a href="#L-357"><span class="linenos">357</span></a><span class="sd">          </span>
+</span><span id="L-358"><a href="#L-358"><span class="linenos">358</span></a><span class="sd">          kwargs: keyword arguments that are passed into the</span>
+</span><span id="L-359"><a href="#L-359"><span class="linenos">359</span></a><span class="sd">            base class.</span>
+</span><span id="L-360"><a href="#L-360"><span class="linenos">360</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-361"><a href="#L-361"><span class="linenos">361</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-362"><a href="#L-362"><span class="linenos">362</span></a>    
+</span><span id="L-363"><a href="#L-363"><span class="linenos">363</span></a>    <span class="k">def</span> <span class="nf">forward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span id="L-364"><a href="#L-364"><span class="linenos">364</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-365"><a href="#L-365"><span class="linenos">365</span></a><span class="sd">        Override of ´polus.training.BaseTrainer.forward_with_grads´</span>
+</span><span id="L-366"><a href="#L-366"><span class="linenos">366</span></a><span class="sd">        </span>
+</span><span id="L-367"><a href="#L-367"><span class="linenos">367</span></a><span class="sd">        Args:</span>
+</span><span id="L-368"><a href="#L-368"><span class="linenos">368</span></a><span class="sd">          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): </span>
+</span><span id="L-369"><a href="#L-369"><span class="linenos">369</span></a><span class="sd">            Samples, in a TensorFlow format, that are fed to the model.</span>
+</span><span id="L-370"><a href="#L-370"><span class="linenos">370</span></a><span class="sd">            </span>
+</span><span id="L-371"><a href="#L-371"><span class="linenos">371</span></a><span class="sd">          y (object): The true label associated with the model, this</span>
+</span><span id="L-372"><a href="#L-372"><span class="linenos">372</span></a><span class="sd">            normally are represented as integer or float.</span>
+</span><span id="L-373"><a href="#L-373"><span class="linenos">373</span></a><span class="sd">            </span>
+</span><span id="L-374"><a href="#L-374"><span class="linenos">374</span></a><span class="sd">        Returns:</span>
+</span><span id="L-375"><a href="#L-375"><span class="linenos">375</span></a><span class="sd">          y (object): The true label associated with the model, this</span>
+</span><span id="L-376"><a href="#L-376"><span class="linenos">376</span></a><span class="sd">            normally are represented as integer or float.</span>
+</span><span id="L-377"><a href="#L-377"><span class="linenos">377</span></a><span class="sd">            </span>
+</span><span id="L-378"><a href="#L-378"><span class="linenos">378</span></a><span class="sd">          logits (tf.Tensor): prediction of the model over the input</span>
+</span><span id="L-379"><a href="#L-379"><span class="linenos">379</span></a><span class="sd">            data *x*.</span>
+</span><span id="L-380"><a href="#L-380"><span class="linenos">380</span></a><span class="sd">            </span>
+</span><span id="L-381"><a href="#L-381"><span class="linenos">381</span></a><span class="sd">        Note that the return values are dirictly passed to the loss</span>
+</span><span id="L-382"><a href="#L-382"><span class="linenos">382</span></a><span class="sd">        function.</span>
+</span><span id="L-383"><a href="#L-383"><span class="linenos">383</span></a><span class="sd">        &quot;&quot;&quot;</span> 
+</span><span id="L-384"><a href="#L-384"><span class="linenos">384</span></a>        
+</span><span id="L-385"><a href="#L-385"><span class="linenos">385</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span id="L-386"><a href="#L-386"><span class="linenos">386</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-387"><a href="#L-387"><span class="linenos">387</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-388"><a href="#L-388"><span class="linenos">388</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-389"><a href="#L-389"><span class="linenos">389</span></a>            
+</span><span id="L-390"><a href="#L-390"><span class="linenos">390</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-391"><a href="#L-391"><span class="linenos">391</span></a>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Post process step of the logits was added to the training loop&quot;</span><span class="p">)</span>
+</span><span id="L-392"><a href="#L-392"><span class="linenos">392</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
+</span><span id="L-393"><a href="#L-393"><span class="linenos">393</span></a>
+</span><span id="L-394"><a href="#L-394"><span class="linenos">394</span></a>        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">logits</span><span class="c1">#self.loss(y, logits)</span>
 </span></pre></div>
 
 
@@ -768,60 +769,61 @@
 </span><span id="BaseTrainer-279"><a href="#BaseTrainer-279"><span class="linenos">279</span></a>        <span class="c1"># add polus env var</span>
 </span><span id="BaseTrainer-280"><a href="#BaseTrainer-280"><span class="linenos">280</span></a>        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;POLUS_PROFILER&quot;</span><span class="p">,</span> <span class="s1">&#39;False&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">):</span>
 </span><span id="BaseTrainer-281"><a href="#BaseTrainer-281"><span class="linenos">281</span></a>            <span class="c1"># add the profiler callback</span>
-</span><span id="BaseTrainer-282"><a href="#BaseTrainer-282"><span class="linenos">282</span></a>            <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Profiler</span><span class="p">())</span>
-</span><span id="BaseTrainer-283"><a href="#BaseTrainer-283"><span class="linenos">283</span></a>            
+</span><span id="BaseTrainer-282"><a href="#BaseTrainer-282"><span class="linenos">282</span></a>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;POLUS_PROFILER env was set to True, so the Profiler callback was added to training&quot;</span><span class="p">)</span>
+</span><span id="BaseTrainer-283"><a href="#BaseTrainer-283"><span class="linenos">283</span></a>            <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Profiler</span><span class="p">())</span>
 </span><span id="BaseTrainer-284"><a href="#BaseTrainer-284"><span class="linenos">284</span></a>            
-</span><span id="BaseTrainer-285"><a href="#BaseTrainer-285"><span class="linenos">285</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackCoordinator</span><span class="p">):</span>
-</span><span id="BaseTrainer-286"><a href="#BaseTrainer-286"><span class="linenos">286</span></a>            <span class="n">callbacks</span> <span class="o">=</span> <span class="n">CallbackCoordinator</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span>
-</span><span id="BaseTrainer-287"><a href="#BaseTrainer-287"><span class="linenos">287</span></a>                                            <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="p">,</span>
-</span><span id="BaseTrainer-288"><a href="#BaseTrainer-288"><span class="linenos">288</span></a>                                            <span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="p">,</span>
-</span><span id="BaseTrainer-289"><a href="#BaseTrainer-289"><span class="linenos">289</span></a>                                            <span class="n">steps</span> <span class="o">=</span> <span class="n">N_STEPS</span><span class="p">)</span>
-</span><span id="BaseTrainer-290"><a href="#BaseTrainer-290"><span class="linenos">290</span></a>            
-</span><span id="BaseTrainer-291"><a href="#BaseTrainer-291"><span class="linenos">291</span></a>        
-</span><span id="BaseTrainer-292"><a href="#BaseTrainer-292"><span class="linenos">292</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span>
-</span><span id="BaseTrainer-293"><a href="#BaseTrainer-293"><span class="linenos">293</span></a>        
-</span><span id="BaseTrainer-294"><a href="#BaseTrainer-294"><span class="linenos">294</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
-</span><span id="BaseTrainer-295"><a href="#BaseTrainer-295"><span class="linenos">295</span></a>        
-</span><span id="BaseTrainer-296"><a href="#BaseTrainer-296"><span class="linenos">296</span></a>        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-</span><span id="BaseTrainer-297"><a href="#BaseTrainer-297"><span class="linenos">297</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
-</span><span id="BaseTrainer-298"><a href="#BaseTrainer-298"><span class="linenos">298</span></a>            
-</span><span id="BaseTrainer-299"><a href="#BaseTrainer-299"><span class="linenos">299</span></a>            <span class="n">_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span>
-</span><span id="BaseTrainer-300"><a href="#BaseTrainer-300"><span class="linenos">300</span></a>            <span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="BaseTrainer-301"><a href="#BaseTrainer-301"><span class="linenos">301</span></a>            
-</span><span id="BaseTrainer-302"><a href="#BaseTrainer-302"><span class="linenos">302</span></a>            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="BaseTrainer-303"><a href="#BaseTrainer-303"><span class="linenos">303</span></a>                
-</span><span id="BaseTrainer-304"><a href="#BaseTrainer-304"><span class="linenos">304</span></a>            <span class="c1">#for step, data in enumerate(tf_dataset):</span>
-</span><span id="BaseTrainer-305"><a href="#BaseTrainer-305"><span class="linenos">305</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
-</span><span id="BaseTrainer-306"><a href="#BaseTrainer-306"><span class="linenos">306</span></a>                
-</span><span id="BaseTrainer-307"><a href="#BaseTrainer-307"><span class="linenos">307</span></a>                <span class="n">data</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">_iter</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-</span><span id="BaseTrainer-308"><a href="#BaseTrainer-308"><span class="linenos">308</span></a>
-</span><span id="BaseTrainer-309"><a href="#BaseTrainer-309"><span class="linenos">309</span></a>                <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="BaseTrainer-310"><a href="#BaseTrainer-310"><span class="linenos">310</span></a>                    <span class="k">break</span>
-</span><span id="BaseTrainer-311"><a href="#BaseTrainer-311"><span class="linenos">311</span></a>                
-</span><span id="BaseTrainer-312"><a href="#BaseTrainer-312"><span class="linenos">312</span></a>                <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="BaseTrainer-313"><a href="#BaseTrainer-313"><span class="linenos">313</span></a>                    <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="BaseTrainer-314"><a href="#BaseTrainer-314"><span class="linenos">314</span></a>                
-</span><span id="BaseTrainer-315"><a href="#BaseTrainer-315"><span class="linenos">315</span></a>                <span class="k">if</span> <span class="n">step</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span><span class="p">:</span>
-</span><span id="BaseTrainer-316"><a href="#BaseTrainer-316"><span class="linenos">316</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">broadcast_init_vars</span><span class="p">()</span>
-</span><span id="BaseTrainer-317"><a href="#BaseTrainer-317"><span class="linenos">317</span></a>
-</span><span id="BaseTrainer-318"><a href="#BaseTrainer-318"><span class="linenos">318</span></a>                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
-</span><span id="BaseTrainer-319"><a href="#BaseTrainer-319"><span class="linenos">319</span></a>                
-</span><span id="BaseTrainer-320"><a href="#BaseTrainer-320"><span class="linenos">320</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
-</span><span id="BaseTrainer-321"><a href="#BaseTrainer-321"><span class="linenos">321</span></a>                
-</span><span id="BaseTrainer-322"><a href="#BaseTrainer-322"><span class="linenos">322</span></a>                <span class="c1">## internally increments the step counter</span>
-</span><span id="BaseTrainer-323"><a href="#BaseTrainer-323"><span class="linenos">323</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="BaseTrainer-324"><a href="#BaseTrainer-324"><span class="linenos">324</span></a>                <span class="n">step</span> <span class="o">+=</span><span class="mi">1</span>
-</span><span id="BaseTrainer-325"><a href="#BaseTrainer-325"><span class="linenos">325</span></a>                
-</span><span id="BaseTrainer-326"><a href="#BaseTrainer-326"><span class="linenos">326</span></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
-</span><span id="BaseTrainer-327"><a href="#BaseTrainer-327"><span class="linenos">327</span></a>                    <span class="k">break</span>
-</span><span id="BaseTrainer-328"><a href="#BaseTrainer-328"><span class="linenos">328</span></a>                
-</span><span id="BaseTrainer-329"><a href="#BaseTrainer-329"><span class="linenos">329</span></a>
-</span><span id="BaseTrainer-330"><a href="#BaseTrainer-330"><span class="linenos">330</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
-</span><span id="BaseTrainer-331"><a href="#BaseTrainer-331"><span class="linenos">331</span></a>            
-</span><span id="BaseTrainer-332"><a href="#BaseTrainer-332"><span class="linenos">332</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
-</span><span id="BaseTrainer-333"><a href="#BaseTrainer-333"><span class="linenos">333</span></a>                <span class="k">break</span>
-</span><span id="BaseTrainer-334"><a href="#BaseTrainer-334"><span class="linenos">334</span></a>                
-</span><span id="BaseTrainer-335"><a href="#BaseTrainer-335"><span class="linenos">335</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span>
+</span><span id="BaseTrainer-285"><a href="#BaseTrainer-285"><span class="linenos">285</span></a>            
+</span><span id="BaseTrainer-286"><a href="#BaseTrainer-286"><span class="linenos">286</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackCoordinator</span><span class="p">):</span>
+</span><span id="BaseTrainer-287"><a href="#BaseTrainer-287"><span class="linenos">287</span></a>            <span class="n">callbacks</span> <span class="o">=</span> <span class="n">CallbackCoordinator</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span>
+</span><span id="BaseTrainer-288"><a href="#BaseTrainer-288"><span class="linenos">288</span></a>                                            <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="p">,</span>
+</span><span id="BaseTrainer-289"><a href="#BaseTrainer-289"><span class="linenos">289</span></a>                                            <span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="p">,</span>
+</span><span id="BaseTrainer-290"><a href="#BaseTrainer-290"><span class="linenos">290</span></a>                                            <span class="n">steps</span> <span class="o">=</span> <span class="n">N_STEPS</span><span class="p">)</span>
+</span><span id="BaseTrainer-291"><a href="#BaseTrainer-291"><span class="linenos">291</span></a>            
+</span><span id="BaseTrainer-292"><a href="#BaseTrainer-292"><span class="linenos">292</span></a>        
+</span><span id="BaseTrainer-293"><a href="#BaseTrainer-293"><span class="linenos">293</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span>
+</span><span id="BaseTrainer-294"><a href="#BaseTrainer-294"><span class="linenos">294</span></a>        
+</span><span id="BaseTrainer-295"><a href="#BaseTrainer-295"><span class="linenos">295</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
+</span><span id="BaseTrainer-296"><a href="#BaseTrainer-296"><span class="linenos">296</span></a>        
+</span><span id="BaseTrainer-297"><a href="#BaseTrainer-297"><span class="linenos">297</span></a>        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+</span><span id="BaseTrainer-298"><a href="#BaseTrainer-298"><span class="linenos">298</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+</span><span id="BaseTrainer-299"><a href="#BaseTrainer-299"><span class="linenos">299</span></a>            
+</span><span id="BaseTrainer-300"><a href="#BaseTrainer-300"><span class="linenos">300</span></a>            <span class="n">_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span>
+</span><span id="BaseTrainer-301"><a href="#BaseTrainer-301"><span class="linenos">301</span></a>            <span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="BaseTrainer-302"><a href="#BaseTrainer-302"><span class="linenos">302</span></a>            
+</span><span id="BaseTrainer-303"><a href="#BaseTrainer-303"><span class="linenos">303</span></a>            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="BaseTrainer-304"><a href="#BaseTrainer-304"><span class="linenos">304</span></a>                
+</span><span id="BaseTrainer-305"><a href="#BaseTrainer-305"><span class="linenos">305</span></a>            <span class="c1">#for step, data in enumerate(tf_dataset):</span>
+</span><span id="BaseTrainer-306"><a href="#BaseTrainer-306"><span class="linenos">306</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+</span><span id="BaseTrainer-307"><a href="#BaseTrainer-307"><span class="linenos">307</span></a>                
+</span><span id="BaseTrainer-308"><a href="#BaseTrainer-308"><span class="linenos">308</span></a>                <span class="n">data</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">_iter</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="BaseTrainer-309"><a href="#BaseTrainer-309"><span class="linenos">309</span></a>
+</span><span id="BaseTrainer-310"><a href="#BaseTrainer-310"><span class="linenos">310</span></a>                <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="BaseTrainer-311"><a href="#BaseTrainer-311"><span class="linenos">311</span></a>                    <span class="k">break</span>
+</span><span id="BaseTrainer-312"><a href="#BaseTrainer-312"><span class="linenos">312</span></a>                
+</span><span id="BaseTrainer-313"><a href="#BaseTrainer-313"><span class="linenos">313</span></a>                <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="BaseTrainer-314"><a href="#BaseTrainer-314"><span class="linenos">314</span></a>                    <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="BaseTrainer-315"><a href="#BaseTrainer-315"><span class="linenos">315</span></a>                
+</span><span id="BaseTrainer-316"><a href="#BaseTrainer-316"><span class="linenos">316</span></a>                <span class="k">if</span> <span class="n">step</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span><span class="p">:</span>
+</span><span id="BaseTrainer-317"><a href="#BaseTrainer-317"><span class="linenos">317</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">broadcast_init_vars</span><span class="p">()</span>
+</span><span id="BaseTrainer-318"><a href="#BaseTrainer-318"><span class="linenos">318</span></a>
+</span><span id="BaseTrainer-319"><a href="#BaseTrainer-319"><span class="linenos">319</span></a>                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+</span><span id="BaseTrainer-320"><a href="#BaseTrainer-320"><span class="linenos">320</span></a>                
+</span><span id="BaseTrainer-321"><a href="#BaseTrainer-321"><span class="linenos">321</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
+</span><span id="BaseTrainer-322"><a href="#BaseTrainer-322"><span class="linenos">322</span></a>                
+</span><span id="BaseTrainer-323"><a href="#BaseTrainer-323"><span class="linenos">323</span></a>                <span class="c1">## internally increments the step counter</span>
+</span><span id="BaseTrainer-324"><a href="#BaseTrainer-324"><span class="linenos">324</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="BaseTrainer-325"><a href="#BaseTrainer-325"><span class="linenos">325</span></a>                <span class="n">step</span> <span class="o">+=</span><span class="mi">1</span>
+</span><span id="BaseTrainer-326"><a href="#BaseTrainer-326"><span class="linenos">326</span></a>                
+</span><span id="BaseTrainer-327"><a href="#BaseTrainer-327"><span class="linenos">327</span></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
+</span><span id="BaseTrainer-328"><a href="#BaseTrainer-328"><span class="linenos">328</span></a>                    <span class="k">break</span>
+</span><span id="BaseTrainer-329"><a href="#BaseTrainer-329"><span class="linenos">329</span></a>                
+</span><span id="BaseTrainer-330"><a href="#BaseTrainer-330"><span class="linenos">330</span></a>
+</span><span id="BaseTrainer-331"><a href="#BaseTrainer-331"><span class="linenos">331</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+</span><span id="BaseTrainer-332"><a href="#BaseTrainer-332"><span class="linenos">332</span></a>            
+</span><span id="BaseTrainer-333"><a href="#BaseTrainer-333"><span class="linenos">333</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
+</span><span id="BaseTrainer-334"><a href="#BaseTrainer-334"><span class="linenos">334</span></a>                <span class="k">break</span>
+</span><span id="BaseTrainer-335"><a href="#BaseTrainer-335"><span class="linenos">335</span></a>                
+</span><span id="BaseTrainer-336"><a href="#BaseTrainer-336"><span class="linenos">336</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -1309,60 +1311,61 @@ fast.ai</p>
 </span><span id="BaseTrainer.train-279"><a href="#BaseTrainer.train-279"><span class="linenos">279</span></a>        <span class="c1"># add polus env var</span>
 </span><span id="BaseTrainer.train-280"><a href="#BaseTrainer.train-280"><span class="linenos">280</span></a>        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;POLUS_PROFILER&quot;</span><span class="p">,</span> <span class="s1">&#39;False&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">):</span>
 </span><span id="BaseTrainer.train-281"><a href="#BaseTrainer.train-281"><span class="linenos">281</span></a>            <span class="c1"># add the profiler callback</span>
-</span><span id="BaseTrainer.train-282"><a href="#BaseTrainer.train-282"><span class="linenos">282</span></a>            <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Profiler</span><span class="p">())</span>
-</span><span id="BaseTrainer.train-283"><a href="#BaseTrainer.train-283"><span class="linenos">283</span></a>            
+</span><span id="BaseTrainer.train-282"><a href="#BaseTrainer.train-282"><span class="linenos">282</span></a>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;POLUS_PROFILER env was set to True, so the Profiler callback was added to training&quot;</span><span class="p">)</span>
+</span><span id="BaseTrainer.train-283"><a href="#BaseTrainer.train-283"><span class="linenos">283</span></a>            <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Profiler</span><span class="p">())</span>
 </span><span id="BaseTrainer.train-284"><a href="#BaseTrainer.train-284"><span class="linenos">284</span></a>            
-</span><span id="BaseTrainer.train-285"><a href="#BaseTrainer.train-285"><span class="linenos">285</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackCoordinator</span><span class="p">):</span>
-</span><span id="BaseTrainer.train-286"><a href="#BaseTrainer.train-286"><span class="linenos">286</span></a>            <span class="n">callbacks</span> <span class="o">=</span> <span class="n">CallbackCoordinator</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span>
-</span><span id="BaseTrainer.train-287"><a href="#BaseTrainer.train-287"><span class="linenos">287</span></a>                                            <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="p">,</span>
-</span><span id="BaseTrainer.train-288"><a href="#BaseTrainer.train-288"><span class="linenos">288</span></a>                                            <span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="p">,</span>
-</span><span id="BaseTrainer.train-289"><a href="#BaseTrainer.train-289"><span class="linenos">289</span></a>                                            <span class="n">steps</span> <span class="o">=</span> <span class="n">N_STEPS</span><span class="p">)</span>
-</span><span id="BaseTrainer.train-290"><a href="#BaseTrainer.train-290"><span class="linenos">290</span></a>            
-</span><span id="BaseTrainer.train-291"><a href="#BaseTrainer.train-291"><span class="linenos">291</span></a>        
-</span><span id="BaseTrainer.train-292"><a href="#BaseTrainer.train-292"><span class="linenos">292</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span>
-</span><span id="BaseTrainer.train-293"><a href="#BaseTrainer.train-293"><span class="linenos">293</span></a>        
-</span><span id="BaseTrainer.train-294"><a href="#BaseTrainer.train-294"><span class="linenos">294</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
-</span><span id="BaseTrainer.train-295"><a href="#BaseTrainer.train-295"><span class="linenos">295</span></a>        
-</span><span id="BaseTrainer.train-296"><a href="#BaseTrainer.train-296"><span class="linenos">296</span></a>        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-</span><span id="BaseTrainer.train-297"><a href="#BaseTrainer.train-297"><span class="linenos">297</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
-</span><span id="BaseTrainer.train-298"><a href="#BaseTrainer.train-298"><span class="linenos">298</span></a>            
-</span><span id="BaseTrainer.train-299"><a href="#BaseTrainer.train-299"><span class="linenos">299</span></a>            <span class="n">_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span>
-</span><span id="BaseTrainer.train-300"><a href="#BaseTrainer.train-300"><span class="linenos">300</span></a>            <span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="BaseTrainer.train-301"><a href="#BaseTrainer.train-301"><span class="linenos">301</span></a>            
-</span><span id="BaseTrainer.train-302"><a href="#BaseTrainer.train-302"><span class="linenos">302</span></a>            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="BaseTrainer.train-303"><a href="#BaseTrainer.train-303"><span class="linenos">303</span></a>                
-</span><span id="BaseTrainer.train-304"><a href="#BaseTrainer.train-304"><span class="linenos">304</span></a>            <span class="c1">#for step, data in enumerate(tf_dataset):</span>
-</span><span id="BaseTrainer.train-305"><a href="#BaseTrainer.train-305"><span class="linenos">305</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
-</span><span id="BaseTrainer.train-306"><a href="#BaseTrainer.train-306"><span class="linenos">306</span></a>                
-</span><span id="BaseTrainer.train-307"><a href="#BaseTrainer.train-307"><span class="linenos">307</span></a>                <span class="n">data</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">_iter</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-</span><span id="BaseTrainer.train-308"><a href="#BaseTrainer.train-308"><span class="linenos">308</span></a>
-</span><span id="BaseTrainer.train-309"><a href="#BaseTrainer.train-309"><span class="linenos">309</span></a>                <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="BaseTrainer.train-310"><a href="#BaseTrainer.train-310"><span class="linenos">310</span></a>                    <span class="k">break</span>
-</span><span id="BaseTrainer.train-311"><a href="#BaseTrainer.train-311"><span class="linenos">311</span></a>                
-</span><span id="BaseTrainer.train-312"><a href="#BaseTrainer.train-312"><span class="linenos">312</span></a>                <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="BaseTrainer.train-313"><a href="#BaseTrainer.train-313"><span class="linenos">313</span></a>                    <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="BaseTrainer.train-314"><a href="#BaseTrainer.train-314"><span class="linenos">314</span></a>                
-</span><span id="BaseTrainer.train-315"><a href="#BaseTrainer.train-315"><span class="linenos">315</span></a>                <span class="k">if</span> <span class="n">step</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span><span class="p">:</span>
-</span><span id="BaseTrainer.train-316"><a href="#BaseTrainer.train-316"><span class="linenos">316</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">broadcast_init_vars</span><span class="p">()</span>
-</span><span id="BaseTrainer.train-317"><a href="#BaseTrainer.train-317"><span class="linenos">317</span></a>
-</span><span id="BaseTrainer.train-318"><a href="#BaseTrainer.train-318"><span class="linenos">318</span></a>                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
-</span><span id="BaseTrainer.train-319"><a href="#BaseTrainer.train-319"><span class="linenos">319</span></a>                
-</span><span id="BaseTrainer.train-320"><a href="#BaseTrainer.train-320"><span class="linenos">320</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
-</span><span id="BaseTrainer.train-321"><a href="#BaseTrainer.train-321"><span class="linenos">321</span></a>                
-</span><span id="BaseTrainer.train-322"><a href="#BaseTrainer.train-322"><span class="linenos">322</span></a>                <span class="c1">## internally increments the step counter</span>
-</span><span id="BaseTrainer.train-323"><a href="#BaseTrainer.train-323"><span class="linenos">323</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="BaseTrainer.train-324"><a href="#BaseTrainer.train-324"><span class="linenos">324</span></a>                <span class="n">step</span> <span class="o">+=</span><span class="mi">1</span>
-</span><span id="BaseTrainer.train-325"><a href="#BaseTrainer.train-325"><span class="linenos">325</span></a>                
-</span><span id="BaseTrainer.train-326"><a href="#BaseTrainer.train-326"><span class="linenos">326</span></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
-</span><span id="BaseTrainer.train-327"><a href="#BaseTrainer.train-327"><span class="linenos">327</span></a>                    <span class="k">break</span>
-</span><span id="BaseTrainer.train-328"><a href="#BaseTrainer.train-328"><span class="linenos">328</span></a>                
-</span><span id="BaseTrainer.train-329"><a href="#BaseTrainer.train-329"><span class="linenos">329</span></a>
-</span><span id="BaseTrainer.train-330"><a href="#BaseTrainer.train-330"><span class="linenos">330</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
-</span><span id="BaseTrainer.train-331"><a href="#BaseTrainer.train-331"><span class="linenos">331</span></a>            
-</span><span id="BaseTrainer.train-332"><a href="#BaseTrainer.train-332"><span class="linenos">332</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
-</span><span id="BaseTrainer.train-333"><a href="#BaseTrainer.train-333"><span class="linenos">333</span></a>                <span class="k">break</span>
-</span><span id="BaseTrainer.train-334"><a href="#BaseTrainer.train-334"><span class="linenos">334</span></a>                
-</span><span id="BaseTrainer.train-335"><a href="#BaseTrainer.train-335"><span class="linenos">335</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span>
+</span><span id="BaseTrainer.train-285"><a href="#BaseTrainer.train-285"><span class="linenos">285</span></a>            
+</span><span id="BaseTrainer.train-286"><a href="#BaseTrainer.train-286"><span class="linenos">286</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackCoordinator</span><span class="p">):</span>
+</span><span id="BaseTrainer.train-287"><a href="#BaseTrainer.train-287"><span class="linenos">287</span></a>            <span class="n">callbacks</span> <span class="o">=</span> <span class="n">CallbackCoordinator</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span>
+</span><span id="BaseTrainer.train-288"><a href="#BaseTrainer.train-288"><span class="linenos">288</span></a>                                            <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="p">,</span>
+</span><span id="BaseTrainer.train-289"><a href="#BaseTrainer.train-289"><span class="linenos">289</span></a>                                            <span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="p">,</span>
+</span><span id="BaseTrainer.train-290"><a href="#BaseTrainer.train-290"><span class="linenos">290</span></a>                                            <span class="n">steps</span> <span class="o">=</span> <span class="n">N_STEPS</span><span class="p">)</span>
+</span><span id="BaseTrainer.train-291"><a href="#BaseTrainer.train-291"><span class="linenos">291</span></a>            
+</span><span id="BaseTrainer.train-292"><a href="#BaseTrainer.train-292"><span class="linenos">292</span></a>        
+</span><span id="BaseTrainer.train-293"><a href="#BaseTrainer.train-293"><span class="linenos">293</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span>
+</span><span id="BaseTrainer.train-294"><a href="#BaseTrainer.train-294"><span class="linenos">294</span></a>        
+</span><span id="BaseTrainer.train-295"><a href="#BaseTrainer.train-295"><span class="linenos">295</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
+</span><span id="BaseTrainer.train-296"><a href="#BaseTrainer.train-296"><span class="linenos">296</span></a>        
+</span><span id="BaseTrainer.train-297"><a href="#BaseTrainer.train-297"><span class="linenos">297</span></a>        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+</span><span id="BaseTrainer.train-298"><a href="#BaseTrainer.train-298"><span class="linenos">298</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+</span><span id="BaseTrainer.train-299"><a href="#BaseTrainer.train-299"><span class="linenos">299</span></a>            
+</span><span id="BaseTrainer.train-300"><a href="#BaseTrainer.train-300"><span class="linenos">300</span></a>            <span class="n">_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">tf_dataset</span><span class="p">)</span>
+</span><span id="BaseTrainer.train-301"><a href="#BaseTrainer.train-301"><span class="linenos">301</span></a>            <span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="BaseTrainer.train-302"><a href="#BaseTrainer.train-302"><span class="linenos">302</span></a>            
+</span><span id="BaseTrainer.train-303"><a href="#BaseTrainer.train-303"><span class="linenos">303</span></a>            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="BaseTrainer.train-304"><a href="#BaseTrainer.train-304"><span class="linenos">304</span></a>                
+</span><span id="BaseTrainer.train-305"><a href="#BaseTrainer.train-305"><span class="linenos">305</span></a>            <span class="c1">#for step, data in enumerate(tf_dataset):</span>
+</span><span id="BaseTrainer.train-306"><a href="#BaseTrainer.train-306"><span class="linenos">306</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_begin</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+</span><span id="BaseTrainer.train-307"><a href="#BaseTrainer.train-307"><span class="linenos">307</span></a>                
+</span><span id="BaseTrainer.train-308"><a href="#BaseTrainer.train-308"><span class="linenos">308</span></a>                <span class="n">data</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">_iter</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="BaseTrainer.train-309"><a href="#BaseTrainer.train-309"><span class="linenos">309</span></a>
+</span><span id="BaseTrainer.train-310"><a href="#BaseTrainer.train-310"><span class="linenos">310</span></a>                <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="BaseTrainer.train-311"><a href="#BaseTrainer.train-311"><span class="linenos">311</span></a>                    <span class="k">break</span>
+</span><span id="BaseTrainer.train-312"><a href="#BaseTrainer.train-312"><span class="linenos">312</span></a>                
+</span><span id="BaseTrainer.train-313"><a href="#BaseTrainer.train-313"><span class="linenos">313</span></a>                <span class="k">if</span> <span class="n">train_map_f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="BaseTrainer.train-314"><a href="#BaseTrainer.train-314"><span class="linenos">314</span></a>                    <span class="n">data</span> <span class="o">=</span> <span class="n">train_map_f</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="BaseTrainer.train-315"><a href="#BaseTrainer.train-315"><span class="linenos">315</span></a>                
+</span><span id="BaseTrainer.train-316"><a href="#BaseTrainer.train-316"><span class="linenos">316</span></a>                <span class="k">if</span> <span class="n">step</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_horovod</span><span class="p">:</span>
+</span><span id="BaseTrainer.train-317"><a href="#BaseTrainer.train-317"><span class="linenos">317</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">broadcast_init_vars</span><span class="p">()</span>
+</span><span id="BaseTrainer.train-318"><a href="#BaseTrainer.train-318"><span class="linenos">318</span></a>
+</span><span id="BaseTrainer.train-319"><a href="#BaseTrainer.train-319"><span class="linenos">319</span></a>                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+</span><span id="BaseTrainer.train-320"><a href="#BaseTrainer.train-320"><span class="linenos">320</span></a>                
+</span><span id="BaseTrainer.train-321"><a href="#BaseTrainer.train-321"><span class="linenos">321</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_batch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
+</span><span id="BaseTrainer.train-322"><a href="#BaseTrainer.train-322"><span class="linenos">322</span></a>                
+</span><span id="BaseTrainer.train-323"><a href="#BaseTrainer.train-323"><span class="linenos">323</span></a>                <span class="c1">## internally increments the step counter</span>
+</span><span id="BaseTrainer.train-324"><a href="#BaseTrainer.train-324"><span class="linenos">324</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="BaseTrainer.train-325"><a href="#BaseTrainer.train-325"><span class="linenos">325</span></a>                <span class="n">step</span> <span class="o">+=</span><span class="mi">1</span>
+</span><span id="BaseTrainer.train-326"><a href="#BaseTrainer.train-326"><span class="linenos">326</span></a>                
+</span><span id="BaseTrainer.train-327"><a href="#BaseTrainer.train-327"><span class="linenos">327</span></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
+</span><span id="BaseTrainer.train-328"><a href="#BaseTrainer.train-328"><span class="linenos">328</span></a>                    <span class="k">break</span>
+</span><span id="BaseTrainer.train-329"><a href="#BaseTrainer.train-329"><span class="linenos">329</span></a>                
+</span><span id="BaseTrainer.train-330"><a href="#BaseTrainer.train-330"><span class="linenos">330</span></a>
+</span><span id="BaseTrainer.train-331"><a href="#BaseTrainer.train-331"><span class="linenos">331</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+</span><span id="BaseTrainer.train-332"><a href="#BaseTrainer.train-332"><span class="linenos">332</span></a>            
+</span><span id="BaseTrainer.train-333"><a href="#BaseTrainer.train-333"><span class="linenos">333</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stop</span><span class="p">:</span>
+</span><span id="BaseTrainer.train-334"><a href="#BaseTrainer.train-334"><span class="linenos">334</span></a>                <span class="k">break</span>
+</span><span id="BaseTrainer.train-335"><a href="#BaseTrainer.train-335"><span class="linenos">335</span></a>                
+</span><span id="BaseTrainer.train-336"><a href="#BaseTrainer.train-336"><span class="linenos">336</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -1405,63 +1408,63 @@ has no influence on the behaviour of the training loop.</li>
 
     </div>
     <a class="headerlink" href="#ClassifierTrainer"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ClassifierTrainer-338"><a href="#ClassifierTrainer-338"><span class="linenos">338</span></a><span class="k">class</span> <span class="nc">ClassifierTrainer</span><span class="p">(</span><span class="n">BaseTrainer</span><span class="p">):</span>
-</span><span id="ClassifierTrainer-339"><a href="#ClassifierTrainer-339"><span class="linenos">339</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="ClassifierTrainer-340"><a href="#ClassifierTrainer-340"><span class="linenos">340</span></a><span class="sd">    Standard classifier that extens the base trainer.</span>
-</span><span id="ClassifierTrainer-341"><a href="#ClassifierTrainer-341"><span class="linenos">341</span></a><span class="sd">    </span>
-</span><span id="ClassifierTrainer-342"><a href="#ClassifierTrainer-342"><span class="linenos">342</span></a><span class="sd">    This trainer can be use to solve simple classification </span>
-</span><span id="ClassifierTrainer-343"><a href="#ClassifierTrainer-343"><span class="linenos">343</span></a><span class="sd">    or regression tasks.</span>
-</span><span id="ClassifierTrainer-344"><a href="#ClassifierTrainer-344"><span class="linenos">344</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="ClassifierTrainer-345"><a href="#ClassifierTrainer-345"><span class="linenos">345</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-</span><span id="ClassifierTrainer-346"><a href="#ClassifierTrainer-346"><span class="linenos">346</span></a>                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-</span><span id="ClassifierTrainer-347"><a href="#ClassifierTrainer-347"><span class="linenos">347</span></a>                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="ClassifierTrainer-348"><a href="#ClassifierTrainer-348"><span class="linenos">348</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="ClassifierTrainer-349"><a href="#ClassifierTrainer-349"><span class="linenos">349</span></a><span class="sd">        Args:</span>
-</span><span id="ClassifierTrainer-350"><a href="#ClassifierTrainer-350"><span class="linenos">350</span></a><span class="sd">          args: positional arguments that are passed into the</span>
-</span><span id="ClassifierTrainer-351"><a href="#ClassifierTrainer-351"><span class="linenos">351</span></a><span class="sd">            base class, e.g., the model variable.</span>
-</span><span id="ClassifierTrainer-352"><a href="#ClassifierTrainer-352"><span class="linenos">352</span></a><span class="sd">            </span>
-</span><span id="ClassifierTrainer-353"><a href="#ClassifierTrainer-353"><span class="linenos">353</span></a><span class="sd">          trainable_weights (list of tf.Variables): List of </span>
-</span><span id="ClassifierTrainer-354"><a href="#ClassifierTrainer-354"><span class="linenos">354</span></a><span class="sd">            trainable variables that will be optimized. Note </span>
-</span><span id="ClassifierTrainer-355"><a href="#ClassifierTrainer-355"><span class="linenos">355</span></a><span class="sd">            that this variables must belongs to the model to </span>
-</span><span id="ClassifierTrainer-356"><a href="#ClassifierTrainer-356"><span class="linenos">356</span></a><span class="sd">            be trained.</span>
-</span><span id="ClassifierTrainer-357"><a href="#ClassifierTrainer-357"><span class="linenos">357</span></a><span class="sd">          </span>
-</span><span id="ClassifierTrainer-358"><a href="#ClassifierTrainer-358"><span class="linenos">358</span></a><span class="sd">          kwargs: keyword arguments that are passed into the</span>
-</span><span id="ClassifierTrainer-359"><a href="#ClassifierTrainer-359"><span class="linenos">359</span></a><span class="sd">            base class.</span>
-</span><span id="ClassifierTrainer-360"><a href="#ClassifierTrainer-360"><span class="linenos">360</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="ClassifierTrainer-361"><a href="#ClassifierTrainer-361"><span class="linenos">361</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="ClassifierTrainer-362"><a href="#ClassifierTrainer-362"><span class="linenos">362</span></a>    
-</span><span id="ClassifierTrainer-363"><a href="#ClassifierTrainer-363"><span class="linenos">363</span></a>    <span class="k">def</span> <span class="nf">forward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-</span><span id="ClassifierTrainer-364"><a href="#ClassifierTrainer-364"><span class="linenos">364</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="ClassifierTrainer-365"><a href="#ClassifierTrainer-365"><span class="linenos">365</span></a><span class="sd">        Override of ´polus.training.BaseTrainer.forward_with_grads´</span>
-</span><span id="ClassifierTrainer-366"><a href="#ClassifierTrainer-366"><span class="linenos">366</span></a><span class="sd">        </span>
-</span><span id="ClassifierTrainer-367"><a href="#ClassifierTrainer-367"><span class="linenos">367</span></a><span class="sd">        Args:</span>
-</span><span id="ClassifierTrainer-368"><a href="#ClassifierTrainer-368"><span class="linenos">368</span></a><span class="sd">          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): </span>
-</span><span id="ClassifierTrainer-369"><a href="#ClassifierTrainer-369"><span class="linenos">369</span></a><span class="sd">            Samples, in a TensorFlow format, that are fed to the model.</span>
-</span><span id="ClassifierTrainer-370"><a href="#ClassifierTrainer-370"><span class="linenos">370</span></a><span class="sd">            </span>
-</span><span id="ClassifierTrainer-371"><a href="#ClassifierTrainer-371"><span class="linenos">371</span></a><span class="sd">          y (object): The true label associated with the model, this</span>
-</span><span id="ClassifierTrainer-372"><a href="#ClassifierTrainer-372"><span class="linenos">372</span></a><span class="sd">            normally are represented as integer or float.</span>
-</span><span id="ClassifierTrainer-373"><a href="#ClassifierTrainer-373"><span class="linenos">373</span></a><span class="sd">            </span>
-</span><span id="ClassifierTrainer-374"><a href="#ClassifierTrainer-374"><span class="linenos">374</span></a><span class="sd">        Returns:</span>
-</span><span id="ClassifierTrainer-375"><a href="#ClassifierTrainer-375"><span class="linenos">375</span></a><span class="sd">          y (object): The true label associated with the model, this</span>
-</span><span id="ClassifierTrainer-376"><a href="#ClassifierTrainer-376"><span class="linenos">376</span></a><span class="sd">            normally are represented as integer or float.</span>
-</span><span id="ClassifierTrainer-377"><a href="#ClassifierTrainer-377"><span class="linenos">377</span></a><span class="sd">            </span>
-</span><span id="ClassifierTrainer-378"><a href="#ClassifierTrainer-378"><span class="linenos">378</span></a><span class="sd">          logits (tf.Tensor): prediction of the model over the input</span>
-</span><span id="ClassifierTrainer-379"><a href="#ClassifierTrainer-379"><span class="linenos">379</span></a><span class="sd">            data *x*.</span>
-</span><span id="ClassifierTrainer-380"><a href="#ClassifierTrainer-380"><span class="linenos">380</span></a><span class="sd">            </span>
-</span><span id="ClassifierTrainer-381"><a href="#ClassifierTrainer-381"><span class="linenos">381</span></a><span class="sd">        Note that the return values are dirictly passed to the loss</span>
-</span><span id="ClassifierTrainer-382"><a href="#ClassifierTrainer-382"><span class="linenos">382</span></a><span class="sd">        function.</span>
-</span><span id="ClassifierTrainer-383"><a href="#ClassifierTrainer-383"><span class="linenos">383</span></a><span class="sd">        &quot;&quot;&quot;</span> 
-</span><span id="ClassifierTrainer-384"><a href="#ClassifierTrainer-384"><span class="linenos">384</span></a>        
-</span><span id="ClassifierTrainer-385"><a href="#ClassifierTrainer-385"><span class="linenos">385</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-</span><span id="ClassifierTrainer-386"><a href="#ClassifierTrainer-386"><span class="linenos">386</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="ClassifierTrainer-387"><a href="#ClassifierTrainer-387"><span class="linenos">387</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="ClassifierTrainer-388"><a href="#ClassifierTrainer-388"><span class="linenos">388</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="ClassifierTrainer-389"><a href="#ClassifierTrainer-389"><span class="linenos">389</span></a>            
-</span><span id="ClassifierTrainer-390"><a href="#ClassifierTrainer-390"><span class="linenos">390</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="ClassifierTrainer-391"><a href="#ClassifierTrainer-391"><span class="linenos">391</span></a>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Post process step of the logits was added to the training loop&quot;</span><span class="p">)</span>
-</span><span id="ClassifierTrainer-392"><a href="#ClassifierTrainer-392"><span class="linenos">392</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
-</span><span id="ClassifierTrainer-393"><a href="#ClassifierTrainer-393"><span class="linenos">393</span></a>
-</span><span id="ClassifierTrainer-394"><a href="#ClassifierTrainer-394"><span class="linenos">394</span></a>        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">logits</span><span class="c1">#self.loss(y, logits)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ClassifierTrainer-339"><a href="#ClassifierTrainer-339"><span class="linenos">339</span></a><span class="k">class</span> <span class="nc">ClassifierTrainer</span><span class="p">(</span><span class="n">BaseTrainer</span><span class="p">):</span>
+</span><span id="ClassifierTrainer-340"><a href="#ClassifierTrainer-340"><span class="linenos">340</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="ClassifierTrainer-341"><a href="#ClassifierTrainer-341"><span class="linenos">341</span></a><span class="sd">    Standard classifier that extens the base trainer.</span>
+</span><span id="ClassifierTrainer-342"><a href="#ClassifierTrainer-342"><span class="linenos">342</span></a><span class="sd">    </span>
+</span><span id="ClassifierTrainer-343"><a href="#ClassifierTrainer-343"><span class="linenos">343</span></a><span class="sd">    This trainer can be use to solve simple classification </span>
+</span><span id="ClassifierTrainer-344"><a href="#ClassifierTrainer-344"><span class="linenos">344</span></a><span class="sd">    or regression tasks.</span>
+</span><span id="ClassifierTrainer-345"><a href="#ClassifierTrainer-345"><span class="linenos">345</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="ClassifierTrainer-346"><a href="#ClassifierTrainer-346"><span class="linenos">346</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+</span><span id="ClassifierTrainer-347"><a href="#ClassifierTrainer-347"><span class="linenos">347</span></a>                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="ClassifierTrainer-348"><a href="#ClassifierTrainer-348"><span class="linenos">348</span></a>                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="ClassifierTrainer-349"><a href="#ClassifierTrainer-349"><span class="linenos">349</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="ClassifierTrainer-350"><a href="#ClassifierTrainer-350"><span class="linenos">350</span></a><span class="sd">        Args:</span>
+</span><span id="ClassifierTrainer-351"><a href="#ClassifierTrainer-351"><span class="linenos">351</span></a><span class="sd">          args: positional arguments that are passed into the</span>
+</span><span id="ClassifierTrainer-352"><a href="#ClassifierTrainer-352"><span class="linenos">352</span></a><span class="sd">            base class, e.g., the model variable.</span>
+</span><span id="ClassifierTrainer-353"><a href="#ClassifierTrainer-353"><span class="linenos">353</span></a><span class="sd">            </span>
+</span><span id="ClassifierTrainer-354"><a href="#ClassifierTrainer-354"><span class="linenos">354</span></a><span class="sd">          trainable_weights (list of tf.Variables): List of </span>
+</span><span id="ClassifierTrainer-355"><a href="#ClassifierTrainer-355"><span class="linenos">355</span></a><span class="sd">            trainable variables that will be optimized. Note </span>
+</span><span id="ClassifierTrainer-356"><a href="#ClassifierTrainer-356"><span class="linenos">356</span></a><span class="sd">            that this variables must belongs to the model to </span>
+</span><span id="ClassifierTrainer-357"><a href="#ClassifierTrainer-357"><span class="linenos">357</span></a><span class="sd">            be trained.</span>
+</span><span id="ClassifierTrainer-358"><a href="#ClassifierTrainer-358"><span class="linenos">358</span></a><span class="sd">          </span>
+</span><span id="ClassifierTrainer-359"><a href="#ClassifierTrainer-359"><span class="linenos">359</span></a><span class="sd">          kwargs: keyword arguments that are passed into the</span>
+</span><span id="ClassifierTrainer-360"><a href="#ClassifierTrainer-360"><span class="linenos">360</span></a><span class="sd">            base class.</span>
+</span><span id="ClassifierTrainer-361"><a href="#ClassifierTrainer-361"><span class="linenos">361</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="ClassifierTrainer-362"><a href="#ClassifierTrainer-362"><span class="linenos">362</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="ClassifierTrainer-363"><a href="#ClassifierTrainer-363"><span class="linenos">363</span></a>    
+</span><span id="ClassifierTrainer-364"><a href="#ClassifierTrainer-364"><span class="linenos">364</span></a>    <span class="k">def</span> <span class="nf">forward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span id="ClassifierTrainer-365"><a href="#ClassifierTrainer-365"><span class="linenos">365</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="ClassifierTrainer-366"><a href="#ClassifierTrainer-366"><span class="linenos">366</span></a><span class="sd">        Override of ´polus.training.BaseTrainer.forward_with_grads´</span>
+</span><span id="ClassifierTrainer-367"><a href="#ClassifierTrainer-367"><span class="linenos">367</span></a><span class="sd">        </span>
+</span><span id="ClassifierTrainer-368"><a href="#ClassifierTrainer-368"><span class="linenos">368</span></a><span class="sd">        Args:</span>
+</span><span id="ClassifierTrainer-369"><a href="#ClassifierTrainer-369"><span class="linenos">369</span></a><span class="sd">          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): </span>
+</span><span id="ClassifierTrainer-370"><a href="#ClassifierTrainer-370"><span class="linenos">370</span></a><span class="sd">            Samples, in a TensorFlow format, that are fed to the model.</span>
+</span><span id="ClassifierTrainer-371"><a href="#ClassifierTrainer-371"><span class="linenos">371</span></a><span class="sd">            </span>
+</span><span id="ClassifierTrainer-372"><a href="#ClassifierTrainer-372"><span class="linenos">372</span></a><span class="sd">          y (object): The true label associated with the model, this</span>
+</span><span id="ClassifierTrainer-373"><a href="#ClassifierTrainer-373"><span class="linenos">373</span></a><span class="sd">            normally are represented as integer or float.</span>
+</span><span id="ClassifierTrainer-374"><a href="#ClassifierTrainer-374"><span class="linenos">374</span></a><span class="sd">            </span>
+</span><span id="ClassifierTrainer-375"><a href="#ClassifierTrainer-375"><span class="linenos">375</span></a><span class="sd">        Returns:</span>
+</span><span id="ClassifierTrainer-376"><a href="#ClassifierTrainer-376"><span class="linenos">376</span></a><span class="sd">          y (object): The true label associated with the model, this</span>
+</span><span id="ClassifierTrainer-377"><a href="#ClassifierTrainer-377"><span class="linenos">377</span></a><span class="sd">            normally are represented as integer or float.</span>
+</span><span id="ClassifierTrainer-378"><a href="#ClassifierTrainer-378"><span class="linenos">378</span></a><span class="sd">            </span>
+</span><span id="ClassifierTrainer-379"><a href="#ClassifierTrainer-379"><span class="linenos">379</span></a><span class="sd">          logits (tf.Tensor): prediction of the model over the input</span>
+</span><span id="ClassifierTrainer-380"><a href="#ClassifierTrainer-380"><span class="linenos">380</span></a><span class="sd">            data *x*.</span>
+</span><span id="ClassifierTrainer-381"><a href="#ClassifierTrainer-381"><span class="linenos">381</span></a><span class="sd">            </span>
+</span><span id="ClassifierTrainer-382"><a href="#ClassifierTrainer-382"><span class="linenos">382</span></a><span class="sd">        Note that the return values are dirictly passed to the loss</span>
+</span><span id="ClassifierTrainer-383"><a href="#ClassifierTrainer-383"><span class="linenos">383</span></a><span class="sd">        function.</span>
+</span><span id="ClassifierTrainer-384"><a href="#ClassifierTrainer-384"><span class="linenos">384</span></a><span class="sd">        &quot;&quot;&quot;</span> 
+</span><span id="ClassifierTrainer-385"><a href="#ClassifierTrainer-385"><span class="linenos">385</span></a>        
+</span><span id="ClassifierTrainer-386"><a href="#ClassifierTrainer-386"><span class="linenos">386</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span id="ClassifierTrainer-387"><a href="#ClassifierTrainer-387"><span class="linenos">387</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="ClassifierTrainer-388"><a href="#ClassifierTrainer-388"><span class="linenos">388</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="ClassifierTrainer-389"><a href="#ClassifierTrainer-389"><span class="linenos">389</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="ClassifierTrainer-390"><a href="#ClassifierTrainer-390"><span class="linenos">390</span></a>            
+</span><span id="ClassifierTrainer-391"><a href="#ClassifierTrainer-391"><span class="linenos">391</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="ClassifierTrainer-392"><a href="#ClassifierTrainer-392"><span class="linenos">392</span></a>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Post process step of the logits was added to the training loop&quot;</span><span class="p">)</span>
+</span><span id="ClassifierTrainer-393"><a href="#ClassifierTrainer-393"><span class="linenos">393</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
+</span><span id="ClassifierTrainer-394"><a href="#ClassifierTrainer-394"><span class="linenos">394</span></a>
+</span><span id="ClassifierTrainer-395"><a href="#ClassifierTrainer-395"><span class="linenos">395</span></a>        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">logits</span><span class="c1">#self.loss(y, logits)</span>
 </span></pre></div>
 
 
@@ -1482,23 +1485,23 @@ or regression tasks.</p>
 
     </div>
     <a class="headerlink" href="#ClassifierTrainer.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ClassifierTrainer.__init__-345"><a href="#ClassifierTrainer.__init__-345"><span class="linenos">345</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-</span><span id="ClassifierTrainer.__init__-346"><a href="#ClassifierTrainer.__init__-346"><span class="linenos">346</span></a>                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-</span><span id="ClassifierTrainer.__init__-347"><a href="#ClassifierTrainer.__init__-347"><span class="linenos">347</span></a>                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="ClassifierTrainer.__init__-348"><a href="#ClassifierTrainer.__init__-348"><span class="linenos">348</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="ClassifierTrainer.__init__-349"><a href="#ClassifierTrainer.__init__-349"><span class="linenos">349</span></a><span class="sd">        Args:</span>
-</span><span id="ClassifierTrainer.__init__-350"><a href="#ClassifierTrainer.__init__-350"><span class="linenos">350</span></a><span class="sd">          args: positional arguments that are passed into the</span>
-</span><span id="ClassifierTrainer.__init__-351"><a href="#ClassifierTrainer.__init__-351"><span class="linenos">351</span></a><span class="sd">            base class, e.g., the model variable.</span>
-</span><span id="ClassifierTrainer.__init__-352"><a href="#ClassifierTrainer.__init__-352"><span class="linenos">352</span></a><span class="sd">            </span>
-</span><span id="ClassifierTrainer.__init__-353"><a href="#ClassifierTrainer.__init__-353"><span class="linenos">353</span></a><span class="sd">          trainable_weights (list of tf.Variables): List of </span>
-</span><span id="ClassifierTrainer.__init__-354"><a href="#ClassifierTrainer.__init__-354"><span class="linenos">354</span></a><span class="sd">            trainable variables that will be optimized. Note </span>
-</span><span id="ClassifierTrainer.__init__-355"><a href="#ClassifierTrainer.__init__-355"><span class="linenos">355</span></a><span class="sd">            that this variables must belongs to the model to </span>
-</span><span id="ClassifierTrainer.__init__-356"><a href="#ClassifierTrainer.__init__-356"><span class="linenos">356</span></a><span class="sd">            be trained.</span>
-</span><span id="ClassifierTrainer.__init__-357"><a href="#ClassifierTrainer.__init__-357"><span class="linenos">357</span></a><span class="sd">          </span>
-</span><span id="ClassifierTrainer.__init__-358"><a href="#ClassifierTrainer.__init__-358"><span class="linenos">358</span></a><span class="sd">          kwargs: keyword arguments that are passed into the</span>
-</span><span id="ClassifierTrainer.__init__-359"><a href="#ClassifierTrainer.__init__-359"><span class="linenos">359</span></a><span class="sd">            base class.</span>
-</span><span id="ClassifierTrainer.__init__-360"><a href="#ClassifierTrainer.__init__-360"><span class="linenos">360</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="ClassifierTrainer.__init__-361"><a href="#ClassifierTrainer.__init__-361"><span class="linenos">361</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ClassifierTrainer.__init__-346"><a href="#ClassifierTrainer.__init__-346"><span class="linenos">346</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+</span><span id="ClassifierTrainer.__init__-347"><a href="#ClassifierTrainer.__init__-347"><span class="linenos">347</span></a>                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="ClassifierTrainer.__init__-348"><a href="#ClassifierTrainer.__init__-348"><span class="linenos">348</span></a>                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="ClassifierTrainer.__init__-349"><a href="#ClassifierTrainer.__init__-349"><span class="linenos">349</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="ClassifierTrainer.__init__-350"><a href="#ClassifierTrainer.__init__-350"><span class="linenos">350</span></a><span class="sd">        Args:</span>
+</span><span id="ClassifierTrainer.__init__-351"><a href="#ClassifierTrainer.__init__-351"><span class="linenos">351</span></a><span class="sd">          args: positional arguments that are passed into the</span>
+</span><span id="ClassifierTrainer.__init__-352"><a href="#ClassifierTrainer.__init__-352"><span class="linenos">352</span></a><span class="sd">            base class, e.g., the model variable.</span>
+</span><span id="ClassifierTrainer.__init__-353"><a href="#ClassifierTrainer.__init__-353"><span class="linenos">353</span></a><span class="sd">            </span>
+</span><span id="ClassifierTrainer.__init__-354"><a href="#ClassifierTrainer.__init__-354"><span class="linenos">354</span></a><span class="sd">          trainable_weights (list of tf.Variables): List of </span>
+</span><span id="ClassifierTrainer.__init__-355"><a href="#ClassifierTrainer.__init__-355"><span class="linenos">355</span></a><span class="sd">            trainable variables that will be optimized. Note </span>
+</span><span id="ClassifierTrainer.__init__-356"><a href="#ClassifierTrainer.__init__-356"><span class="linenos">356</span></a><span class="sd">            that this variables must belongs to the model to </span>
+</span><span id="ClassifierTrainer.__init__-357"><a href="#ClassifierTrainer.__init__-357"><span class="linenos">357</span></a><span class="sd">            be trained.</span>
+</span><span id="ClassifierTrainer.__init__-358"><a href="#ClassifierTrainer.__init__-358"><span class="linenos">358</span></a><span class="sd">          </span>
+</span><span id="ClassifierTrainer.__init__-359"><a href="#ClassifierTrainer.__init__-359"><span class="linenos">359</span></a><span class="sd">          kwargs: keyword arguments that are passed into the</span>
+</span><span id="ClassifierTrainer.__init__-360"><a href="#ClassifierTrainer.__init__-360"><span class="linenos">360</span></a><span class="sd">            base class.</span>
+</span><span id="ClassifierTrainer.__init__-361"><a href="#ClassifierTrainer.__init__-361"><span class="linenos">361</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="ClassifierTrainer.__init__-362"><a href="#ClassifierTrainer.__init__-362"><span class="linenos">362</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1529,38 +1532,38 @@ base class.</li>
 
     </div>
     <a class="headerlink" href="#ClassifierTrainer.forward_with_grads"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ClassifierTrainer.forward_with_grads-363"><a href="#ClassifierTrainer.forward_with_grads-363"><span class="linenos">363</span></a>    <span class="k">def</span> <span class="nf">forward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-</span><span id="ClassifierTrainer.forward_with_grads-364"><a href="#ClassifierTrainer.forward_with_grads-364"><span class="linenos">364</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="ClassifierTrainer.forward_with_grads-365"><a href="#ClassifierTrainer.forward_with_grads-365"><span class="linenos">365</span></a><span class="sd">        Override of ´polus.training.BaseTrainer.forward_with_grads´</span>
-</span><span id="ClassifierTrainer.forward_with_grads-366"><a href="#ClassifierTrainer.forward_with_grads-366"><span class="linenos">366</span></a><span class="sd">        </span>
-</span><span id="ClassifierTrainer.forward_with_grads-367"><a href="#ClassifierTrainer.forward_with_grads-367"><span class="linenos">367</span></a><span class="sd">        Args:</span>
-</span><span id="ClassifierTrainer.forward_with_grads-368"><a href="#ClassifierTrainer.forward_with_grads-368"><span class="linenos">368</span></a><span class="sd">          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): </span>
-</span><span id="ClassifierTrainer.forward_with_grads-369"><a href="#ClassifierTrainer.forward_with_grads-369"><span class="linenos">369</span></a><span class="sd">            Samples, in a TensorFlow format, that are fed to the model.</span>
-</span><span id="ClassifierTrainer.forward_with_grads-370"><a href="#ClassifierTrainer.forward_with_grads-370"><span class="linenos">370</span></a><span class="sd">            </span>
-</span><span id="ClassifierTrainer.forward_with_grads-371"><a href="#ClassifierTrainer.forward_with_grads-371"><span class="linenos">371</span></a><span class="sd">          y (object): The true label associated with the model, this</span>
-</span><span id="ClassifierTrainer.forward_with_grads-372"><a href="#ClassifierTrainer.forward_with_grads-372"><span class="linenos">372</span></a><span class="sd">            normally are represented as integer or float.</span>
-</span><span id="ClassifierTrainer.forward_with_grads-373"><a href="#ClassifierTrainer.forward_with_grads-373"><span class="linenos">373</span></a><span class="sd">            </span>
-</span><span id="ClassifierTrainer.forward_with_grads-374"><a href="#ClassifierTrainer.forward_with_grads-374"><span class="linenos">374</span></a><span class="sd">        Returns:</span>
-</span><span id="ClassifierTrainer.forward_with_grads-375"><a href="#ClassifierTrainer.forward_with_grads-375"><span class="linenos">375</span></a><span class="sd">          y (object): The true label associated with the model, this</span>
-</span><span id="ClassifierTrainer.forward_with_grads-376"><a href="#ClassifierTrainer.forward_with_grads-376"><span class="linenos">376</span></a><span class="sd">            normally are represented as integer or float.</span>
-</span><span id="ClassifierTrainer.forward_with_grads-377"><a href="#ClassifierTrainer.forward_with_grads-377"><span class="linenos">377</span></a><span class="sd">            </span>
-</span><span id="ClassifierTrainer.forward_with_grads-378"><a href="#ClassifierTrainer.forward_with_grads-378"><span class="linenos">378</span></a><span class="sd">          logits (tf.Tensor): prediction of the model over the input</span>
-</span><span id="ClassifierTrainer.forward_with_grads-379"><a href="#ClassifierTrainer.forward_with_grads-379"><span class="linenos">379</span></a><span class="sd">            data *x*.</span>
-</span><span id="ClassifierTrainer.forward_with_grads-380"><a href="#ClassifierTrainer.forward_with_grads-380"><span class="linenos">380</span></a><span class="sd">            </span>
-</span><span id="ClassifierTrainer.forward_with_grads-381"><a href="#ClassifierTrainer.forward_with_grads-381"><span class="linenos">381</span></a><span class="sd">        Note that the return values are dirictly passed to the loss</span>
-</span><span id="ClassifierTrainer.forward_with_grads-382"><a href="#ClassifierTrainer.forward_with_grads-382"><span class="linenos">382</span></a><span class="sd">        function.</span>
-</span><span id="ClassifierTrainer.forward_with_grads-383"><a href="#ClassifierTrainer.forward_with_grads-383"><span class="linenos">383</span></a><span class="sd">        &quot;&quot;&quot;</span> 
-</span><span id="ClassifierTrainer.forward_with_grads-384"><a href="#ClassifierTrainer.forward_with_grads-384"><span class="linenos">384</span></a>        
-</span><span id="ClassifierTrainer.forward_with_grads-385"><a href="#ClassifierTrainer.forward_with_grads-385"><span class="linenos">385</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-</span><span id="ClassifierTrainer.forward_with_grads-386"><a href="#ClassifierTrainer.forward_with_grads-386"><span class="linenos">386</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="ClassifierTrainer.forward_with_grads-387"><a href="#ClassifierTrainer.forward_with_grads-387"><span class="linenos">387</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="ClassifierTrainer.forward_with_grads-388"><a href="#ClassifierTrainer.forward_with_grads-388"><span class="linenos">388</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="ClassifierTrainer.forward_with_grads-389"><a href="#ClassifierTrainer.forward_with_grads-389"><span class="linenos">389</span></a>            
-</span><span id="ClassifierTrainer.forward_with_grads-390"><a href="#ClassifierTrainer.forward_with_grads-390"><span class="linenos">390</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="ClassifierTrainer.forward_with_grads-391"><a href="#ClassifierTrainer.forward_with_grads-391"><span class="linenos">391</span></a>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Post process step of the logits was added to the training loop&quot;</span><span class="p">)</span>
-</span><span id="ClassifierTrainer.forward_with_grads-392"><a href="#ClassifierTrainer.forward_with_grads-392"><span class="linenos">392</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
-</span><span id="ClassifierTrainer.forward_with_grads-393"><a href="#ClassifierTrainer.forward_with_grads-393"><span class="linenos">393</span></a>
-</span><span id="ClassifierTrainer.forward_with_grads-394"><a href="#ClassifierTrainer.forward_with_grads-394"><span class="linenos">394</span></a>        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">logits</span><span class="c1">#self.loss(y, logits)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ClassifierTrainer.forward_with_grads-364"><a href="#ClassifierTrainer.forward_with_grads-364"><span class="linenos">364</span></a>    <span class="k">def</span> <span class="nf">forward_with_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span id="ClassifierTrainer.forward_with_grads-365"><a href="#ClassifierTrainer.forward_with_grads-365"><span class="linenos">365</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="ClassifierTrainer.forward_with_grads-366"><a href="#ClassifierTrainer.forward_with_grads-366"><span class="linenos">366</span></a><span class="sd">        Override of ´polus.training.BaseTrainer.forward_with_grads´</span>
+</span><span id="ClassifierTrainer.forward_with_grads-367"><a href="#ClassifierTrainer.forward_with_grads-367"><span class="linenos">367</span></a><span class="sd">        </span>
+</span><span id="ClassifierTrainer.forward_with_grads-368"><a href="#ClassifierTrainer.forward_with_grads-368"><span class="linenos">368</span></a><span class="sd">        Args:</span>
+</span><span id="ClassifierTrainer.forward_with_grads-369"><a href="#ClassifierTrainer.forward_with_grads-369"><span class="linenos">369</span></a><span class="sd">          x (tf.Tensor or list(tf.Tensor) or dict(tf.Tensor)): </span>
+</span><span id="ClassifierTrainer.forward_with_grads-370"><a href="#ClassifierTrainer.forward_with_grads-370"><span class="linenos">370</span></a><span class="sd">            Samples, in a TensorFlow format, that are fed to the model.</span>
+</span><span id="ClassifierTrainer.forward_with_grads-371"><a href="#ClassifierTrainer.forward_with_grads-371"><span class="linenos">371</span></a><span class="sd">            </span>
+</span><span id="ClassifierTrainer.forward_with_grads-372"><a href="#ClassifierTrainer.forward_with_grads-372"><span class="linenos">372</span></a><span class="sd">          y (object): The true label associated with the model, this</span>
+</span><span id="ClassifierTrainer.forward_with_grads-373"><a href="#ClassifierTrainer.forward_with_grads-373"><span class="linenos">373</span></a><span class="sd">            normally are represented as integer or float.</span>
+</span><span id="ClassifierTrainer.forward_with_grads-374"><a href="#ClassifierTrainer.forward_with_grads-374"><span class="linenos">374</span></a><span class="sd">            </span>
+</span><span id="ClassifierTrainer.forward_with_grads-375"><a href="#ClassifierTrainer.forward_with_grads-375"><span class="linenos">375</span></a><span class="sd">        Returns:</span>
+</span><span id="ClassifierTrainer.forward_with_grads-376"><a href="#ClassifierTrainer.forward_with_grads-376"><span class="linenos">376</span></a><span class="sd">          y (object): The true label associated with the model, this</span>
+</span><span id="ClassifierTrainer.forward_with_grads-377"><a href="#ClassifierTrainer.forward_with_grads-377"><span class="linenos">377</span></a><span class="sd">            normally are represented as integer or float.</span>
+</span><span id="ClassifierTrainer.forward_with_grads-378"><a href="#ClassifierTrainer.forward_with_grads-378"><span class="linenos">378</span></a><span class="sd">            </span>
+</span><span id="ClassifierTrainer.forward_with_grads-379"><a href="#ClassifierTrainer.forward_with_grads-379"><span class="linenos">379</span></a><span class="sd">          logits (tf.Tensor): prediction of the model over the input</span>
+</span><span id="ClassifierTrainer.forward_with_grads-380"><a href="#ClassifierTrainer.forward_with_grads-380"><span class="linenos">380</span></a><span class="sd">            data *x*.</span>
+</span><span id="ClassifierTrainer.forward_with_grads-381"><a href="#ClassifierTrainer.forward_with_grads-381"><span class="linenos">381</span></a><span class="sd">            </span>
+</span><span id="ClassifierTrainer.forward_with_grads-382"><a href="#ClassifierTrainer.forward_with_grads-382"><span class="linenos">382</span></a><span class="sd">        Note that the return values are dirictly passed to the loss</span>
+</span><span id="ClassifierTrainer.forward_with_grads-383"><a href="#ClassifierTrainer.forward_with_grads-383"><span class="linenos">383</span></a><span class="sd">        function.</span>
+</span><span id="ClassifierTrainer.forward_with_grads-384"><a href="#ClassifierTrainer.forward_with_grads-384"><span class="linenos">384</span></a><span class="sd">        &quot;&quot;&quot;</span> 
+</span><span id="ClassifierTrainer.forward_with_grads-385"><a href="#ClassifierTrainer.forward_with_grads-385"><span class="linenos">385</span></a>        
+</span><span id="ClassifierTrainer.forward_with_grads-386"><a href="#ClassifierTrainer.forward_with_grads-386"><span class="linenos">386</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span id="ClassifierTrainer.forward_with_grads-387"><a href="#ClassifierTrainer.forward_with_grads-387"><span class="linenos">387</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="ClassifierTrainer.forward_with_grads-388"><a href="#ClassifierTrainer.forward_with_grads-388"><span class="linenos">388</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="ClassifierTrainer.forward_with_grads-389"><a href="#ClassifierTrainer.forward_with_grads-389"><span class="linenos">389</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="ClassifierTrainer.forward_with_grads-390"><a href="#ClassifierTrainer.forward_with_grads-390"><span class="linenos">390</span></a>            
+</span><span id="ClassifierTrainer.forward_with_grads-391"><a href="#ClassifierTrainer.forward_with_grads-391"><span class="linenos">391</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="ClassifierTrainer.forward_with_grads-392"><a href="#ClassifierTrainer.forward_with_grads-392"><span class="linenos">392</span></a>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Post process step of the logits was added to the training loop&quot;</span><span class="p">)</span>
+</span><span id="ClassifierTrainer.forward_with_grads-393"><a href="#ClassifierTrainer.forward_with_grads-393"><span class="linenos">393</span></a>            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_logits</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
+</span><span id="ClassifierTrainer.forward_with_grads-394"><a href="#ClassifierTrainer.forward_with_grads-394"><span class="linenos">394</span></a>
+</span><span id="ClassifierTrainer.forward_with_grads-395"><a href="#ClassifierTrainer.forward_with_grads-395"><span class="linenos">395</span></a>        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">logits</span><span class="c1">#self.loss(y, logits)</span>
 </span></pre></div>
 
 
