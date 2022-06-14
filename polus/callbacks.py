@@ -411,7 +411,7 @@ class Profiler(Callback):
     """
     def __init__(self, 
                  write_graph=True, 
-                 steps_interval=[50,60],
+                 steps_interval=[10,20],
                  logs_dir="logs/tensorboard_logs"):
         self.write_graph = write_graph
         self.steps_interval = steps_interval
