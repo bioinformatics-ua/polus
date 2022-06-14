@@ -69,4 +69,7 @@ COPY . .
 RUN pip install -r requirements.txt && \
     python setup.py bdist_wheel && \
     pip install dist/polus-0.2.0-py3-none-any.whl
+    
+    
+ENV LD_LIBRARY_PATH=/usr/local/cuda-11.4/lib64:
 

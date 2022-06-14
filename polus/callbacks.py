@@ -16,6 +16,7 @@ import inspect
 import wandb
 import numpy as np
 import os
+import sys
 
 
 from functools import wraps
@@ -410,7 +411,7 @@ class Profiler(Callback):
     """
     def __init__(self, 
                  write_graph=True, 
-                 steps_interval=[10,20],
+                 steps_interval=[50,60],
                  logs_dir="logs/tensorboard_logs"):
         self.write_graph = write_graph
         self.steps_interval = steps_interval
@@ -427,8 +428,8 @@ class Profiler(Callback):
         self._tensorboard_writer = tf.summary.create_file_writer(os.path.join(self.logs_dir, "training_graph"))
         
         # cold init
-        tf.profiler.experimental.start(self.logs_dir)
-        tf.profiler.experimental.stop(save=False)
+        #tf.profiler.experimental.start(self.logs_dir)
+        #tf.profiler.experimental.stop(save=False)
 
         
     @runs_if_root
@@ -439,18 +440,31 @@ class Profiler(Callback):
     
     @runs_if_root
     def on_train_batch_begin(self, epoch, step):
-        if self.coordinator.trainer.step_counter > self.steps_interval[0] and not self.trace_started:
+        
+        if self.coordinator.trainer.step_counter >= self.steps_interval[0] and not self.trace_started:
             logger.info("Profiler - trace start!")
-            tf.summary.trace_on(graph=True, profiler=False)
             tf.profiler.experimental.start(self.logs_dir)
             self.trace_started = True
+            
+        if self.steps_interval[0] <= self.coordinator.trainer.step_counter < self.steps_interval[1] and self.trace_started:#  and not self.trace_started:
+            logger.info(f"Step - {step}")
+            #tf.summary.trace_on(graph=True, profiler=False)
+            self.tracer = tf.profiler.experimental.Trace('step', step_num=step, _r=1)
+            self.tracer.__enter__()
+            
             #tracer_context = tf.profiler.experimental.Trace("Train", step_num=step, _r=1)
     
     @runs_if_root
     def on_train_batch_end(self, epoch, step, loss):
-        if self.coordinator.trainer.step_counter > self.steps_interval[1] and self.trace_started:
-            with self._tensorboard_writer.as_default():
-                tf.summary.trace_export(name="trace", step=tf.cast(step, dtype=tf.int64))
+        
+        if self.steps_interval[0] <= self.coordinator.trainer.step_counter < self.steps_interval[1]:
+            self.tracer.__exit__(*sys.exc_info())
+        
+        
+        if self.coordinator.trainer.step_counter >= self.steps_interval[1]-1 and self.trace_started:
+            #with self._tensorboard_writer.as_default():
+            #    logger.debug(f"STEP WHEN TRACE EXPORT: {step}, EXPERIMENTAL: {tf.summary.experimental.get_step()}")
+            #    tf.summary.trace_export(name="trace", step=0)
             tf.profiler.experimental.stop()
             self.trace_started = False
             self.coordinator.trainer.early_stop = True
